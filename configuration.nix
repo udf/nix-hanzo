@@ -75,6 +75,7 @@ in
     sshfs
     tmux
     ffmpeg
+    openssl
   ];
 
   # Syncthing
