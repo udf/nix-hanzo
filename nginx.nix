@@ -46,7 +46,6 @@ let
   };
   mapAttrsToStr = sep: fn: set: lib.strings.concatStringsSep sep (lib.mapAttrsToList fn set);
 
-  nginxStrEscape = s: lib.strings.escape [ "\"" "\\" ] s;
   proxyCfg = config.services.nginxProxy;
   proxyPathOpts = { path, ...}: {
     options = {
@@ -125,7 +124,7 @@ in
                 proxy_set_header X-Forwarded-Host $host;
                 proxy_set_header X-Forwarded-Proto $scheme;
                 proxy_set_header X-Forwarded-Prefix syncthing;
-                auth_basic "${nginxStrEscape opts.authMessage}";
+                auth_basic "${opts.authMessage}";
                 auth_basic_user_file /var/www/${path}/.htpasswd;
               '';
             };

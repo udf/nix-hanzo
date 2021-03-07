@@ -91,7 +91,7 @@ in
   services.nginxProxy.paths = {
     "syncthing" = {
       port = 8384;
-      authMessage = "What are you doing in my \"swamp\"?!";
+      authMessage = "What are you doing in my swamp?!";
     };
   };
 }
