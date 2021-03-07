@@ -13,6 +13,7 @@ in
     ./hardware-configuration.nix
     ./nvim.nix
     ./nginx.nix
+    ./torrentvpn.nix
   ];
 
   # Use the GRUB 2 boot loader.
@@ -31,11 +32,6 @@ in
     defaultGateway.address = "5.9.43.65";
     defaultGateway.metric = 10;
     nameservers = [ "213.133.98.98" "8.8.8.8" ];
-
-    iproute2.enable = true;
-    iproute2.rttablesExtraConfig = ''
-      2 tun0
-    '';
   };
 
   time.timeZone = "UTC";
@@ -81,25 +77,6 @@ in
     tmux
     ffmpeg
   ];
-
-  # VPN
-  services.openvpn.servers = {
-    torrentVPN = {
-      config = '' config /root/openvpn/torrentVPN.conf '';
-      up = ''
-        ip route add 10.8.0.0/24 dev tun0 src 10.8.0.2 table tun0
-        ip route add default via 10.8.0.1 dev tun0 table tun0
-        ip rule add from 10.8.0.2/32 table tun0
-        ip rule add to 10.8.0.2/32 table tun0
-      '';
-      down = ''
-        ip route del 10.8.0.0/24 dev tun0 src 10.8.0.2 table tun0
-        ip route del default via 10.8.0.1 dev tun0 table tun0
-        ip rule del from 10.8.0.2/32 table tun0
-        ip rule del to 10.8.0.2/32 table tun0
-      '';
-    };
-  };
 
   # Syncthing
   services.syncthing = {
