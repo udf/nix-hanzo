@@ -87,6 +87,22 @@ in
     configDir = "/home/syncthing/.config/syncthing";
     openDefaultPorts = true;
   };
+  
+  services.nginx = {
+    virtualHosts."tsunderestore.io" = {
+      locations."/syncthing/" = {
+        proxyPass = "https://127.0.0.1:8384";
+        extraConfig = ''
+          rewrite /syncthing/(.*) /$1 break;
+          proxy_set_header X-Forwarded-Host $host;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_set_header X-Forwarded-Prefix syncthing;
+          auth_basic "What are you doing in my swamp?!";
+          auth_basic_user_file /var/www/syncthing/.htpasswd;
+        '';
+      };
+    };
+  };
 }
 
 # vim:et:sw=2
