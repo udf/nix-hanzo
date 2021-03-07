@@ -70,65 +70,67 @@ in
     };
   };
 
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
+  config = {
+    networking.firewall.allowedTCPPorts = [ 80 443 ];
 
-  security.acme = {
-    acceptTerms = true;
-    certs = {
-      "tsunderestore.io".email = "tabhooked@gmail.com";
+    security.acme = {
+      acceptTerms = true;
+      certs = {
+        "tsunderestore.io".email = "tabhooked@gmail.com";
+      };
     };
-  };
 
-  services.nginx = {
-    enable = true;
+    services.nginx = {
+      enable = true;
 
-    appendHttpConfig = let
-      lines = mapAttrsToStr "\n" (k: v: "${k} ${lib.strings.escapeNixString v};") statusCodes;
-    in ''
-      map $status $status_text {
-        ${lines}
-        default "Something went wrong";
-      }
+      appendHttpConfig = let
+        lines = mapAttrsToStr "\n" (k: v: "${k} ${lib.strings.escapeNixString v};") statusCodes;
+      in ''
+        map $status $status_text {
+          ${lines}
+          default "Something went wrong";
+        }
 
-      access_log syslog:server=unix:/dev/log;
-      log_format   main '$remote_addr - $remote_user [$time_local] $status '
-        '"$request" $body_bytes_sent "$http_referer" '
-        '"$http_user_agent" "$http_x_forwarded_for"';
-    '';
+        access_log syslog:server=unix:/dev/log;
+        log_format   main '$remote_addr - $remote_user [$time_local] $status '
+          '"$request" $body_bytes_sent "$http_referer" '
+          '"$http_user_agent" "$http_x_forwarded_for"';
+      '';
 
-    virtualHosts."tsunderestore.io" = {
-      enableACME = true;
-      forceSSL = true;
-      root = "/var/www/";
+      virtualHosts."tsunderestore.io" = {
+        enableACME = true;
+        forceSSL = true;
+        root = "/var/www/";
 
-      extraConfig = let
-          codes = mapAttrsToStr " " (k: v: "${k}") statusCodes;
-        in "error_page ${codes} /error.html;";
+        extraConfig = let
+            codes = mapAttrsToStr " " (k: v: "${k}") statusCodes;
+          in "error_page ${codes} /error.html;";
 
-      locations = {
-        "/error.html".extraConfig = ''
-          ssi on;
-          internal;
-        '';
+        locations = {
+          "/error.html".extraConfig = ''
+            ssi on;
+            internal;
+          '';
 
-        "/food".extraConfig = ''
-          return 410;
-        '';
-      } // lib.attrsets.mapAttrs' (
-        path: opts: {
-          name = "/${path}/";
-          value = {
-            proxyPass = "https://127.0.0.1:${opts.port}";
-            extraConfig = ''
-              rewrite /${path}/(.*) /$1 break;
-              proxy_set_header X-Forwarded-Host $host;
-              proxy_set_header X-Forwarded-Proto $scheme;
-              proxy_set_header X-Forwarded-Prefix syncthing;
-              auth_basic "${nginxStrEscape opts.authMessage}";
-              auth_basic_user_file /var/www/${path}/.htpasswd;
-            '';
-          };
-        }) proxyCfg.paths;
+          "/food".extraConfig = ''
+            return 410;
+          '';
+        } // lib.attrsets.mapAttrs' (
+          path: opts: {
+            name = "/${path}/";
+            value = {
+              proxyPass = "https://127.0.0.1:${opts.port}";
+              extraConfig = ''
+                rewrite /${path}/(.*) /$1 break;
+                proxy_set_header X-Forwarded-Host $host;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                proxy_set_header X-Forwarded-Prefix syncthing;
+                auth_basic "${nginxStrEscape opts.authMessage}";
+                auth_basic_user_file /var/www/${path}/.htpasswd;
+              '';
+            };
+          }) proxyCfg.paths;
+      };
     };
   };
 }
