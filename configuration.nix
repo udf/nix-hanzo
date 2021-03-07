@@ -6,7 +6,6 @@
 
 let
   unstable = import <nixos-unstable> { config = { allowUnfree = true; }; };
-  mapAttrsToStr = sep: fn: set: lib.strings.concatStringsSep sep (lib.mapAttrsToList fn set);
 in
 {
   imports = [
