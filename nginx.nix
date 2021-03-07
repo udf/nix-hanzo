@@ -54,7 +54,7 @@ let
         description = "The local port to proxy";
         type = types.port;
       };
-      authMessage = {
+      authMessage = mkOption {
         description = "The message to display when prompting for authorization";
         default = "Restricted area";
         type = types.str;
@@ -119,7 +119,7 @@ in
           path: opts: {
             name = "/${path}/";
             value = {
-              proxyPass = "https://127.0.0.1:${opts.port}";
+              proxyPass = "https://127.0.0.1:${toString opts.port}";
               extraConfig = ''
                 rewrite /${path}/(.*) /$1 break;
                 proxy_set_header X-Forwarded-Host $host;
