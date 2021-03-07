@@ -1,5 +1,5 @@
 { config, lib, pkgs, ... }:
-
+with lib;
 let
   statusCodes = {
     "400" = "Bad Request";
@@ -45,8 +45,31 @@ let
     "599" = "Network Connect Timeout Error";
   };
   mapAttrsToStr = sep: fn: set: lib.strings.concatStringsSep sep (lib.mapAttrsToList fn set);
+
+  nginxStrEscape = s: lib.strings.escape [ "\"" "\\" ] s;
+  proxyCfg = config.services.nginxProxy;
+  proxyPathOpts = { path, ...}: {
+    options = {
+      port = mkOption {
+        description = "The local port to proxy";
+        type = types.port;
+      };
+      authMessage = {
+        description = "The message to display when prompting for authorization";
+        default = "Restricted area";
+        type = types.str;
+      };
+    };
+  };
 in
 {
+  options.services.nginxProxy = {
+    paths = mkOption {
+      description = "Set of paths that will be proxied (without leading/trailing slashes)";
+      type = types.attrsOf (types.submodule proxyPathOpts);
+    };
+  };
+
   networking.firewall.allowedTCPPorts = [ 80 443 ];
 
   security.acme = {
@@ -82,14 +105,30 @@ in
           codes = mapAttrsToStr " " (k: v: "${k}") statusCodes;
         in "error_page ${codes} /error.html;";
 
-      locations."/error.html".extraConfig = ''
-        ssi on;
-        internal;
-      '';
+      locations = {
+        "/error.html".extraConfig = ''
+          ssi on;
+          internal;
+        '';
 
-      locations."/food".extraConfig = ''
-        return 410;
-      '';
+        "/food".extraConfig = ''
+          return 410;
+        '';
+      } // lib.attrsets.mapAttrs' (
+        path: opts: {
+          name = "/${path}/";
+          value = {
+            proxyPass = "https://127.0.0.1:${opts.port}";
+            extraConfig = ''
+              rewrite /${path}/(.*) /$1 break;
+              proxy_set_header X-Forwarded-Host $host;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_set_header X-Forwarded-Prefix syncthing;
+              auth_basic "${nginxStrEscape opts.authMessage}";
+              auth_basic_user_file /var/www/${path}/.htpasswd;
+            '';
+          };
+        }) proxyCfg.paths;
     };
   };
 }
