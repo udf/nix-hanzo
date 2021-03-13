@@ -13,6 +13,8 @@ in
     ./nvim.nix
     ./nginx.nix
     ./torrentvpn.nix
+
+    ./syncthing.nix
   ];
 
   # Use the GRUB 2 boot loader.
@@ -82,22 +84,6 @@ in
     openssl
   ];
 
-  # Syncthing
-  services.syncthing = {
-    enable = true;
-    user = "syncthing";
-    group = "storage";
-    dataDir = "/home/syncthing";
-    configDir = "/home/syncthing/.config/syncthing";
-    openDefaultPorts = true;
-  };
-
-  services.nginxProxy.paths = {
-    "syncthing" = {
-      port = 8384;
-      authMessage = "What are you doing in my swamp?!";
-    };
-  };
 }
 
 # vim:et:sw=2
