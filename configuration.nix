@@ -10,11 +10,19 @@ in
 {
   imports = [
     ./hardware-configuration.nix
-    ./nvim.nix
+
+    # modules
+    ./modules/endlessh.nix
+
+    # core
     ./nginx.nix
     ./torrentvpn.nix
 
+    # services
     ./syncthing.nix
+
+    # programs
+    ./nvim.nix
   ];
 
   # Use the GRUB 2 boot loader.
@@ -84,6 +92,12 @@ in
     openssl
   ];
 
+  services.endlessh = {
+    enable = true;
+    port = 22;
+    messageDelay = 5;
+    openFirewall = true;
+  };
 }
 
 # vim:et:sw=2
