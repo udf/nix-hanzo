@@ -95,7 +95,7 @@ in
   services.endlessh = {
     enable = true;
     port = 22;
-    messageDelay = 5;
+    messageDelay = 3600;
     openFirewall = true;
   };
 }
