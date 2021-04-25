@@ -48,6 +48,21 @@ in
 
   systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];
 
+  security.pam.loginLimits = [
+    {
+      domain = "*";
+      type = "soft";
+      item = "nofile";
+      value = "4096";
+    }
+    {
+      domain = "*";
+      type = "hard";
+      item = "nofile";
+      value = "4096";
+    }
+  ];
+
   # User accounts
   users.users = {
     sam = {
