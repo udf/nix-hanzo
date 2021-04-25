@@ -3,7 +3,7 @@ let
   vlanSubnet = "192.168.1.0";
   hostIP = "192.168.1.1";
   containerIP = "192.168.1.2";
-  webUIPort = 8112;
+  webUIPort = 8080;
 in
 {
   # manually specify GID so the group can have the same ID inside the container
@@ -14,13 +14,10 @@ in
   };
 
   services.nginxProxy.paths = {
-    "deluge" = {
+    "qbt" = {
       port = webUIPort;
       host = containerIP;
       authMessage = "Stop Right There, Criminal Scum!";
-      extraConfig = ''
-        proxy_set_header X-Deluge-Base "/deluge/";
-      '';
     };
   };
 
@@ -45,6 +42,10 @@ in
     in
       { config, pkgs, ... }:
       {
+        
+        imports = [
+          ./modules/qbittorrent.nix
+        ];
 
         environment.systemPackages = with pkgs; [
           tree
@@ -56,16 +57,13 @@ in
           openvpn = {};
           st_downloads = {
             gid = hostCfg.users.groups.st_downloads.gid;
-            members = [ "deluge" ];
+            members = [ "qbittorrent" ];
           };
         };
 
-        services.deluge = {
+        services.qbittorrent = {
           enable = true;
-          web = {
-            enable = true;
-            port = webUIPort;
-          };
+          port = webUIPort;
         };
 
         services.openvpn.servers = {
