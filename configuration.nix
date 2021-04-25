@@ -107,6 +107,7 @@ in
     adminUsers = [ "sam" ];
     dirs = {
       music = { users = [ "syncthing" ]; };
+      downloads = { users = [ "syncthing" ]; };
     };
   };
 
