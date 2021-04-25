@@ -8,6 +8,11 @@ let
         type = types.listOf (types.str);
         default = [ ];
       };
+      gid = mkOption {
+        description = "The group ID for the generated group";
+        type = types.nullOr types.int;
+        default = null;
+      };
     };
   };
   storageDirsCfg = config.utils.storageDirs;
@@ -34,6 +39,7 @@ in
         name = "st_${dir}";
         value = {
           members = storageDirsCfg.adminUsers ++ opts.users;
+          gid = opts.gid;
         };
       }) storageDirsCfg.dirs;
 
