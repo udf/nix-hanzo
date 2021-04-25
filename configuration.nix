@@ -15,6 +15,7 @@ in
     ./modules/endlessh.nix
 
     # core
+    ./storage-dirs.nix
     ./nginx.nix
     ./torrentvpn.nix
 
@@ -46,11 +47,6 @@ in
   time.timeZone = "UTC";
 
   systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];
-
-  # Groups
-  users.groups.st_music = {
-    members = [ "sam" "syncthing" ];
-  };
 
   # User accounts
   users.users = {
@@ -90,6 +86,14 @@ in
     ffmpeg
     openssl
   ];
+
+  utils.storageDirs = {
+    storagePath = "/booty";
+    adminUsers = [ "sam" ];
+    dirs = {
+      music = { users = [ "syncthing" ]; };
+    };
+  };
 
   services.endlessh = {
     enable = true;
