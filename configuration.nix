@@ -17,10 +17,10 @@ in
     # core
     ./storage-dirs.nix
     ./nginx.nix
-    ./torrentvpn.nix
 
     # services
     ./syncthing.nix
+    ./torrent-container.nix
 
     # programs
     ./nvim.nix
