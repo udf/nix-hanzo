@@ -53,6 +53,16 @@ let
         description = "The local port to proxy";
         type = types.port;
       };
+      host = mkOption {
+        description = "The host to proxy";
+        default = "127.0.0.1";
+        type = types.str;
+      };
+      extraConfig = mkOption {
+        description = "Extra config to add";
+        default = "";
+        type = types.str;
+      };
       authMessage = mkOption {
         description = "The message to display when prompting for authorization";
         default = "Restricted area";
@@ -118,14 +128,15 @@ in
           path: opts: {
             name = "/${path}/";
             value = {
-              proxyPass = "https://127.0.0.1:${toString opts.port}";
+              proxyPass = "http://${opts.host}:${toString opts.port}";
               extraConfig = ''
                 rewrite /${path}/(.*) /$1 break;
                 proxy_set_header X-Forwarded-Host $host;
                 proxy_set_header X-Forwarded-Proto $scheme;
-                proxy_set_header X-Forwarded-Prefix syncthing;
+                proxy_set_header X-Forwarded-Prefix /${path}/;
                 auth_basic "${opts.authMessage}";
                 auth_basic_user_file /var/www/${path}/.htpasswd;
+                ${opts.extraConfig}
               '';
             };
           }) proxyCfg.paths;
