@@ -4,7 +4,6 @@
   services.syncthing = {
     enable = true;
     user = "syncthing";
-    group = "storage";
     dataDir = "/home/syncthing";
     configDir = "/home/syncthing/.config/syncthing";
     openDefaultPorts = true;
