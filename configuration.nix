@@ -100,6 +100,7 @@ in
     tmux
     ffmpeg
     openssl
+    python39
   ];
 
   utils.storageDirs = {
