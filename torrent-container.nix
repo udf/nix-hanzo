@@ -29,7 +29,7 @@ in
     localAddress = containerIP;
     bindMounts = {
       "/mnt/data" = {
-        hostPath = "/var/containers/torrents";
+        hostPath = "/var/lib/container_data/torrents";
         isReadOnly = true;
       };
       "/mnt/downloads" = {
