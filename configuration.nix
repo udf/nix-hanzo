@@ -108,6 +108,7 @@ in
     dirs = {
       music = { users = [ "syncthing" ]; };
       downloads = { users = [ "syncthing" ]; };
+      backups = { users = [ "syncthing" ]; };
     };
   };
 
