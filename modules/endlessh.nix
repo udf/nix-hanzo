@@ -27,7 +27,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    networking.firewall.allowedTCPPorts = if cfg.openFirewall then [ cfg.port ] else [];
+    networking.firewall.allowedTCPPorts = mkIf (cfg.openFirewall) [ cfg.port ];
 
     systemd.services.endlessh = {
      description = "SSH tarpit";
