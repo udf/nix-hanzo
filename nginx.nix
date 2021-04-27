@@ -68,6 +68,11 @@ let
         default = "Restricted area";
         type = types.str;
       };
+      rewrite = mkOption {
+        description = "Whether or not to rewrite the URL before calling the proxy";
+        default = true;
+        type = types.bool;
+      };
     };
   };
 in
@@ -130,7 +135,7 @@ in
             value = {
               proxyPass = "http://${opts.host}:${toString opts.port}";
               extraConfig = ''
-                rewrite /${path}/(.*) /$1 break;
+                ${if opts.rewrite then "rewrite /${path}/(.*) /$1 break;" else ""}
                 proxy_set_header X-Forwarded-Host $host;
                 proxy_set_header X-Forwarded-Proto $scheme;
                 proxy_set_header X-Forwarded-Prefix /${path}/;
