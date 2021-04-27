@@ -64,8 +64,6 @@ in {
 
   config = mkIf cfg.enable {
 
-    environment.systemPackages = [ pkgs.qbittorrent-nox ];
-
     networking.firewall = mkIf cfg.openFirewall {
       allowedTCPPorts = [ cfg.port ];
       allowedUDPPorts = [ cfg.port ];
@@ -99,6 +97,6 @@ in {
     };
 
     users.groups =
-      mkIf (cfg.group == "qbittorrent") { qbittorrent = { gid = null; }; };
+      mkIf (cfg.group == "qbittorrent") { qbittorrent = {}; };
   };
 }
