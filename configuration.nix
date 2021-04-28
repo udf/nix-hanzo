@@ -119,6 +119,14 @@ in
     messageDelay = 3600;
     openFirewall = true;
   };
+
+  services.syncplay = {
+    enable = true;
+  };
+  systemd.services.syncplay.environment = {
+    SYNCPLAY_PASSWORD = "hentai";
+  };
+  networking.firewall.allowedTCPPorts = [ config.services.syncplay.port ];
 }
 
 # vim:et:sw=2
