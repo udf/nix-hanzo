@@ -65,16 +65,6 @@ in
       '';
     };
 
-    # TODO: enum or something to switch between rtorrent, qbittorrent, or transmission
-    # maybe move each option into its own set and assert that only one is not null
-    # rtSocketPath = mkOption {
-    #   type = types.path;
-    #   default = "/run/rtorrent/rpc.sock";
-    #   description = ''
-    #     rtorrent RPC socket path
-    #   '';
-    # };
-
     qbURL = mkOption {
       type = types.str;
       default = "http://127.0.0.1:${webUIPort}";
