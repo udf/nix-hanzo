@@ -39,6 +39,15 @@
     nameservers = [ "1.1.1.1" "8.8.8.8" ];
   };
 
+  networking.nat = {
+    enable = true;
+    externalInterface = "eth0";
+    internalInterfaces = [ "wg0" ];
+  };
+  networking.firewall = {
+    allowedUDPPorts = [ 51820 ];
+  };
+
   # User accounts
   users.users = {
     sam = {
@@ -70,6 +79,29 @@
     tmux
     python39
   ];
+
+  networking.wireguard.interfaces = {
+    wg0 = {
+      ips = [ "10.100.0.1/24" ];
+      listenPort = 51820;
+      privateKeyFile = "/root/wireguard-keys/private";
+
+      postSetup = ''
+        ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s 10.100.0.0/24 -o eth0 -j MASQUERADE
+      '';
+      postShutdown = ''
+        ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -s 10.100.0.0/24 -o eth0 -j MASQUERADE
+      '';
+
+      peers = [
+        {
+          # hanzo torrent container
+          publicKey = "ltOCgajrsyWKJKuVtG9RFMWJNzSxg8tUxossPT3Nfkw=";
+          allowedIPs = [ "10.100.0.2/32" ];
+        }
+      ];
+    };
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

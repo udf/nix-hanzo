@@ -68,6 +68,7 @@ in
           tree
           file
           htop
+          wireguard
         ];
 
         users = {
@@ -105,50 +106,45 @@ in
             enable = true;
             port = webUIPort;
           };
-          # rtorrent = {
-          #   enable = true;
-          #   downloadDir = "/mnt/downloads/complete";
-          #   package = (pkgs.callPackage ./packages/rtorrent-jesec.nix {});
-          # };
-        };
-
-        services.openvpn.servers = {
-          torrentVPN = {
-            config = '' config /mnt/data/openvpn/torrentVPN.conf '';
-          };
         };
 
         networking = {
           enableIPv6 = false;
           nameservers = [ "8.8.8.8" ];
-
-          # We don't need extraStopCommands because the whole container gets restarted
-          # when the config is updated
+          firewall.allowedUDPPorts = [ 51820 ];
+          # poor man's killswitch
           firewall.extraCommands = ''
-            # accept anything from openvpn group
-            iptables -A OUTPUT -j ACCEPT -m owner --gid-owner openvpn
-
-            # allow vpn server
-            iptables -A OUTPUT -d ***REMOVED***/32 -j ACCEPT
-
-            # allow loopback and tunnel
-            iptables -A OUTPUT -j ACCEPT -o lo
-            iptables -A OUTPUT -j ACCEPT -o tun+
-
-            # allow lan IPs
-            iptables -A INPUT -s ${vlanSubnet}/24 -j ACCEPT
-            iptables -A OUTPUT -d ${vlanSubnet}/24 -j ACCEPT
-
-            # allow replies to established connections
-            iptables -A INPUT -j ACCEPT -m state --state ESTABLISHED
-
-            # drop everything else
-            iptables -P OUTPUT DROP
-            iptables -P INPUT DROP
+            ip route del default
           '';
+        };
+
+        networking.wireguard.interfaces = {
+          wg0 = {
+            ips = [ "10.100.0.2/24" ];
+            listenPort = 51820;
+            privateKeyFile = "/root/wireguard-keys/private";
+
+            postSetup = ''
+              ip route add ***REMOVED*** via ${hostIP} dev eth0
+            '';
+            postShutdown = ''
+              ip route del ***REMOVED*** via ${hostIP} dev eth0
+            '';
+
+            peers = [
+              {
+                publicKey = "nJnRKVLUwW+D2h/rhbF0o69IWfccK/8SJJuNvg7GkgA=";
+                allowedIPs = [ "0.0.0.0/0" ];
+                endpoint = "***REMOVED***:51820";
+                persistentKeepalive = 25;
+              }
+            ];
+          };
         };
       };
   };
+
+  boot.extraModulePackages = with config.boot.kernelPackages; [ wireguard ];
 
   networking.nat = {
     enable = true;
