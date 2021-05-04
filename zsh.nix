@@ -4,6 +4,8 @@
     fzf
   ];
 
+  users.defaultUserShell = pkgs.zsh;
+
   programs.zsh = {
     enable = true;
     histSize = 10000000;
@@ -22,7 +24,12 @@
     ];
     promptInit = ''
       function do_prompt() {
-        echo -n '%B%F{magenta}[%b%F{red}%(?..%? )%B%F{green}%m %b%F{magenta}%~%B]%# %f%b'
+        uid=$(id -u)
+        fg=green
+        [ $uid = 0 ] && fg=red
+        echo -n "%F{magenta}%B[%b%F{red}%(?..%? )%B%F{$fg}"
+        [ $uid != 1000 ] && echo -n '%n@'
+        echo -n "%m %b%F{magenta}%~%B]%# %f%b"
       }
       export PROMPT='$(do_prompt)'
     '';
