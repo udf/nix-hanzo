@@ -9,7 +9,7 @@ let
 in
 {
   imports = [
-    ./hardware-configuration.nix
+    ./hardware-configuration-hanzo.nix
 
     # modules
     ./modules/endlessh.nix
@@ -72,7 +72,6 @@ in
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIzlWx6yy2nWV8fYcIm9Laap8/KxAlLJd943TIrcldSY archdesktop"
       ];
-      shell = pkgs.zsh;
     };
   };
 
@@ -89,7 +88,7 @@ in
   # should.
   system.stateVersion = "20.09";
 
-  # List packages installed in system profile. To search, run:
+  # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
     lm_sensors
     git
