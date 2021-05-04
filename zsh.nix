@@ -51,6 +51,11 @@
       # make time builtin look like bash
       TIMEFMT=$'\nreal\t%*Es\nuser\t%*Us\nsys\t%*Ss'
 
+      # Issue a BELL when a command is done
+      function precmd() {
+          echo -ne '\a'
+      }
+
       # completion
       zstyle ':completion:*' menu select
       zmodload zsh/complist
