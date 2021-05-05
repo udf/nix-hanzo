@@ -5,6 +5,7 @@ let
   containerIP = "192.168.1.2";
   webUIPort = 8080;
   floodUIPort = 3000;
+  vpnConsts = import ../constants/vpn.nix;
 in
 {
   # manually specify GID so the group can have the same ID inside the container
@@ -111,8 +112,8 @@ in
         networking = {
           enableIPv6 = false;
           nameservers = [ "8.8.8.8" ];
-          firewall.allowedTCPPorts = [ 10810 ];
-          firewall.allowedUDPPorts = [ 51820 ];
+          firewall.allowedTCPPorts = [ vpnConsts.torrentListenPort ];
+          firewall.allowedUDPPorts = [ vpnConsts.serverPort vpnConsts.torrentListenPort ];
           # poor man's killswitch
           firewall.extraCommands = ''
             ip route del default
@@ -121,22 +122,22 @@ in
 
         networking.wireguard.interfaces = {
           wg0 = {
-            ips = [ "10.100.0.2/24" ];
-            listenPort = 51820;
+            ips = [ "${vpnConsts.torrentContainerIP}/24" ];
+            listenPort = vpnConsts.serverPort;
             privateKeyFile = "/root/wireguard-keys/private";
 
             postSetup = ''
-              ip route add ***REMOVED*** via ${hostIP} dev eth0
+              ip route add ${vpnConsts.serverIP} via ${hostIP} dev eth0
             '';
             postShutdown = ''
-              ip route del ***REMOVED*** via ${hostIP} dev eth0
+              ip route del ${vpnConsts.serverIP} via ${hostIP} dev eth0
             '';
 
             peers = [
               {
                 publicKey = "nJnRKVLUwW+D2h/rhbF0o69IWfccK/8SJJuNvg7GkgA=";
                 allowedIPs = [ "0.0.0.0/0" ];
-                endpoint = "***REMOVED***:51820";
+                endpoint = "${vpnConsts.serverIP}:${toString vpnConsts.serverPort}";
                 persistentKeepalive = 25;
               }
             ];

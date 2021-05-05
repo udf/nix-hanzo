@@ -3,7 +3,7 @@
   pkgs,
   interface,
   externalInterface,
-  gatewayIp,
+  gatewayIP,
   gatewaySubnet
 }: {forwardedTCPPorts, forwardedUDPPorts, ...} @ cfg:
 let
@@ -23,7 +23,7 @@ let
   getForwardRules = {proto ? "tcp", port, ip}: ''
     ${iptables} -A ${prefixChain "FORWARD"} -i ${externalInterface} -o ${interface} -p ${proto} ${lib.optionalString (proto == "tcp") "--syn"} --dport ${port} -m conntrack --ctstate NEW -j ACCEPT
     ${iptables} -t nat -A ${prefixChain "PREROUTING"} -i ${externalInterface} -p ${proto} --dport ${port} -j DNAT --to-destination ${ip}
-    ${iptables} -t nat -A ${prefixChain "POSTROUTING"} -o ${interface} -p ${proto} --dport ${port} -d ${ip} -j SNAT --to-source ${gatewayIp}
+    ${iptables} -t nat -A ${prefixChain "POSTROUTING"} -o ${interface} -p ${proto} --dport ${port} -d ${ip} -j SNAT --to-source ${gatewayIP}
   '';
 in
 (removeAttrs cfg ["forwardedTCPPorts" "forwardedUDPPorts"]) // {

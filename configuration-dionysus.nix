@@ -4,6 +4,9 @@
 
 { config, lib, pkgs, ... }:
 
+let
+  vpnConsts = import ./constants/vpn.nix;
+in
 {
   imports = [
     ./hardware-configuration-dionysus.nix
@@ -31,7 +34,7 @@
   networking = {
     usePredictableInterfaceNames = false;
     interfaces.eth0.ipv4.addresses = [{
-      address = "***REMOVED***";
+      address = vpnConsts.serverIP;
       prefixLength = 24;
     }];
     defaultGateway.address = "104.244.77.1";
@@ -45,8 +48,8 @@
     internalInterfaces = [ "wg0" ];
   };
   networking.firewall = {
-    allowedTCPPorts = [ 10810 ];
-    allowedUDPPorts = [ 51820 10810 ];
+    allowedTCPPorts = [ vpnConsts.torrentListenPort ];
+    allowedUDPPorts = [ vpnConsts.serverPort vpnConsts.torrentListenPort ];
   };
 
   # User accounts
@@ -81,33 +84,31 @@
     python39
   ];
 
-  networking.wireguard.interfaces = let
-    gatewayIp = "10.100.0.1";
-  in {
+  networking.wireguard.interfaces = {
     wg0 = (import ./helpers/wireguard-port-forward.nix {
       lib = lib;
       pkgs = pkgs;
       interface = "wg0";
       externalInterface = "eth0";
-      gatewayIp = gatewayIp;
+      gatewayIP = vpnConsts.gatewayIP;
       gatewaySubnet = "10.100.0.0/24";
     }) {
-      ips = [ "${gatewayIp}/24" ];
-      listenPort = 51820;
+      ips = [ "${vpnConsts.gatewayIP}/24" ];
+      listenPort = vpnConsts.serverPort;
       privateKeyFile = "/root/wireguard-keys/private";
 
       forwardedTCPPorts = {
-        "10810" = "10.100.0.2";
+        "${toString vpnConsts.torrentListenPort}" = vpnConsts.torrentContainerIP;
       };
       forwardedUDPPorts = {
-        "10810" = "10.100.0.2";
+        "${toString vpnConsts.torrentListenPort}" = vpnConsts.torrentContainerIP;
       };
 
       peers = [
         {
           # hanzo torrent container
           publicKey = "ltOCgajrsyWKJKuVtG9RFMWJNzSxg8tUxossPT3Nfkw=";
-          allowedIPs = [ "10.100.0.2/32" ];
+          allowedIPs = [ "${vpnConsts.torrentContainerIP}/32" ];
         }
       ];
     };
