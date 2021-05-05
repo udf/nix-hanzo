@@ -81,31 +81,47 @@
     python39
   ];
 
-  networking.wireguard.interfaces = {
+  networking.wireguard.interfaces = let
+    iptables = "${pkgs.iptables}/bin/iptables";
+    prefixChain = chain: "${chain}_WG0";
+    getTableArg = table: lib.optionalString (table != "") "-t ${table}";
+    createChain = {chain, table ? ""}: ''
+      ${iptables} ${getTableArg table} -N ${prefixChain chain}
+      ${iptables} ${getTableArg table} -A ${chain} -j ${prefixChain chain}
+    '';
+    deleteChain = {chain, table ? ""}: ''
+      ${iptables} ${getTableArg table} -D ${chain} -j ${prefixChain chain}
+      ${iptables} ${getTableArg table} -F ${prefixChain chain}
+      ${iptables} ${getTableArg table} -X ${prefixChain chain}
+    '';
+    getForwardRules = {proto ? "tcp", port, ip}: ''
+      ${iptables} -A ${prefixChain "FORWARD"} -i eth0 -o wg0 -p ${proto} ${lib.optionalString (proto == "tcp") "--syn"} --dport ${port} -m conntrack --ctstate NEW -j ACCEPT
+      ${iptables} -t nat -A ${prefixChain "PREROUTING"} -i eth0 -p ${proto} --dport ${port} -j DNAT --to-destination ${ip}
+      ${iptables} -t nat -A ${prefixChain "POSTROUTING"} -o wg0 -p ${proto} --dport ${port} -d ${ip} -j SNAT --to-source 10.100.0.1
+    '';
+  in {
     wg0 = {
       ips = [ "10.100.0.1/24" ];
       listenPort = 51820;
       privateKeyFile = "/root/wireguard-keys/private";
 
       postSetup = ''
-        ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s 10.100.0.0/24 -o eth0 -j MASQUERADE
+        ${createChain {table="nat"; chain="POSTROUTING";}}
+        ${createChain {table="nat"; chain="PREROUTING";}}
+        ${createChain {chain="FORWARD";}}
 
-        ${pkgs.iptables}/bin/iptables -A FORWARD -i eth0 -o wg0 -p tcp --syn --dport 10810 -m conntrack --ctstate NEW -j ACCEPT
-        ${pkgs.iptables}/bin/iptables -A FORWARD -i eth0 -o wg0 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-        ${pkgs.iptables}/bin/iptables -A FORWARD -i wg0 -o eth0 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+        ${iptables} -t nat -A ${prefixChain "POSTROUTING"} -s 10.100.0.0/24 -o eth0 -j MASQUERADE
 
-        ${pkgs.iptables}/bin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 10810 -j DNAT --to-destination 10.100.0.2
-        ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -o wg0 -p tcp --dport 10810 -d 10.100.0.2 -j SNAT --to-source 10.100.0.1
+        ${iptables} -A ${prefixChain "FORWARD"} -i eth0 -o wg0 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+        ${iptables} -A ${prefixChain "FORWARD"} -i wg0 -o eth0 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+        ${getForwardRules {proto="tcp"; port="10810"; ip="10.100.0.2";}}
+        ${getForwardRules {proto="udp"; port="10810"; ip="10.100.0.2";}}
       '';
       postShutdown = ''
-        ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -s 10.100.0.0/24 -o eth0 -j MASQUERADE
-
-        ${pkgs.iptables}/bin/iptables -D FORWARD -i eth0 -o wg0 -p tcp --syn --dport 10810 -m conntrack --ctstate NEW -j ACCEPT
-        ${pkgs.iptables}/bin/iptables -D FORWARD -i eth0 -o wg0 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-        ${pkgs.iptables}/bin/iptables -D FORWARD -i wg0 -o eth0 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-
-        ${pkgs.iptables}/bin/iptables -t nat -D PREROUTING -i eth0 -p tcp --dport 10810 -j DNAT --to-destination 10.100.0.2
-        ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -o wg0 -p tcp --dport 10810 -d 10.100.0.2 -j SNAT --to-source 10.100.0.1
+        ${deleteChain {table="nat"; chain="POSTROUTING";}}
+        ${deleteChain {table="nat"; chain="PREROUTING";}}
+        ${deleteChain {chain="FORWARD";}}
       '';
 
       peers = [
