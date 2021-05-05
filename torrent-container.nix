@@ -111,6 +111,7 @@ in
         networking = {
           enableIPv6 = false;
           nameservers = [ "8.8.8.8" ];
+          firewall.allowedTCPPorts = [ 10810 ];
           firewall.allowedUDPPorts = [ 51820 ];
           # poor man's killswitch
           firewall.extraCommands = ''

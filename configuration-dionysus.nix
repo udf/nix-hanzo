@@ -45,7 +45,8 @@
     internalInterfaces = [ "wg0" ];
   };
   networking.firewall = {
-    allowedUDPPorts = [ 51820 ];
+    allowedTCPPorts = [ 10810 ];
+    allowedUDPPorts = [ 51820 10810 ];
   };
 
   # User accounts
@@ -88,9 +89,23 @@
 
       postSetup = ''
         ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -s 10.100.0.0/24 -o eth0 -j MASQUERADE
+
+        ${pkgs.iptables}/bin/iptables -A FORWARD -i eth0 -o wg0 -p tcp --syn --dport 10810 -m conntrack --ctstate NEW -j ACCEPT
+        ${pkgs.iptables}/bin/iptables -A FORWARD -i eth0 -o wg0 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+        ${pkgs.iptables}/bin/iptables -A FORWARD -i wg0 -o eth0 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+        ${pkgs.iptables}/bin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 10810 -j DNAT --to-destination 10.100.0.2
+        ${pkgs.iptables}/bin/iptables -t nat -A POSTROUTING -o wg0 -p tcp --dport 10810 -d 10.100.0.2 -j SNAT --to-source 10.100.0.1
       '';
       postShutdown = ''
         ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -s 10.100.0.0/24 -o eth0 -j MASQUERADE
+
+        ${pkgs.iptables}/bin/iptables -D FORWARD -i eth0 -o wg0 -p tcp --syn --dport 10810 -m conntrack --ctstate NEW -j ACCEPT
+        ${pkgs.iptables}/bin/iptables -D FORWARD -i eth0 -o wg0 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+        ${pkgs.iptables}/bin/iptables -D FORWARD -i wg0 -o eth0 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+        ${pkgs.iptables}/bin/iptables -t nat -D PREROUTING -i eth0 -p tcp --dport 10810 -j DNAT --to-destination 10.100.0.2
+        ${pkgs.iptables}/bin/iptables -t nat -D POSTROUTING -o wg0 -p tcp --dport 10810 -d 10.100.0.2 -j SNAT --to-source 10.100.0.1
       '';
 
       peers = [
