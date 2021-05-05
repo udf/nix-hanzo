@@ -21,6 +21,7 @@ in
     };
     services.yt-music-dl = {
       after = ["network.target"];
+      before = ["music-gain-tag.service"];
       path = [
         "/home/yt-music-dl/.local"
         pkgs.ffmpeg

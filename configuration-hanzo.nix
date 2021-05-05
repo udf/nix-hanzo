@@ -22,6 +22,7 @@ in
     ./fragments/syncthing.nix
     ./fragments/torrent-container.nix
     ./fragments/yt-music-dl.nix
+    ./fragments/music-gain-tag.nix
 
     # programs
     ./fragments/nvim.nix
