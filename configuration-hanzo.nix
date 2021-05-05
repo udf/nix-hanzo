@@ -54,13 +54,13 @@ in
       domain = "*";
       type = "soft";
       item = "nofile";
-      value = "4096";
+      value = "65536";
     }
     {
       domain = "*";
       type = "hard";
       item = "nofile";
-      value = "4096";
+      value = "65536";
     }
   ];
 
