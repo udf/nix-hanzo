@@ -9,8 +9,8 @@
     ./hardware-configuration-dionysus.nix
 
     # programs
-    ./nvim.nix
-    ./zsh.nix
+    ./fragments/nvim.nix
+    ./fragments/zsh.nix
   ];
 
   # Use the GRUB 2 boot loader.

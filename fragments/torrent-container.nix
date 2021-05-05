@@ -60,8 +60,8 @@ in
       {
 
         imports = [
-          ./modules/qbittorrent.nix
-          ./modules/flood.nix
+          ../modules/qbittorrent.nix
+          ../modules/flood.nix
         ];
 
         environment.systemPackages = with pkgs; [
