@@ -21,6 +21,7 @@ in
     # services
     ./fragments/syncthing.nix
     ./fragments/torrent-container.nix
+    ./fragments/yt-music-dl.nix
 
     # programs
     ./fragments/nvim.nix
