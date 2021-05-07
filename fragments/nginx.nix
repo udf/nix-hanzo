@@ -94,6 +94,8 @@ in
       };
     };
 
+    utils.storageDirs.dirs.downloads.readOnlyUsers = [ "nginx" ];
+
     services.nginx = {
       enable = true;
 
@@ -128,6 +130,16 @@ in
 
           "/food".extraConfig = ''
             return 410;
+          '';
+
+          "/auth".extraConfig = ''
+            deny all;
+          '';
+
+          "~ /files.*/$".extraConfig = ''
+            autoindex on;
+            auth_basic              "Keep trying";
+            auth_basic_user_file    /var/www/auth/files.htpasswd;
           '';
         } // lib.attrsets.mapAttrs' (
           path: opts: {

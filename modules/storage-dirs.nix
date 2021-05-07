@@ -13,9 +13,28 @@ let
         type = types.nullOr types.int;
         default = null;
       };
+      readOnlyUsers = mkOption {
+        description = "List of users that will have read only access to the storage directory";
+        type = types.listOf (types.str);
+        default = [ ];
+      };
     };
   };
   storageDirsCfg = config.utils.storageDirs;
+  setfacl = "${pkgs.acl}/bin/setfacl";
+  mkFACLScript = isDefault: dirs: concatStringsSep "\n" (lib.attrsets.mapAttrsToList (
+    dir: opts:
+    let
+      path = "${storageDirsCfg.storagePath}/${dir}";
+      group = "st_${dir}";
+      getROUserFACL = user: "${setfacl} -R ${optionalString isDefault "-d"} -m u:${user}:r-x ${path}";
+    in
+      ''
+        mkdir -p ${path}
+        ${setfacl} -R ${optionalString isDefault "-d"} -m g:${group}:rwx ${path}
+        ${concatMapStringsSep "\n" getROUserFACL opts.readOnlyUsers}
+      ''
+  ) dirs);
 in
 {
   options.utils.storageDirs = {
@@ -34,6 +53,10 @@ in
   };
 
   config = {
+    environment.systemPackages = [
+      (pkgs.writeScriptBin "storage-dirs-set-acl" (mkFACLScript false storageDirsCfg.dirs))
+    ];
+
     users.groups = attrsets.mapAttrs' (
       dir: opts: {
         name = "st_${dir}";
@@ -46,16 +69,7 @@ in
     system.activationScripts = {
       storageDirCreator = {
         deps = [ "specialfs" ];
-        text = let
-          buildLine = (dir: opts:
-            let
-              path = "${storageDirsCfg.storagePath}/${dir}";
-              group = "st_${dir}";
-            in
-              "mkdir -p ${path} && chgrp ${group} ${path}"
-          );
-        in
-          concatStringsSep "\n" (lib.attrsets.mapAttrsToList buildLine storageDirsCfg.dirs);
+        text = (mkFACLScript true storageDirsCfg.dirs);
       };
     };
   };
