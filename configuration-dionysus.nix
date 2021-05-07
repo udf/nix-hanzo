@@ -11,6 +11,9 @@ in
   imports = [
     ./hardware-configuration-dionysus.nix
 
+    # core
+    ./fragments/users.nix
+
     # programs
     ./fragments/nvim.nix
     ./fragments/zsh.nix
@@ -50,17 +53,6 @@ in
   networking.firewall = {
     allowedTCPPorts = [ vpnConsts.torrentListenPort ];
     allowedUDPPorts = [ vpnConsts.serverPort vpnConsts.torrentListenPort ];
-  };
-
-  # User accounts
-  users.users = {
-    sam = {
-      isNormalUser = true;
-      extraGroups = [ "wheel" ];
-      openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIzlWx6yy2nWV8fYcIm9Laap8/KxAlLJd943TIrcldSY archdesktop"
-      ];
-    };
   };
 
   systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];

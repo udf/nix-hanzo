@@ -17,6 +17,7 @@ in
     # core
     ./modules/storage-dirs.nix
     ./fragments/nginx.nix
+    ./fragments/users.nix
 
     # services
     ./fragments/syncthing.nix
@@ -65,17 +66,6 @@ in
       value = "65536";
     }
   ];
-
-  # User accounts
-  users.users = {
-    sam = {
-      isNormalUser = true;
-      extraGroups = [ "wheel" ];
-      openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIzlWx6yy2nWV8fYcIm9Laap8/KxAlLJd943TIrcldSY archdesktop"
-      ];
-    };
-  };
 
   # Enable the OpenSSH daemon.
   services.openssh = {
