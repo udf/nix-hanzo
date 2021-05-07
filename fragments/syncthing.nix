@@ -15,4 +15,12 @@
       authMessage = "What are you doing in my swamp?!";
     };
   };
+
+  utils.storageDirs = {
+    dirs = {
+      music = { users = [ "syncthing" ]; };
+      downloads = { users = [ "syncthing" ]; };
+      backups = { users = [ "syncthing" ]; };
+    };
+  };
 }

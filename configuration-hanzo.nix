@@ -110,9 +110,9 @@ in
     storagePath = "/booty";
     adminUsers = [ "sam" ];
     dirs = {
-      music = { users = [ "syncthing" ]; };
-      downloads = { users = [ "syncthing" ]; };
-      backups = { users = [ "syncthing" ]; };
+      music = {};
+      downloads = {};
+      backups = {};
     };
   };
 
