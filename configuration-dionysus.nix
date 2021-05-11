@@ -55,6 +55,13 @@ in
     allowedUDPPorts = [ vpnConsts.serverPort vpnConsts.torrentListenPort ];
   };
 
+  # Fix DoS when too many nat connections are open
+  boot.kernel.sysctl = {
+    "net.netfilter.nf_conntrack_max" = 32768;
+    "net.netfilter.nf_conntrack_generic_timeout" = 120;
+    "net.netfilter.nf_conntrack_tcp_timeout_established" = 21600;
+  };
+
   systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];
 
   # Enable the OpenSSH daemon.
