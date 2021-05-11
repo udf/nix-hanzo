@@ -63,6 +63,7 @@ in
         imports = [
           ../modules/qbittorrent.nix
           ../modules/flood.nix
+          ./tg-spam.nix
         ];
 
         environment.systemPackages = with pkgs; [
