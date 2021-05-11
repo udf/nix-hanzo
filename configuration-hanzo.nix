@@ -24,6 +24,7 @@ in
     ./fragments/torrent-container.nix
     ./fragments/yt-music-dl.nix
     ./fragments/music-gain-tag.nix
+    ./fragments/bbd-clients.nix
 
     # programs
     ./fragments/nvim.nix
