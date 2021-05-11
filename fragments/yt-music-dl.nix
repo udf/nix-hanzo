@@ -26,9 +26,6 @@ in
         "/home/yt-music-dl/.local"
         pkgs.ffmpeg
       ];
-      environment = {
-        HOME = "/home/yt-music-dl";
-      };
       serviceConfig = {
         Type = "oneshot";
         User = "yt-music-dl";
@@ -44,6 +41,7 @@ in
 
   users.extraUsers.yt-music-dl = {
     description = "YT playlist downloader";
+    home = "/home/yt-music-dl";
     createHome = true;
     isSystemUser = true;
   };
