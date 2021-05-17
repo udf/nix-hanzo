@@ -8,21 +8,18 @@ let
   vpnConsts = import ../constants/vpn.nix;
 in
 {
-  # manually specify GID so the group can have the same ID inside the container
-  utils.storageDirs = {
-    dirs = {
-      downloads = { gid = 995; };
-    };
-  };
-  # TODO: automate setting same uid/gid inside and outside of container
+  # Create qbittorrent user/group on host so file permissions make sense
+  # deterministic-ids.nix ensures that we have the same ids inside and outside of the container
   users = {
     users = {
-      qbittorrent = { uid = 10002; };
+      qbittorrent = {};
     };
     groups = {
-      qbittorrent = { gid = 10002; };
+      qbittorrent = {};
     };
   };
+  # probably isn't necessary
+  utils.storageDirs.dirs.downloads.users = [ "qbittorrent" ];
 
   services.nginxProxy.paths = {
     "flood" = {
@@ -61,6 +58,7 @@ in
       {
 
         imports = [
+          ../fragments/deterministic-ids.nix
           ../modules/qbittorrent.nix
           ../modules/flood.nix
           ./tg-spam.nix
@@ -75,18 +73,8 @@ in
 
         users = {
           groups = {
-            openvpn = {};
             st_downloads = {
-              gid = hostCfg.users.groups.st_downloads.gid;
               members = [ "qbittorrent" ];
-            };
-            qbittorrent = {
-              gid = hostCfg.users.groups.qbittorrent.gid;
-            };
-          };
-          users = {
-            qbittorrent = {
-              uid = hostCfg.users.users.qbittorrent.uid;
             };
           };
         };

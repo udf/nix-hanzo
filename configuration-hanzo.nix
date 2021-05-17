@@ -11,6 +11,8 @@ in
   imports = [
     ./hardware-configuration-hanzo.nix
 
+    ./fragments/deterministic-ids.nix
+
     # modules
     ./modules/endlessh.nix
 
