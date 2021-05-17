@@ -43,7 +43,6 @@ in
     description = "YT playlist downloader";
     home = "/home/yt-music-dl";
     createHome = true;
-    isSystemUser = true;
   };
 
   utils.storageDirs.dirs.music.users = [ "yt-music-dl" ];

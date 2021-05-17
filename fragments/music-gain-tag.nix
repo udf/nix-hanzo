@@ -29,7 +29,6 @@ in
   
   users.extraUsers.music-gain-tagger = {
     description = "Tags music with replaygain";
-    isSystemUser = true;
   };
 
   utils.storageDirs.dirs.music.users = [ "music-gain-tagger" ];
