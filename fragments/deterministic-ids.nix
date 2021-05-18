@@ -11,7 +11,7 @@ let
   hexChars = listToAttrs (imap0 (i: v: {name = v; value = i;}) (stringToCharacters "0123456789abcdef"));
   hexToInt = s: foldl (a: b: a * 16 + hexChars."${b}") 0 (stringToCharacters s);
 
-  genHash = s: (hexToInt (substring 0 7 (hashString "sha1" s))) * 65535 / 65536 + 65536;
+  genHash = s: (hexToInt (substring 0 8 (hashString "sha1" s))) * 65535 / 65536 + 65536;
   genId = outAttr: name: opts: opts // {"${outAttr}" = genHash name;};
   genIds = outAttr: sets: mapAttrs (genId outAttr) sets; 
 in
