@@ -105,7 +105,7 @@ in
           firewall.allowedUDPPorts = [ vpnConsts.serverPort vpnConsts.torrentListenPort ];
           # poor man's killswitch
           firewall.extraCommands = ''
-            ip route del default
+            ${pkgs.iproute}/bin/ip route del default
           '';
         };
 
