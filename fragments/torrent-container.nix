@@ -101,7 +101,7 @@ in
         networking = {
           enableIPv6 = false;
           nameservers = [ "8.8.8.8" ];
-          firewall.allowedTCPPorts = [ vpnConsts.torrentListenPort ];
+          firewall.allowedTCPPorts = [ vpnConsts.torrentListenPort webUIPort floodUIPort ];
           firewall.allowedUDPPorts = [ vpnConsts.serverPort vpnConsts.torrentListenPort ];
           # poor man's killswitch
           firewall.extraCommands = ''
