@@ -11,12 +11,11 @@ in
   imports = [
     ./hardware-configuration-hanzo.nix
 
-    ./fragments/deterministic-ids.nix
-
     # modules
     ./modules/endlessh.nix
 
     # core
+    ./fragments/deterministic-ids.nix
     ./modules/storage-dirs.nix
     ./fragments/nginx.nix
     ./fragments/users.nix
@@ -27,6 +26,7 @@ in
     ./fragments/yt-music-dl.nix
     ./fragments/music-gain-tag.nix
     ./fragments/bbd-clients.nix
+    ./fragments/airsonic.nix
 
     # programs
     ./fragments/nvim.nix
