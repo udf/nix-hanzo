@@ -141,6 +141,10 @@ in
             auth_basic              "Keep trying";
             auth_basic_user_file    /var/www/auth/files.htpasswd;
           '';
+
+          "/configtoolmachine".extraConfig = ''
+            try_files $uri /configtoolmachine/index.html;
+          '';
         } // lib.attrsets.mapAttrs' (
           path: opts: {
             name = "/${path}/";
