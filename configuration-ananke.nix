@@ -59,7 +59,7 @@
       address = "192.168.0.3";
       prefixLength = 24;
     }];
-    firewall.allowedTCPPorts = [ 8443 ];
+    firewall.allowedTCPPorts = [ 8443 3493 ];
   };
 
   services.openssh.enable = true;
@@ -80,4 +80,20 @@
     openPorts = true;
     unifiPackage = pkgs.unifiStable;
   };
+
+  power.ups = {
+    enable = true;
+    mode = "netserver";
+    ups.mecer-vesta-3k = {
+      driver = "blazer_usb";
+      port = "auto";
+    };
+  };
+  systemd.services.upsmon.enable = false;
+  environment.etc."nut/upsd.conf".source = pkgs.writeText "upsd.conf" ''
+    LISTEN 127.0.0.1 3493
+    LISTEN 192.168.0.3 3493
+  '';
+  environment.etc."nut/upsd.users".source = ../ups/upsd.users;
+  environment.etc."nut/upsmon.conf".source = ../ups/upsmon.conf;
 }
