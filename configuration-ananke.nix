@@ -59,6 +59,7 @@
       address = "192.168.0.3";
       prefixLength = 24;
     }];
+    firewall.allowedTCPPorts = [ 8443 ];
   };
 
   services.openssh.enable = true;
