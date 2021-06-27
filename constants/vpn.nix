@@ -7,4 +7,5 @@ in
   gatewayIP = "10.100.0.1";
   torrentContainerIP = "10.100.0.2";
   torrentListenPort = 10810;
+  hathListenPort = 6969;
 }

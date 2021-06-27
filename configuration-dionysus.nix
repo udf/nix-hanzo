@@ -51,7 +51,7 @@ in
     internalInterfaces = [ "wg0" ];
   };
   networking.firewall = {
-    allowedTCPPorts = [ vpnConsts.torrentListenPort ];
+    allowedTCPPorts = [ vpnConsts.torrentListenPort vpnConsts.hathListenPort ];
     allowedUDPPorts = [ vpnConsts.serverPort vpnConsts.torrentListenPort ];
   };
 
@@ -98,6 +98,7 @@ in
 
       forwardedTCPPorts = {
         "${toString vpnConsts.torrentListenPort}" = vpnConsts.torrentContainerIP;
+        "${toString vpnConsts.hathListenPort}" = vpnConsts.torrentContainerIP;
       };
       forwardedUDPPorts = {
         "${toString vpnConsts.torrentListenPort}" = vpnConsts.torrentContainerIP;

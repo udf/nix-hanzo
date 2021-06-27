@@ -13,13 +13,16 @@ in
   users = {
     users = {
       qbittorrent = {};
+      hath = {};
     };
     groups = {
       qbittorrent = {};
+      hath = {};
     };
   };
-  # probably isn't necessary
+  
   utils.storageDirs.dirs.downloads.users = [ "qbittorrent" ];
+  utils.storageDirs.dirs.hath.users = [ "hath" ];
 
   services.nginxProxy.paths = {
     "flood" = {
@@ -50,6 +53,10 @@ in
         hostPath = "${config.utils.storageDirs.storagePath}/downloads";
         isReadOnly = false;
       };
+      "/mnt/hath" = {
+        hostPath = "${config.utils.storageDirs.storagePath}/hath";
+        isReadOnly = false;
+      };
     };
     config = let
       hostCfg = config;
@@ -61,6 +68,7 @@ in
           ../fragments/deterministic-ids.nix
           ../modules/qbittorrent.nix
           ../modules/flood.nix
+          ../modules/hath.nix
           ./tg-spam.nix
         ];
 
@@ -73,9 +81,8 @@ in
 
         users = {
           groups = {
-            st_downloads = {
-              members = [ "qbittorrent" ];
-            };
+            st_downloads.members = [ "qbittorrent" ];
+            st_hath.members = [ "hath" ];
           };
         };
 
@@ -95,6 +102,13 @@ in
           qbittorrent = {
             enable = true;
             port = webUIPort;
+          };
+          hath = {
+            enable = true;
+            cacheDir = "/mnt/hath/cache";
+            downloadDir = "/mnt/hath/download";
+            port = vpnConsts.hathListenPort;
+            # tempDir = "/mnt/hath/tmp";
           };
         };
 
