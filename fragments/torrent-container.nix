@@ -1,13 +1,18 @@
 { config, lib, pkgs, ... }:
+with lib;
 let
   vlanSubnet = "192.168.1.0";
   hostIP = "192.168.1.1";
   containerIP = "192.168.1.2";
   webUIPort = 8080;
   floodUIPort = 3000;
-  vpnConsts = import ../constants/vpn.nix;
+  vpnConsts = config.consts.vpn;
 in
 {
+  imports = [
+    ../constants/vpn.nix
+  ];
+
   # Create qbittorrent user/group on host so file permissions make sense
   # deterministic-ids.nix ensures that we have the same ids inside and outside of the container
   users = {
@@ -107,7 +112,7 @@ in
             enable = true;
             cacheDir = "/mnt/hath/cache";
             downloadDir = "/mnt/hath/download";
-            port = vpnConsts.hathListenPort;
+            port = vpnConsts.clients.torrents.forwardedTCPPorts.hath;
             # tempDir = "/mnt/hath/tmp";
           };
         };
@@ -115,8 +120,8 @@ in
         networking = {
           enableIPv6 = false;
           nameservers = [ "8.8.8.8" ];
-          firewall.allowedTCPPorts = [ vpnConsts.torrentListenPort webUIPort floodUIPort ];
-          firewall.allowedUDPPorts = [ vpnConsts.serverPort vpnConsts.torrentListenPort ];
+          firewall.allowedTCPPorts = [ webUIPort floodUIPort ] ++ (attrValues vpnConsts.clients.torrents.forwardedTCPPorts);
+          firewall.allowedUDPPorts = [ vpnConsts.serverPort ] ++ (attrValues vpnConsts.clients.torrents.forwardedUDPPorts);
           # poor man's killswitch
           firewall.extraCommands = ''
             ${pkgs.iproute}/bin/ip route del default
@@ -125,7 +130,7 @@ in
 
         networking.wireguard.interfaces = {
           wg0 = {
-            ips = [ "${vpnConsts.torrentContainerIP}/24" ];
+            ips = [ "${vpnConsts.clients.torrents.ip}/24" ];
             listenPort = vpnConsts.serverPort;
             privateKeyFile = "/root/wireguard-keys/private";
 
@@ -138,7 +143,7 @@ in
 
             peers = [
               {
-                publicKey = "nJnRKVLUwW+D2h/rhbF0o69IWfccK/8SJJuNvg7GkgA=";
+                publicKey = vpnConsts.serverPublicKey;
                 allowedIPs = [ "0.0.0.0/0" ];
                 endpoint = "${vpnConsts.serverIP}:${toString vpnConsts.serverPort}";
                 persistentKeepalive = 25;

@@ -4,12 +4,14 @@
 
 { config, lib, pkgs, ... }:
 
+with lib;
 let
-  vpnConsts = import ./constants/vpn.nix;
+  vpnConsts = config.consts.vpn;
 in
 {
   imports = [
     ./hardware-configuration-dionysus.nix
+    ./constants/vpn.nix
 
     # core
     ./fragments/users.nix
@@ -50,9 +52,11 @@ in
     externalInterface = "eth0";
     internalInterfaces = [ "wg0" ];
   };
-  networking.firewall = {
-    allowedTCPPorts = [ vpnConsts.torrentListenPort vpnConsts.hathListenPort ];
-    allowedUDPPorts = [ vpnConsts.serverPort vpnConsts.torrentListenPort ];
+  networking.firewall = let
+    getClientAttrValues = (attr: concatMap (cfg: attrValues cfg."${attr}") (attrValues vpnConsts.clients));
+  in {
+    allowedTCPPorts = (getClientAttrValues "forwardedTCPPorts");
+    allowedUDPPorts = [ vpnConsts.serverPort ] ++ (getClientAttrValues "forwardedUDPPorts");
   };
 
   # Fix DoS when too many nat connections are open
@@ -83,34 +87,34 @@ in
     python39
   ];
 
-  networking.wireguard.interfaces = {
+  networking.wireguard.interfaces = let
+    getPorts = let
+      mergeSets = (s: fold mergeAttrs {} s);
+    in
+      attr: (mergeSets (forEach
+        (attrValues vpnConsts.clients)
+        (cfg: mapAttrs' (_: port: nameValuePair (toString port) cfg.ip) cfg."${attr}"))
+      );
+  in {
     wg0 = (import ./helpers/wireguard-port-forward.nix {
       lib = lib;
       pkgs = pkgs;
       interface = "wg0";
       externalInterface = "eth0";
       gatewayIP = vpnConsts.gatewayIP;
-      gatewaySubnet = "10.100.0.0/24";
+      gatewaySubnet = vpnConsts.gatewaySubnet;
     }) {
       ips = [ "${vpnConsts.gatewayIP}/24" ];
       listenPort = vpnConsts.serverPort;
       privateKeyFile = "/root/wireguard-keys/private";
 
-      forwardedTCPPorts = {
-        "${toString vpnConsts.torrentListenPort}" = vpnConsts.torrentContainerIP;
-        "${toString vpnConsts.hathListenPort}" = vpnConsts.torrentContainerIP;
-      };
-      forwardedUDPPorts = {
-        "${toString vpnConsts.torrentListenPort}" = vpnConsts.torrentContainerIP;
-      };
+      forwardedTCPPorts = getPorts "forwardedTCPPorts";
+      forwardedUDPPorts = getPorts "forwardedUDPPorts";
 
-      peers = [
-        {
-          # hanzo torrent container
-          publicKey = "ltOCgajrsyWKJKuVtG9RFMWJNzSxg8tUxossPT3Nfkw=";
-          allowedIPs = [ "${vpnConsts.torrentContainerIP}/32" ];
-        }
-      ];
+      peers = forEach (attrValues vpnConsts.clients) (cfg: {
+        publicKey = cfg.publicKey;
+        allowedIPs = [ "${cfg.ip}/32" ];
+      });
     };
   };
 
