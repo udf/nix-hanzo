@@ -22,11 +22,13 @@ in
 
     # services
     ./fragments/syncthing.nix
-    ./fragments/torrent-container.nix
     ./fragments/yt-music-dl.nix
     ./fragments/music-gain-tag.nix
     ./fragments/bbd-clients.nix
     ./fragments/airsonic.nix
+    ./fragments/torrent-container.nix
+    ./fragments/hath-container.nix
+    ./fragments/tg-spam-container.nix
 
     # programs
     ./fragments/nvim.nix
@@ -123,6 +125,11 @@ in
     SYNCPLAY_PASSWORD = "hentai";
   };
   networking.firewall.allowedTCPPorts = [ config.services.syncplay.port ];
+
+  networking.nat = {
+    enable = true;
+    externalInterface = "eth0";
+  }; 
 }
 
 # vim:et:sw=2

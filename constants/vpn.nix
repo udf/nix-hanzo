@@ -28,6 +28,10 @@ let
 in
 {
   options.consts.vpn = {
+    serverPublicKey = mkOption {
+      description = "VPN Server public key";
+      type = types.str;
+    };
     serverIP = mkOption {
       description = "VPN Server IP address";
       type = types.str;
@@ -60,13 +64,17 @@ in
       torrents = {
         publicKey = "ltOCgajrsyWKJKuVtG9RFMWJNzSxg8tUxossPT3Nfkw=";
         ip = "10.100.0.2";
-        forwardedTCPPorts = { torrentListen = 10810; hath = 6969; };
+        forwardedTCPPorts = { torrentListen = 10810; };
         forwardedUDPPorts = { torrentListen = 10810; };
       };
       hath = {
         publicKey = "kh7Tw+GLtUWMS+eYDHZOzCkm/cQ8kRuGSRC3+iHpng0=";
         ip = "10.100.0.3";
-        forwardedTCPPorts = { hath = 7000; };
+        forwardedTCPPorts = { hath = 6969; };
+      };
+      tg-spam = {
+        publicKey = "+41lQrWtn66Q/Gv4jQxyb9s/wUqvRD5M42oBoQntPCk=";
+        ip = "10.100.0.4";
       };
     };
   };
