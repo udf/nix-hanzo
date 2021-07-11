@@ -26,6 +26,7 @@ in
     ./fragments/music-gain-tag.nix
     ./fragments/bbd-clients.nix
     ./fragments/airsonic.nix
+    ./fragments/hvotebot.nix
     ./fragments/torrent-container.nix
     ./fragments/hath-container.nix
     ./fragments/tg-spam-container.nix
