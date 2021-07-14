@@ -98,6 +98,7 @@ in
       description = "H@H user";
       home = cfg.homeDir;
       createHome = true;
+      isSystemUser = true;
     };
 
     users.groups = mkIf (cfg.group == "hath") { hath = {}; };

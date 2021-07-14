@@ -28,5 +28,6 @@
     description = "Posts list of BBD clients to Telegram";
     home = "/home/bbdc";
     createHome = true;
+    isSystemUser = true;
   };
 }

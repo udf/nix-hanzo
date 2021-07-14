@@ -93,6 +93,7 @@ in {
         home = cfg.dataDir;
         createHome = true;
         description = "qBittorrent Daemon user";
+        isSystemUser = true;
       };
     };
 

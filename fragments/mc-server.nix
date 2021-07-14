@@ -7,7 +7,7 @@ in
     description = "Minecraft server";
     after = ["network.target"];
     wantedBy = ["multi-user.target"];
-    path = [ pkgs.openjdk11 ];
+    path = [ pkgs.openjdk16 ];
 
     serviceConfig = {
       Type = "forking";

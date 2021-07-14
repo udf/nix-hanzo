@@ -26,5 +26,6 @@
     description = "Image vote bot for @JapaneseSpirit";
     home = "/home/hvotebot";
     createHome = true;
+    isSystemUser = true;
   };
 }

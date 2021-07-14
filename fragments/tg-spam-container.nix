@@ -32,6 +32,7 @@
         description = "@spamwastaken";
         home = "/home/spamwastaken";
         createHome = true;
+        isSystemUser = true;
       };
     };
   };

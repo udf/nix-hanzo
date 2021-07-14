@@ -42,15 +42,13 @@ in
     # deterministic-ids.nix ensures that we have the same ids inside and outside of the container
     users.users = mergeSets (forEach
       (flatten (map (f: attrValues f.storageUsers) (attrValues cfg)))
-      (u: { "${u}" = {}; })
+      (u: { "${u}" = { isSystemUser = true; }; })
     );
 
     utils.storageDirs.dirs = (mapAttrs
       (name: value: { users = value; })
       (foldAttrs concat [] (catAttrs "storageUsers" (attrValues cfg)))
     );
-
-    boot.extraModulePackages = with config.boot.kernelPackages; [ wireguard ];
 
     networking.nat = {
       internalInterfaces = map (n: "ve-${n}") (attrNames cfg);
