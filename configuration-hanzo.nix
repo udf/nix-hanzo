@@ -27,6 +27,7 @@ in
     ./fragments/bbd-clients.nix
     ./fragments/airsonic.nix
     ./fragments/hvotebot.nix
+    ./fragments/mc-server.nix
     ./fragments/torrent-container.nix
     ./fragments/hath-container.nix
     ./fragments/tg-spam-container.nix
@@ -100,6 +101,8 @@ in
     ffmpeg
     openssl
     python39
+    atool
+    unzip
   ];
 
   utils.storageDirs = {
