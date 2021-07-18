@@ -1,11 +1,11 @@
-# Generates uid/gid for non-system users based on the hash of the user/group name
+# Generates uid/gid for users based on the hash of the user/group name
 # only users/groups without a id will have one generated
 # 65536 <= id <= 4294967296
 { lib, ... }:
 with lib;
 with builtins;
 let
-  userFilter = v: filterAttrs (user: opts: (!opts.isSystemUser && opts.uid == null)) v;
+  userFilter = v: filterAttrs (user: opts: (opts.uid == null)) v;
   groupFilter = v: filterAttrs (group: opts: (opts.gid == null)) v;
 
   hexChars = listToAttrs (imap0 (i: v: {name = v; value = i;}) (stringToCharacters "0123456789abcdef"));
