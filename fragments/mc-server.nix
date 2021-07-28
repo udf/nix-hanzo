@@ -1,18 +1,20 @@
 { config, lib, pkgs, ... }:
 let
   tmux = "${pkgs.tmux}/bin/tmux";
+  java = "${pkgs.openjdk16}/bin/java";
+  papermc = (pkgs.callPackage ../packages/papermc.nix {});
+  papermcJar = "${papermc}/share/papermc/papermc.jar";
 in
 {
   systemd.services.mc-server = {
     description = "Minecraft server";
     after = ["network.target"];
     wantedBy = ["multi-user.target"];
-    path = [ pkgs.openjdk16 ];
 
     serviceConfig = {
       Type = "forking";
-      WorkingDirectory = "/home/mc/Enigmatica6Server-0.5.4";
-      ExecStart = "${tmux} new-session -d -s mc 'java -Xmx8G -jar forge-1.16.5-36.1.31.jar'";
+      WorkingDirectory = "/home/mc/papermc";
+      ExecStart = "${tmux} new-session -d -s mc '${java} -Xmx8G -jar ${papermcJar}'";
       ExecStop = "${tmux} kill-session -t mc";
       Restart = "on-failure";
       RestartSec = 10;
