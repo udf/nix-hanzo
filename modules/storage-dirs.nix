@@ -55,6 +55,7 @@ in
   config = {
     environment.systemPackages = [
       (pkgs.writeScriptBin "storage-dirs-set-acl" (mkFACLScript false storageDirsCfg.dirs))
+      (pkgs.writeScriptBin "storage-dirs-set-acl-default" (mkFACLScript true storageDirsCfg.dirs))
     ];
 
     users.groups = attrsets.mapAttrs' (
@@ -69,7 +70,20 @@ in
     system.activationScripts = {
       storageDirCreator = {
         deps = [ "specialfs" ];
-        text = (mkFACLScript true storageDirsCfg.dirs);
+        text = concatStringsSep "\n" (lib.attrsets.mapAttrsToList (
+          dir: opts:
+          let
+            path = "${storageDirsCfg.storagePath}/${dir}";
+            group = "st_${dir}";
+            getROUserFACL = user: "${setfacl} -R -d -m u:${user}:r-x ${path}";
+          in
+            ''
+              if mkdir ${path} 2>/dev/null ; then
+                ${setfacl} -R -d -m g:${group}:rwx ${path}
+                ${concatMapStringsSep "\n" getROUserFACL opts.readOnlyUsers}
+              fi
+            ''
+        ) storageDirsCfg.dirs);
       };
     };
   };
