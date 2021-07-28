@@ -72,8 +72,8 @@ let
         type = str;
       };
       python = mkOption {
-        default = pkgs.python37;
-        defaultText = "pkgs.python37";
+        default = pkgs.python38;
+        defaultText = "pkgs.python38";
         description = ''Python package to use.'';
         type = package;
       };
