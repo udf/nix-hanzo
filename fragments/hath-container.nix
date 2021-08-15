@@ -12,6 +12,7 @@ in
     ipPrefix = "192.168.2";
     storageUsers = {
       hath = [ "hath" ];
+      downloads = [ "hath" ];
     };
     config = { config, pkgs, ... }: {
       imports = [
@@ -21,7 +22,7 @@ in
       services.hath = {
         enable = true;
         cacheDir = "/mnt/hath/cache";
-        downloadDir = "/mnt/hath/download";
+        downloadDir = "/mnt/downloads/sync/hath";
         port = vpnConsts.clients.hath.forwardedTCPPorts.hath; 
       };
     };
