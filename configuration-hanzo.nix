@@ -29,6 +29,7 @@ in
     ./fragments/hvotebot.nix
     ./fragments/uniborg.nix
     ./fragments/mc-server.nix
+    ./fragments/factorio-server.nix
     ./fragments/torrent-container.nix
     ./fragments/hath-container.nix
     ./fragments/tg-spam-container.nix
