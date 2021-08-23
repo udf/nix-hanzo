@@ -3,8 +3,8 @@ let
   tmux = "${pkgs.tmux}/bin/tmux";
   port = 34197;
   private = import ../constants/private.nix;
-  unstable = import <nixos-unstable> { config = { allowUnfree = true; }; };
-  factorioPkg = unstable.factorio-headless.override {
+  master = import <nixpkgs-master> { config = { allowUnfree = true; }; };
+  factorioPkg = master.factorio-headless.override {
     username = private.factorioUsername;
     token = private.factorioToken;
   };

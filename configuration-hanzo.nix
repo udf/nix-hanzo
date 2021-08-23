@@ -2,11 +2,8 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, options, ... }:
 
-let
-  unstable = import <nixos-unstable> { config = { allowUnfree = true; }; };
-in
 {
   imports = [
     ./hardware-configuration-hanzo.nix
@@ -105,6 +102,11 @@ in
     python39
     atool
     unzip
+  ];
+
+  # Add local clone to NIX_PATH
+  nix.nixPath = options.nix.nixPath.default ++ [
+    "nixpkgs-master=/home/sam/nixpkgs"
   ];
 
   utils.storageDirs = {
