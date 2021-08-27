@@ -12,7 +12,7 @@ in
     serviceConfig = {
       Type = "forking";
       WorkingDirectory = "/home/mc/autismcraft/server";
-      ExecStart = "${tmux} new-session -d -s mc '${java} -Xmx8G -jar forge-1.16.5-36.2.0.jar'";
+      ExecStart = "${tmux} new-session -d -s mc '${java} -Xmx8G -XX:+UseG1GC -XX:ParallelGCThreads=4 -XX:MaxGCPauseMillis=50 -server -jar forge-1.16.5-36.2.0.jar'";
       ExecStop = "${tmux} kill-session -t mc";
       Restart = "on-failure";
       RestartSec = 10;
