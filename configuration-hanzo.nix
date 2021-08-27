@@ -109,6 +109,11 @@
     "nixpkgs-master=/home/sam/nixpkgs"
   ];
 
+  nix = {
+    daemonNiceLevel = 19;
+    daemonIONiceLevel = 4;
+  };
+
   utils.storageDirs = {
     storagePath = "/booty";
     adminUsers = [ "sam" ];
