@@ -81,6 +81,29 @@
     unifiPackage = pkgs.unifiStable;
   };
 
+  systemd = {
+    timers.unifi-rebooter = {
+      wantedBy = [ "timers.target" ];
+      partOf = [ "unifi-rebooter.service" ];
+      timerConfig = {
+        OnCalendar = "Mon *-*-* 03:00:00";
+        Persistent = true;
+      };
+    };
+    services.unifi-rebooter = {
+      after = ["network.target"];
+      serviceConfig = {
+        Type = "oneshot";
+        User = "sam";
+        WorkingDirectory = "/home/sam";
+      };
+
+      script = ''
+        ${pkgs.openssh}/bin/ssh admin@192.168.0.8 reboot
+      '';
+    };
+  };
+
   power.ups = {
     enable = true;
     mode = "netserver";
