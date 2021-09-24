@@ -6,7 +6,9 @@ let
     "weeb shit" = "https://www.youtube.com/playlist?list=PLjgVd_07uAd-JL2Wz1Zr9q7aVKG8pBdZA";
   };
   getDownloadCmd = playlist: url: ''
-    yt-dlp -o '${playlist}/%(title)s-%(id)s.%(ext)s' --download-archive '${playlist}.txt' --no-progress --no-post-overwrites -ciwx -f bestaudio --add-metadata '${url}'
+    yt-dlp -o '${playlist}/%(title)s-%(id)s.%(ext)s' --download-archive '${playlist}.txt' \
+    --no-progress --no-post-overwrites -ciwx -f bestaudio \
+    --add-metadata --replace-in-metadata 'album' '.' "" --parse-metadata 'title:%(track)s' --parse-metadata 'uploader:%(artist)s' '${url}' || true
   '';
 in
 {
