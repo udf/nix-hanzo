@@ -10,7 +10,7 @@
       sam = {
         enable = true;
         extraPythonPackages = [
-          "pillow" "ffmpeg-python" "numpy"
+          "pillow" "ffmpeg-python" "numpy" "aiohttp"
         ];
       };
       cath = {
