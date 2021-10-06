@@ -8,6 +8,7 @@
     # programs
     ./fragments/nvim.nix
     ./fragments/zsh.nix
+    ./fragments/msmtp-gmail.nix
   ];
 
   # Assuming this is installed on top of the disk image.

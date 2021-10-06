@@ -34,6 +34,7 @@
     # programs
     ./fragments/nvim.nix
     ./fragments/zsh.nix
+    ./fragments/msmtp-gmail.nix
   ];
 
   # Use the GRUB 2 boot loader.
@@ -143,6 +144,10 @@
     enable = true;
     externalInterface = "eth0";
   }; 
+
+  environment.etc."mdadm.conf".source = pkgs.writeText "mdadm.conf" ''
+    MAILADDR tabhooked@gmail.com
+  '';
 }
 
 # vim:et:sw=2
