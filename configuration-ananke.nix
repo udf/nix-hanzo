@@ -1,5 +1,8 @@
 { pkgs, ... }:
 
+let
+  private = import ./constants/private.nix;
+in
 {
   imports = [
     # core
@@ -60,6 +63,14 @@
       address = "192.168.0.3";
       prefixLength = 24;
     }];
+    interfaces.eth0.ipv6.addresses = [{
+      address = private.anankePublicIPv6;
+      prefixLength = 64;
+    }];
+    defaultGateway6 = {
+      address = "fe80::76ac:b9ff:fe54:4f1";
+      interface = "eth0";
+    };
     firewall.allowedTCPPorts = [ 8443 3493 ];
   };
 

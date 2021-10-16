@@ -56,7 +56,7 @@ in
 
   config.consts.vpn = {
     serverPublicKey = "nJnRKVLUwW+D2h/rhbF0o69IWfccK/8SJJuNvg7GkgA=";
-    serverIP = private.vpnServerIP;
+    serverIP = private.dionysusIPv4;
     serverPort = 51820;
     gatewaySubnet = "10.100.0.0/24";
     gatewayIP = "10.100.0.1";

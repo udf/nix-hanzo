@@ -6,6 +6,7 @@
 
 with lib;
 let
+  private = import ./constants/private.nix;
   vpnConsts = config.consts.vpn;
 in
 {
@@ -39,9 +40,17 @@ in
   networking = {
     usePredictableInterfaceNames = false;
     interfaces.eth0.ipv4.addresses = [{
-      address = vpnConsts.serverIP;
+      address = private.dionysusIPv4;
       prefixLength = 24;
     }];
+    interfaces.eth0.ipv6.addresses = [{
+      address = private.dionysusIPv6;
+      prefixLength = 48;
+    }];
+    defaultGateway6 = {
+      address = "2605:6400:30::1";
+      interface = "eth0";
+    };
     defaultGateway.address = "104.244.77.1";
     defaultGateway.metric = 10;
     nameservers = [ "1.1.1.1" "8.8.8.8" ];
