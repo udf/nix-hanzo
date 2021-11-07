@@ -1,17 +1,8 @@
 { config, lib, pkgs, ... }:
 with lib;
 let
-  unstable = import <nixos-unstable> { config = { allowUnfree = true; }; };
-  nodePackages = unstable.nodePackages // {
-    flood = unstable.nodePackages.flood.override {
-      version = "4.7.0";
-      src = pkgs.fetchurl {
-        url = "https://registry.npmjs.org/flood/-/flood-4.7.0.tgz";
-        sha512 = "26905ak80w6382z5vlgqx452rf6zvf4k6xpdrs3kbsh17s5889cff01vf91qgy61b385r0n4ycz84q4y52gpk6hwgd57q9si5ibh29h";
-      };
-    };
-  };
-  floodPkg = nodePackages.flood;
+  unstable = import <nixpkgs-unstable> { config = { allowUnfree = true; }; };
+  floodPkg = unstable.nodePackages.flood;
   cfg = config.services.flood;
 in
 {

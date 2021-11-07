@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  unstable = import <nixos-unstable> {};
+  unstable = import <nixpkgs-unstable> {};
 in
 {
   systemd = {
