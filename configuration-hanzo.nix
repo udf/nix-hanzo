@@ -30,6 +30,7 @@
     ./fragments/torrent-container.nix
     ./fragments/hath-container.nix
     ./fragments/tg-spam-container.nix
+    ./fragments/tagbot.nix
 
     # programs
     ./fragments/nvim.nix
