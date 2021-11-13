@@ -31,6 +31,7 @@
     ./fragments/hath-container.nix
     ./fragments/tg-spam-container.nix
     ./fragments/tagbot.nix
+    ./fragments/stringifybot.nix
 
     # programs
     ./fragments/nvim.nix
