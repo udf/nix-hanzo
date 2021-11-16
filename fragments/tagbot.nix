@@ -28,7 +28,7 @@ in
       Type = "simple";
       Restart = "always";
       RestartSec = 5;
-      WorkingDirectory = "/srv/tagbot/";
+      WorkingDirectory = "/home/tagbot/tagbot/";
       ExecStart = "${python-pkg}/bin/python bot.py";
     };
   };
