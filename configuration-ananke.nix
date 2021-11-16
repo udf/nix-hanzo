@@ -85,6 +85,7 @@ in
     sshfs
     tmux
     lm_sensors
+    wol
   ];
 
   services.unifi = {
