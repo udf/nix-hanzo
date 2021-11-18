@@ -74,6 +74,10 @@ in
     firewall.allowedTCPPorts = [ 8443 3493 ];
   };
 
+  boot.kernel.sysctl = {
+    "net.ipv6.conf.eth0.accept_ra" = 0;
+  };
+
   services.openssh.enable = true;
 
   environment.systemPackages = with pkgs; [
