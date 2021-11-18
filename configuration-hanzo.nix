@@ -55,6 +55,7 @@
     defaultGateway.address = "5.9.43.65";
     defaultGateway.metric = 10;
     nameservers = [ "213.133.98.98" "8.8.8.8" ];
+    firewall.logRefusedConnections = false;
   };
 
   time.timeZone = "UTC";

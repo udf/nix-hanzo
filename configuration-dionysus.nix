@@ -66,6 +66,7 @@ in
   in {
     allowedTCPPorts = (getClientAttrValues "forwardedTCPPorts");
     allowedUDPPorts = [ vpnConsts.serverPort ] ++ (getClientAttrValues "forwardedUDPPorts");
+    logRefusedConnections = false;
   };
 
   # Fix DoS when too many nat connections are open
