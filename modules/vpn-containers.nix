@@ -17,8 +17,13 @@ let
         type = types.attrsOf (types.listOf types.str);
         default = {};
       };
+      bindMounts = mkOption {
+        description = "Additional bind mounts";
+        type = types.unspecified;
+        default = {};
+      };
       config = mkOption {
-        description = "";
+        description = "The configuration of this container, as a NixOS module.";
         type = types.unspecified;
       };
     };
@@ -60,13 +65,13 @@ in
       privateNetwork = true;
       hostAddress = "${opts.ipPrefix}.1";
       localAddress = "${opts.ipPrefix}.2";
-      bindMounts = attrsets.mapAttrs' (dirName: users: {
+      bindMounts = (attrsets.mapAttrs' (dirName: users: {
         name = "/mnt/${dirName}";
         value = {
           hostPath = "${config.utils.storageDirs.storagePath}/${dirName}";
           isReadOnly = false;
         };
-      }) opts.storageUsers;
+      }) opts.storageUsers) // opts.bindMounts;
       config = { config, pkgs, ...}: {
         imports = [
           ../fragments/deterministic-ids.nix

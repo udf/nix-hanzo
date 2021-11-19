@@ -7,6 +7,11 @@
 
   services.vpnContainers.tg-spam = {
     ipPrefix = "192.168.3";
+    bindMounts = {
+      "/mnt/spamwastaken" = {
+        hostPath = "/srv/spamwastaken";
+      };
+    };
     config = { config, pkgs, ... }: {
       systemd.services.spamwastaken = {
         description = "@spamwastaken";
@@ -20,8 +25,8 @@
 
         serviceConfig = {
           Type = "simple";
-          WorkingDirectory = "/home/spamwastaken/botmachine";
-          ExecStart = "/home/spamwastaken/botmachine/spam.py";
+          WorkingDirectory = "/mnt/spamwastaken/";
+          ExecStart = "/mnt/spamwastaken/spam.py";
           Restart = "always";
           RestartSec = 5;
           User = "spamwastaken";
@@ -30,9 +35,7 @@
 
       users.extraUsers.spamwastaken = {
         description = "@spamwastaken";
-        home = "/home/spamwastaken";
-        createHome = true;
-        isSystemUser = true;
+        isNormalUser = true;
       };
     };
   };
