@@ -85,6 +85,11 @@ in
           wireguard
         ];
 
+        services.journald.extraConfig = ''
+          MaxRetentionSec=1week
+          SystemMaxUse=1G
+        '';
+
         users = {
           users = mergeSets (forEach
             (flatten (attrValues opts.storageUsers))
