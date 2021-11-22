@@ -76,6 +76,10 @@ in
         publicKey = "+41lQrWtn66Q/Gv4jQxyb9s/wUqvRD5M42oBoQntPCk=";
         ip = "10.100.0.4";
       };
+      desktop = {
+        publicKey = "z5oHAMmuI9ewM9aaZtzTl7EFm09AIKO74IPsUCSy2wk=";
+        ip = "10.100.0.5";
+      };
     };
   };
 }
