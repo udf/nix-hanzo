@@ -26,23 +26,28 @@ let
       path = mkOption {
         description = "Full path of the storage directory";
         type = types.str;
-        default = "${storageDirsCfg.storagePath}/${name}";
+        default = "${cfg.storagePath}/${name}";
       };
     };
   };
-  storageDirsCfg = config.utils.storageDirs;
+  cfg = config.utils.storageDirs;
   setfacl = "${pkgs.acl}/bin/setfacl";
-  mkFACLScript = isDefault: dirs: concatStringsSep "\n" (lib.attrsets.mapAttrsToList (
-    dir: opts:
-    let
-      getROUserFACL = user: "${setfacl} -R ${optionalString isDefault "-d"} -m u:${user}:r-x ${opts.path}";
-    in
-      ''
-        mkdir -p ${opts.path}
-        ${setfacl} -R ${optionalString isDefault "-d"} -m g:${opts.group}:rwx ${opts.path}
-        ${concatMapStringsSep "\n" getROUserFACL opts.readOnlyUsers}
-      ''
-  ) dirs);
+  mkFACLScript = {default ? true, dirs ? cfg.dirs, skipIfExists ? false}:
+    concatStringsSep "\n" (mapAttrsToList (dir: opts:
+      let
+        getROUserFACL = user: "${setfacl} -R ${optionalString default "-d"} -m u:${user}:r-x ${opts.path}";
+      in
+        ''
+          ${if skipIfExists then
+              "if mkdir ${opts.path} 2>/dev/null ; then"
+            else
+              "mkdir -p ${opts.path}"
+          }
+          ${setfacl} -R ${optionalString default "-d"} -m g:${opts.group}:rwx ${opts.path}
+          ${concatMapStringsSep "\n" getROUserFACL opts.readOnlyUsers}
+          ${optionalString skipIfExists "fi"}
+        ''
+    ) dirs);
 in
 {
   options.utils.storageDirs = {
@@ -62,8 +67,8 @@ in
 
   config = {
     environment.systemPackages = [
-      (pkgs.writeScriptBin "storage-dirs-set-acl" (mkFACLScript false storageDirsCfg.dirs))
-      (pkgs.writeScriptBin "storage-dirs-set-acl-default" (mkFACLScript true storageDirsCfg.dirs))
+      (pkgs.writeScriptBin "storage-dirs-set-acl" (mkFACLScript { default = false; }))
+      (pkgs.writeScriptBin "storage-dirs-set-acl-default" (mkFACLScript {}))
     ];
 
     users.groups = attrsets.mapAttrs' (
@@ -78,18 +83,7 @@ in
     system.activationScripts = {
       storageDirCreator = {
         deps = [ "specialfs" ];
-        text = concatStringsSep "\n" (lib.attrsets.mapAttrsToList (
-          dir: opts:
-          let
-            getROUserFACL = user: "${setfacl} -R -d -m u:${user}:r-x ${opts.path}";
-          in
-            ''
-              if mkdir ${opts.path} 2>/dev/null ; then
-                ${setfacl} -R -d -m g:${opts.group}:rwx ${opts.path}
-                ${concatMapStringsSep "\n" getROUserFACL opts.readOnlyUsers}
-              fi
-            ''
-        ) storageDirsCfg.dirs);
+        text = (mkFACLScript { skipIfExists = true; });
       };
     };
   };
