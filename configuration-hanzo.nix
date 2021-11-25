@@ -58,6 +58,9 @@
     firewall.logRefusedConnections = false;
   };
 
+  # tfw no console access
+  systemd.enableEmergencyMode = false;
+
   time.timeZone = "UTC";
 
   systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];
