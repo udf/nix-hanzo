@@ -8,6 +8,10 @@ in
     ../modules/vpn-containers.nix
   ];
 
+  utils.storageDirs.dirs = {
+    hath = { path = "/backups/hath"; };
+  };
+
   services.vpnContainers.hath = {
     ipPrefix = "192.168.2";
     storageUsers = {

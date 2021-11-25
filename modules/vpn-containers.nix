@@ -68,7 +68,7 @@ in
       bindMounts = (attrsets.mapAttrs' (dirName: users: {
         name = "/mnt/${dirName}";
         value = {
-          hostPath = "${config.utils.storageDirs.storagePath}/${dirName}";
+          hostPath = "${config.utils.storageDirs.dirs."${dirName}".path}";
           isReadOnly = false;
         };
       }) opts.storageUsers) // opts.bindMounts;

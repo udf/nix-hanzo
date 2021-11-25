@@ -122,9 +122,9 @@
     storagePath = "/booty";
     adminUsers = [ "sam" ];
     dirs = {
-      music = {};
+      music = { path = "/backups/music"; };
+      backups = { path = "/backups"; };
       downloads = {};
-      backups = {};
     };
   };
 

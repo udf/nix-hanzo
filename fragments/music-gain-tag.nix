@@ -19,7 +19,7 @@ in
       serviceConfig = {
         Type = "oneshot";
         User = "music-gain-tagger";
-        WorkingDirectory = "${config.utils.storageDirs.storagePath}/music";
+        WorkingDirectory = "${config.utils.storageDirs.dirs.music.path}";
         Nice = 10;
       };
 

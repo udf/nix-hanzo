@@ -31,7 +31,7 @@ in
       serviceConfig = {
         Type = "oneshot";
         User = "yt-music-dl";
-        WorkingDirectory = "${config.utils.storageDirs.storagePath}/music/favourites";
+        WorkingDirectory = "${config.utils.storageDirs.dirs.music.path}/favourites";
       };
 
       script = ''

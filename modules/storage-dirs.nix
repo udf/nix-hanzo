@@ -1,12 +1,17 @@
 { config, lib, pkgs, ... }:
 with lib;
 let
-  dirCfgOpts = {...}: {
+  dirCfgOpts = {name, ...}: {
     options = {
       users = mkOption {
         description = "List of users that will be part of this storage group";
         type = types.listOf (types.str);
         default = [ ];
+      };
+      group = mkOption {
+        description = "The group name that will be allowed to access the folder";
+        type = types.str;
+        default = "st_${name}";
       };
       gid = mkOption {
         description = "The group ID for the generated group";
@@ -18,6 +23,11 @@ let
         type = types.listOf (types.str);
         default = [ ];
       };
+      path = mkOption {
+        description = "Full path of the storage directory";
+        type = types.str;
+        default = "${storageDirsCfg.storagePath}/${name}";
+      };
     };
   };
   storageDirsCfg = config.utils.storageDirs;
@@ -25,13 +35,11 @@ let
   mkFACLScript = isDefault: dirs: concatStringsSep "\n" (lib.attrsets.mapAttrsToList (
     dir: opts:
     let
-      path = "${storageDirsCfg.storagePath}/${dir}";
-      group = "st_${dir}";
-      getROUserFACL = user: "${setfacl} -R ${optionalString isDefault "-d"} -m u:${user}:r-x ${path}";
+      getROUserFACL = user: "${setfacl} -R ${optionalString isDefault "-d"} -m u:${user}:r-x ${opts.path}";
     in
       ''
-        mkdir -p ${path}
-        ${setfacl} -R ${optionalString isDefault "-d"} -m g:${group}:rwx ${path}
+        mkdir -p ${opts.path}
+        ${setfacl} -R ${optionalString isDefault "-d"} -m g:${opts.group}:rwx ${opts.path}
         ${concatMapStringsSep "\n" getROUserFACL opts.readOnlyUsers}
       ''
   ) dirs);
@@ -60,7 +68,7 @@ in
 
     users.groups = attrsets.mapAttrs' (
       dir: opts: {
-        name = "st_${dir}";
+        name = opts.group;
         value = {
           members = storageDirsCfg.adminUsers ++ opts.users;
           gid = opts.gid;
@@ -73,13 +81,11 @@ in
         text = concatStringsSep "\n" (lib.attrsets.mapAttrsToList (
           dir: opts:
           let
-            path = "${storageDirsCfg.storagePath}/${dir}";
-            group = "st_${dir}";
-            getROUserFACL = user: "${setfacl} -R -d -m u:${user}:r-x ${path}";
+            getROUserFACL = user: "${setfacl} -R -d -m u:${user}:r-x ${opts.path}";
           in
             ''
-              if mkdir ${path} 2>/dev/null ; then
-                ${setfacl} -R -d -m g:${group}:rwx ${path}
+              if mkdir ${opts.path} 2>/dev/null ; then
+                ${setfacl} -R -d -m g:${opts.group}:rwx ${opts.path}
                 ${concatMapStringsSep "\n" getROUserFACL opts.readOnlyUsers}
               fi
             ''
