@@ -44,9 +44,13 @@
   boot.loader.grub.version = 2;
   boot.loader.grub.device = "/dev/sda";
 
+  # ZFS
+  boot.supportedFilesystems = [ "zfs" ];
+
   # Static IP
   networking.hostName = "hanzo";
   networking = {
+    hostId = "f1d1df42";
     usePredictableInterfaceNames = false;
     interfaces.eth0.ipv4.addresses = [{
       address = "5.9.43.79";
@@ -150,10 +154,6 @@
     enable = true;
     externalInterface = "eth0";
   }; 
-
-  environment.etc."mdadm.conf".source = pkgs.writeText "mdadm.conf" ''
-    MAILADDR tabhooked@gmail.com
-  '';
 }
 
 # vim:et:sw=2

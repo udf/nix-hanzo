@@ -19,8 +19,13 @@
   };
 
   fileSystems."/booty" = {
-    device = "/dev/disk/by-uuid/396a47fe-d18a-4f86-b4ea-f4a62d5dd113";
-    fsType = "ext4";
+    device = "booty";
+    fsType = "zfs";
+  };
+
+  fileSystems."/backups" = {
+    device = "backups";
+    fsType = "zfs";
   };
 
   swapDevices = [
