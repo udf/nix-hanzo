@@ -46,6 +46,7 @@
 
   # ZFS
   boot.supportedFilesystems = [ "zfs" ];
+  boot.extraModprobeConfig = "options zfs l2arc_mfuonly=1";
 
   # Static IP
   networking.hostName = "hanzo";
