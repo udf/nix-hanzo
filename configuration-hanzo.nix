@@ -16,6 +16,7 @@
     ./modules/storage-dirs.nix
     ./fragments/nginx.nix
     ./fragments/users.nix
+    ./modules/zfs-auto-scrub.nix
 
     # services
     ./fragments/syncthing.nix
@@ -61,6 +62,10 @@
       ZED_USE_ENCLOSURE_LEDS = true;
       ZED_SCRUB_AFTER_RESILVER = false;
     };
+  };
+  services.zfs-auto-scrub = {
+    booty = "Sat *-*-* 00:00:00";
+    backups = "Sat *-*-* 06:00:00";
   };
 
   # Static IP
