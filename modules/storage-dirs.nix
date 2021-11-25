@@ -71,14 +71,12 @@ in
       (pkgs.writeScriptBin "storage-dirs-set-acl-default" (mkFACLScript {}))
     ];
 
-    users.groups = attrsets.mapAttrs' (
-      dir: opts: {
-        name = opts.group;
-        value = {
-          members = storageDirsCfg.adminUsers ++ opts.users;
-          gid = opts.gid;
-        };
-      }) storageDirsCfg.dirs;
+    users.groups = mkMerge (mapAttrsToList (name: opts: {
+      "${opts.group}" = {
+        members = cfg.adminUsers ++ opts.users;
+        gid = opts.gid;
+      };
+    }) cfg.dirs);
 
     system.activationScripts = {
       storageDirCreator = {
