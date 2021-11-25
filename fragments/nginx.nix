@@ -81,6 +81,7 @@ in
     paths = mkOption {
       description = "Set of paths that will be proxied (without leading/trailing slashes)";
       type = types.attrsOf (types.submodule proxyPathOpts);
+      default = {};
     };
   };
 
