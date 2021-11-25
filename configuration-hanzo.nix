@@ -47,6 +47,21 @@
   # ZFS
   boot.supportedFilesystems = [ "zfs" ];
   boot.extraModprobeConfig = "options zfs l2arc_mfuonly=1";
+  nixpkgs.config.packageOverrides = pkgs: {
+    zfs = pkgs.zfs.override { enableMail = true; };
+  };
+  services.zfs.zed = {
+    enableMail = true;
+    settings = {
+      ZED_EMAIL_ADDR = "tabhooked@gmail.com";
+      ZED_EMAIL_OPTS = "-s '@SUBJECT@' @ADDRESS@";
+      ZED_NOTIFY_INTERVAL_SECS = 600;
+      ZED_NOTIFY_VERBOSE = true;
+      ZED_NOTIFY_DATA = true;
+      ZED_USE_ENCLOSURE_LEDS = true;
+      ZED_SCRUB_AFTER_RESILVER = false;
+    };
+  };
 
   # Static IP
   networking.hostName = "hanzo";

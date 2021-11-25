@@ -2,6 +2,7 @@
 {
   programs.msmtp = {
     enable = true;
+    setSendmail = true;
     accounts = {
       default = {
         host = "smtp.gmail.com";
