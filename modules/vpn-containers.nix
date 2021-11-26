@@ -30,6 +30,10 @@ let
   };
   cfg = config.services.vpnContainers;
   vpnConsts = config.consts.vpn;
+  # https://gist.github.com/udf/4d9301bdc02ab38439fd64fbda06ea43
+  mkMergeTopLevel = names: attrs: getAttrs names (
+    mapAttrs (k: v: mkMerge v) (foldAttrs (n: a: [n] ++ a) [] attrs)
+  );
 in
 {
   imports = [
@@ -42,97 +46,98 @@ in
     type = types.attrsOf (types.submodule containerOpts);
   };
 
-  config = {
-    # Create users and groups on host so file permissions make sense
-    # deterministic-ids.nix ensures that we have the same ids inside and outside of the container
-    users.users = mergeSets (forEach
-      (flatten (map (f: attrValues f.storageUsers) (attrValues cfg)))
-      (u: { "${u}" = { isSystemUser = true; }; })
-    );
+  config = (mkMergeTopLevel [ "users" "utils" "networking" "containers" ] (mapAttrsToList (
+    name: opts: {
+      # Create users and groups on host so file owners make sense
+      # deterministic-ids.nix ensures that we have the same ids inside and outside of the container
+      users.users = (genAttrs
+        (flatten (attrValues opts.storageUsers))
+        (u: { isSystemUser = true; })
+      );
 
-    utils.storageDirs.dirs = mkMerge (mapAttrsToList (containerName: opts: 
-      mapAttrs (dir: users: { users = users; }) opts.storageUsers
-    ) cfg);
+      utils.storageDirs.dirs = (mapAttrs
+        (dir: users: { users = users; })
+        opts.storageUsers
+      );
 
-    networking.nat = {
-      internalInterfaces = map (n: "ve-${n}") (attrNames cfg);
-    }; 
+      networking.nat.internalInterfaces = ["ve-${name}"];
 
-    containers = attrsets.mapAttrs (containerName: opts: {
-      autoStart = true;
-      enableTun = true;
-      privateNetwork = true;
-      hostAddress = "${opts.ipPrefix}.1";
-      localAddress = "${opts.ipPrefix}.2";
-      bindMounts = mkMerge ((mapAttrsToList (dir: users: {
-        "/mnt/${dir}" = {
-          hostPath = "${config.utils.storageDirs.dirs."${dir}".path}";
-          isReadOnly = false;
-        };
-      }) opts.storageUsers) ++ [opts.bindMounts]);
-      config = { config, pkgs, ...}: {
-        imports = [
-          ../fragments/deterministic-ids.nix
-          opts.config
-        ];
+      containers."${name}" = {
+        autoStart = true;
+        enableTun = true;
+        privateNetwork = true;
+        hostAddress = "${opts.ipPrefix}.1";
+        localAddress = "${opts.ipPrefix}.2";
+        bindMounts = mkMerge ((mapAttrsToList (dir: users: {
+          "/mnt/${dir}" = {
+            hostPath = "${config.utils.storageDirs.dirs."${dir}".path}";
+            isReadOnly = false;
+          };
+        }) opts.storageUsers) ++ [opts.bindMounts]);
+        config = { config, pkgs, ...}: {
+          imports = [
+            ../fragments/deterministic-ids.nix
+            opts.config
+          ];
 
-        environment.systemPackages = with pkgs; [
-          tree
-          file
-          htop
-          wireguard
-        ];
+          environment.systemPackages = with pkgs; [
+            tree
+            file
+            htop
+            wireguard
+          ];
 
-        services.journald.extraConfig = ''
-          MaxRetentionSec=1week
-          SystemMaxUse=1G
-        '';
-
-        users = {
-          users = mergeSets (forEach
-            (flatten (attrValues opts.storageUsers))
-            (u: { "${u}" = {}; })
-          );
-          groups = mkMerge (mapAttrsToList (dir: users: {
-            "st_${dir}".members = users;
-          }) opts.storageUsers);
-        };
-
-        networking = {
-          enableIPv6 = false;
-          nameservers = [ "8.8.8.8" ];
-          firewall.allowedTCPPorts = (attrValues vpnConsts.clients."${containerName}".forwardedTCPPorts);
-          firewall.allowedUDPPorts = [ vpnConsts.serverPort ] ++ (attrValues vpnConsts.clients."${containerName}".forwardedUDPPorts);
-          # poor man's killswitch
-          firewall.extraCommands = ''
-            ${pkgs.iproute}/bin/ip route del default
+          services.journald.extraConfig = ''
+            MaxRetentionSec=1week
+            SystemMaxUse=1G
           '';
-        };
 
-        networking.wireguard.interfaces = {
-          wg0 = {
-            ips = [ "${vpnConsts.clients."${containerName}".ip}/24" ];
-            listenPort = vpnConsts.serverPort;
-            privateKeyFile = "/root/wireguard-keys/private";
+          users = {
+            users = mergeSets (forEach
+              (flatten (attrValues opts.storageUsers))
+              (u: { "${u}" = {}; })
+            );
+            groups = mkMerge (mapAttrsToList (dir: users: {
+              "st_${dir}".members = users;
+            }) opts.storageUsers);
+          };
 
-            postSetup = ''
-              ip route add ${vpnConsts.serverIP} via ${opts.ipPrefix}.1 dev eth0
+          networking = {
+            enableIPv6 = false;
+            nameservers = [ "8.8.8.8" ];
+            firewall.allowedTCPPorts = (attrValues vpnConsts.clients."${name}".forwardedTCPPorts);
+            firewall.allowedUDPPorts = [ vpnConsts.serverPort ] ++ (attrValues vpnConsts.clients."${name}".forwardedUDPPorts);
+            # poor man's killswitch
+            firewall.extraCommands = ''
+              ${pkgs.iproute}/bin/ip route del default
             '';
-            postShutdown = ''
-              ip route del ${vpnConsts.serverIP} via ${opts.ipPrefix}.1 dev eth0
-            '';
+          };
 
-            peers = [
-              {
-                publicKey = vpnConsts.serverPublicKey;
-                allowedIPs = [ "0.0.0.0/0" ];
-                endpoint = "${vpnConsts.serverIP}:${toString vpnConsts.serverPort}";
-                persistentKeepalive = 25;
-              }
-            ];
+          networking.wireguard.interfaces = {
+            wg0 = {
+              ips = [ "${vpnConsts.clients."${name}".ip}/24" ];
+              listenPort = vpnConsts.serverPort;
+              privateKeyFile = "/root/wireguard-keys/private";
+
+              postSetup = ''
+                ip route add ${vpnConsts.serverIP} via ${opts.ipPrefix}.1 dev eth0
+              '';
+              postShutdown = ''
+                ip route del ${vpnConsts.serverIP} via ${opts.ipPrefix}.1 dev eth0
+              '';
+
+              peers = [
+                {
+                  publicKey = vpnConsts.serverPublicKey;
+                  allowedIPs = [ "0.0.0.0/0" ];
+                  endpoint = "${vpnConsts.serverIP}:${toString vpnConsts.serverPort}";
+                  persistentKeepalive = 25;
+                }
+              ];
+            };
           };
         };
       };
-    }) cfg;
-  };
+    }
+  ) cfg));
 }
