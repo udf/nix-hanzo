@@ -93,9 +93,9 @@ in
             (flatten (attrValues opts.storageUsers))
             (u: { "${u}" = {}; })
           );
-          groups = attrsets.mapAttrs' (dirName: users: 
-            nameValuePair "st_${dirName}" { members = users; }
-          ) opts.storageUsers;
+          groups = mkMerge (mapAttrsToList (dir: users: {
+            "st_${dir}".members = users;
+          }) opts.storageUsers);
         };
 
         networking = {
