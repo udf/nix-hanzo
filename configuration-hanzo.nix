@@ -47,7 +47,10 @@
 
   # ZFS
   boot.supportedFilesystems = [ "zfs" ];
-  boot.extraModprobeConfig = "options zfs l2arc_mfuonly=1";
+  boot.extraModprobeConfig = ''
+    options zfs l2arc_mfuonly=1
+    options zfs l2arc_noprefetch=0
+  '';
   nixpkgs.config.packageOverrides = pkgs: {
     zfs = pkgs.zfs.override { enableMail = true; };
   };
