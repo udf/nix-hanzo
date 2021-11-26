@@ -97,6 +97,7 @@ in
     openPorts = true;
     unifiPackage = pkgs.unifiStable;
   };
+  programs.ssh.pubkeyAcceptedKeyTypes = [ "+ssh-rsa" ];
 
   systemd = {
     timers.unifi-rebooter = {
