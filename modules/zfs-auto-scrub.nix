@@ -5,7 +5,7 @@ let
 in
 {
   options.services.zfs-auto-scrub = mkOption {
-    description = "Set of pools to scrub, and when to scrub them";
+    description = "Set of pools to scrub, to when to scrub them";
     type = types.attrsOf types.str;
     default = {};
   };
