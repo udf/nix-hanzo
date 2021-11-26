@@ -50,10 +50,9 @@ in
       (u: { "${u}" = { isSystemUser = true; }; })
     );
 
-    utils.storageDirs.dirs = (mapAttrs
-      (name: value: { users = value; })
-      (foldAttrs concat [] (catAttrs "storageUsers" (attrValues cfg)))
-    );
+    utils.storageDirs.dirs = mkMerge (mapAttrsToList (containerName: opts: 
+      mapAttrs (dir: users: { users = users; }) opts.storageUsers
+    ) cfg);
 
     networking.nat = {
       internalInterfaces = map (n: "ve-${n}") (attrNames cfg);
@@ -65,13 +64,12 @@ in
       privateNetwork = true;
       hostAddress = "${opts.ipPrefix}.1";
       localAddress = "${opts.ipPrefix}.2";
-      bindMounts = (attrsets.mapAttrs' (dirName: users: {
-        name = "/mnt/${dirName}";
-        value = {
-          hostPath = "${config.utils.storageDirs.dirs."${dirName}".path}";
+      bindMounts = mkMerge ((mapAttrsToList (dir: users: {
+        "/mnt/${dir}" = {
+          hostPath = "${config.utils.storageDirs.dirs."${dir}".path}";
           isReadOnly = false;
         };
-      }) opts.storageUsers) // opts.bindMounts;
+      }) opts.storageUsers) ++ [opts.bindMounts]);
       config = { config, pkgs, ...}: {
         imports = [
           ../fragments/deterministic-ids.nix
