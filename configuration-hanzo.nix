@@ -70,6 +70,43 @@
     booty = "Sat *-*-* 01:00:00";
     backups = "Sun *-*-* 01:00:00";
   };
+  services.zfs.autoSnapshot = {
+    enable = true;
+    flags = "-k -p -u";
+    frequent = 0;
+    hourly = 24 * 7;
+    daily = 30;
+    weekly = 0;
+    monthly = 0;
+  };
+  systemd.timers = {
+    # why do they generate the units when the amount is set to 0?
+    zfs-snapshot-frequent.enable = false;
+    zfs-snapshot-weekly.enable = false;
+    zfs-snapshot-monthly.enable = false;
+  };
+  systemd.services.rsync-root = let
+    snapshotServices = (map
+      (n: "zfs-snapshot-${n}.service")
+      (builtins.filter (n: config.services.zfs.autoSnapshot."${n}" > 0) ["hourly" "daily" "weekly" "monthly"])
+    );
+  in {
+    description = "Backups root filesystem to the snapshot dataset";
+    requiredBy = snapshotServices;
+    before = snapshotServices;
+    serviceConfig = {
+      Type = "oneshot";
+      User = "root";
+    };
+    script = ''
+      ${pkgs.rsync}/bin/rsync \
+        -aAXHxx \
+        --delete \
+        --info=progress2 \
+        --exclude={/dev,/proc,/sys,/tmp,/run,/lost+found,/nix}\
+        / /backups/snapshots/root/
+    '';
+  };
 
   # Static IP
   networking.hostName = "hanzo";
@@ -129,11 +166,7 @@
     tree
     file
     htop
-    gcc
-    sshfs
     tmux
-    ffmpeg
-    openssl
     python39
     atool
     unzip
