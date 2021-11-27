@@ -67,8 +67,8 @@
     };
   };
   services.zfs-auto-scrub = {
-    booty = "Sat *-*-* 00:00:00";
-    backups = "Sat *-*-* 06:00:00";
+    booty = "Sat *-*-* 01:00:00";
+    backups = "Sun *-*-* 01:00:00";
   };
 
   # Static IP
