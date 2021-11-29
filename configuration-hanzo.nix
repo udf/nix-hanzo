@@ -50,6 +50,7 @@
   boot.extraModprobeConfig = ''
     options zfs l2arc_mfuonly=1
     options zfs l2arc_noprefetch=0
+    options zfs l2arc_trim_ahead=50
   '';
   nixpkgs.config.packageOverrides = pkgs: {
     zfs = pkgs.zfs.override { enableMail = true; };
@@ -103,7 +104,7 @@
         -aAXHxx \
         --delete \
         --info=progress2 \
-        --exclude={/dev,/proc,/sys,/tmp,/run,/lost+found,/nix}\
+        --exclude={/dev,/proc,/sys,/tmp,/run,/lost+found,/nix,/home/syncthing} \
         / /backups/snapshots/root/
     '';
   };
@@ -168,6 +169,7 @@
     htop
     tmux
     python39
+    ffmpeg
     atool
     unzip
   ];
