@@ -27,12 +27,13 @@
     ./fragments/hvotebot.nix
     ./fragments/uniborg.nix
     # ./fragments/mc-server.nix
-    ./fragments/factorio-server.nix
+    #./fragments/factorio-server.nix
     ./fragments/torrent-container.nix
     ./fragments/hath-container.nix
     ./fragments/tg-spam-container.nix
     ./fragments/tagbot.nix
     ./fragments/stringifybot.nix
+    ./fragments/murmur.nix
 
     # programs
     ./fragments/nvim.nix
