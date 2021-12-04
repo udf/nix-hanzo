@@ -69,6 +69,12 @@ in
     logRefusedConnections = false;
   };
 
+  system.autoUpgrade = {
+    enable = true;
+    allowReboot = true;
+  };
+  nix.gc.automatic = true;
+
   # Fix DoS when too many nat connections are open
   boot.kernel.sysctl = {
     "net.netfilter.nf_conntrack_max" = 32768;

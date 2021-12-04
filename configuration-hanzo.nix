@@ -124,6 +124,8 @@
     firewall.logRefusedConnections = false;
   };
 
+  nix.gc.automatic = true;
+
   # tfw no console access
   systemd.enableEmergencyMode = false;
 
