@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  private = import ./constants/private.nix;
+  private = (import ./constants/private.nix).ananke;
 in
 {
   imports = [
@@ -64,7 +64,7 @@ in
       prefixLength = 24;
     }];
     interfaces.eth0.ipv6.addresses = [{
-      address = private.anankePublicIPv6;
+      address = private.publicIPv6;
       prefixLength = 64;
     }];
     defaultGateway6 = {
@@ -130,11 +130,50 @@ in
       port = "auto";
     };
   };
-  systemd.services.upsmon.enable = false;
   environment.etc."nut/upsd.conf".source = pkgs.writeText "upsd.conf" ''
     LISTEN 127.0.0.1 3493
     LISTEN 192.168.0.3 3493
   '';
-  environment.etc."nut/upsd.users".source = ../ups/upsd.users;
-  environment.etc."nut/upsmon.conf".source = ../ups/upsmon.conf;
+  environment.etc."nut/upsd.users".source = pkgs.writeText "upsd.users" ''
+    [${private.upsd.username}]
+    password = "${private.upsd.pw}"
+    actions = SET
+    instcmds = ALL
+  '';
+  environment.etc."nut/upsmon.conf".source = pkgs.writeText "upsmon.conf" ''
+    MONITOR mecer-vesta-3k@localhost 1 ${private.upsd.username} ${private.upsd.pw} master
+
+    MINSUPPLIES 1
+    NOTIFYCMD /etc/nut/notify.sh
+    POLLFREQ 1
+    POLLFREQALERT 1
+
+    NOTIFYMSG ONLINE "%s"
+    NOTIFYMSG ONBATT "%s"
+    NOTIFYMSG LOWBATT "%s"
+    NOTIFYMSG FSD "%s"
+    NOTIFYMSG COMMOK "%s"
+    NOTIFYMSG COMMBAD "%s"
+    NOTIFYMSG SHUTDOWN "%s"
+    NOTIFYMSG REPLBATT "%s"
+    NOTIFYMSG NOCOMM "%s"
+    NOTIFYMSG NOPARENT "%s"
+
+    NOTIFYFLAG ONLINE EXEC
+    NOTIFYFLAG ONBATT EXEC
+    NOTIFYFLAG LOWBATT EXEC
+    NOTIFYFLAG FSD EXEC
+    NOTIFYFLAG COMMOK EXEC
+    NOTIFYFLAG COMMBAD EXEC
+    NOTIFYFLAG SHUTDOWN EXEC
+    NOTIFYFLAG REPLBATT EXEC
+    NOTIFYFLAG NOCOMM EXEC
+  '';
+  environment.etc."nut/notify.sh".source = pkgs.writeScript "notify.sh" ''
+    #!${pkgs.bash}/bin/bash
+    echo $NOTIFYTYPE on $1 | ${pkgs.systemd}/bin/systemd-cat -p warning -t upsmon-notify
+    if [ "$NOTIFYTYPE" == "ONBATT" ]; then
+      ${pkgs.nut}/bin/upscmd -u ${private.upsd.username} -p '${private.upsd.pw}' $1 beeper.toggle
+    fi
+  '';
 }
