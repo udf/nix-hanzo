@@ -183,8 +183,8 @@
   ];
 
   nix = {
-    daemonNiceLevel = 19;
-    daemonIONiceLevel = 4;
+    daemonCPUSchedPolicy = "idle";
+    daemonIOSchedPriority = 4;
   };
 
   utils.storageDirs = {
