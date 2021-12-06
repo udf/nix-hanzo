@@ -29,5 +29,7 @@
     home = "/home/bbdc";
     createHome = true;
     isSystemUser = true;
+    group = "bbdc";
   };
+  users.groups.bbdc = {};
 }

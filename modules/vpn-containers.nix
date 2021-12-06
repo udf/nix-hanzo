@@ -3,8 +3,6 @@
 { config, lib, pkgs, ...}:
 with lib;
 let
-  mergeSets = (s: fold mergeAttrs {} s);
-
   containerOpts = {...}: {
     options = {
       ipPrefix = mkOption {
@@ -50,10 +48,18 @@ in
     name: opts: {
       # Create users and groups on host so file owners make sense
       # deterministic-ids.nix ensures that we have the same ids inside and outside of the container
-      users.users = (genAttrs
-        (flatten (attrValues opts.storageUsers))
-        (u: { isSystemUser = true; })
-      );
+      users = let
+        userNames = flatten (attrValues opts.storageUsers);
+      in {
+        users = (genAttrs
+          userNames
+          (u: { isSystemUser = true; group = u; })
+        );
+        groups = (genAttrs
+          userNames
+          (u: { })
+        );
+      };
 
       utils.storageDirs.dirs = (mapAttrs
         (dir: users: { users = users; })
@@ -93,9 +99,9 @@ in
           '';
 
           users = {
-            users = mergeSets (forEach
+            users = (genAttrs
               (flatten (attrValues opts.storageUsers))
-              (u: { "${u}" = {}; })
+              (u: { isSystemUser = true; group = u; })
             );
             groups = mkMerge (mapAttrsToList (dir: users: {
               "st_${dir}".members = users;

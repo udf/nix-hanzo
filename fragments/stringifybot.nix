@@ -26,5 +26,7 @@ in
     description = "stringifybot user";
     home = "/home/stringifybot";
     isSystemUser = true;
+    group = "stringifybot";
   };
+  users.groups.stringifybot = {};
 }

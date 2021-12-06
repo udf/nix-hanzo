@@ -30,7 +30,9 @@ in
   users.extraUsers.music-gain-tagger = {
     description = "Tags music with replaygain";
     isSystemUser = true;
+    group = "music-gain-tagger";
   };
+  users.groups.music-gain-tagger = {};
 
   utils.storageDirs.dirs.music.users = [ "music-gain-tagger" ];
 }

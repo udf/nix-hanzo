@@ -46,7 +46,9 @@ in
     home = "/home/yt-music-dl";
     createHome = true;
     isSystemUser = true;
+    group = "yt-music-dl";
   };
+  users.groups.yt-music-dl = {};
 
   utils.storageDirs.dirs.music.users = [ "yt-music-dl" ];
 }

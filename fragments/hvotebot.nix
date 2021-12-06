@@ -27,5 +27,7 @@
     home = "/home/hvotebot";
     createHome = true;
     isSystemUser = true;
+    group = "hvotebot";
   };
+  users.groups.hvotebot = {};
 }
