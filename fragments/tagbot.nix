@@ -18,7 +18,7 @@ in
 
   systemd.services.tagbot = {
     description = "@TheTagBot";
-    after = ["network.target"];
+    after = ["network.target" "elasticsearch.service"];
     wantedBy = ["multi-user.target"];
     path = [python-pkg];
 

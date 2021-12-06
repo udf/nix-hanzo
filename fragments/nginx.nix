@@ -114,6 +114,15 @@ in
           '"$http_user_agent" "$http_x_forwarded_for"';
       '';
 
+      # default server block (i.e. wrong/no domain)
+      virtualHosts."_" = {
+        default = true;
+        rejectSSL = true;
+        extraConfig = ''
+          return 444;
+        '';
+      };
+
       virtualHosts."tsunderestore.io" = {
         enableACME = true;
         forceSSL = true;
