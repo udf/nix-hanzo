@@ -117,9 +117,10 @@ in
       # default server block (i.e. wrong/no domain)
       virtualHosts."_" = {
         default = true;
-        rejectSSL = true;
+        addSSL = true;
+        useACMEHost = "tsunderestore.io";
         extraConfig = ''
-          return 444;
+          return 410;
         '';
       };
 
