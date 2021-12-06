@@ -9,11 +9,25 @@ in
 
   services.elasticsearch = {
     enable = true;
-    package = unstable.elasticsearch7;
+    package = pkgs.elasticsearch7;
+    single_node = true;
     extraConf = ''
-      discovery.type: single-node
       xpack.security.enabled: true
-      reindex.remote.whitelist: "localhost:9999"
+      xpack.security.authc:
+        anonymous:
+          roles: anonymous
+          authz_exception: true 
     '';
   };
+
+  # Add role so the postStart script can check if es is up without creds
+  systemd.services.elasticsearch.preStart = let
+    rolesYml = pkgs.writeText "roles.yml" ''
+      anonymous:
+        cluster: [ 'monitor' ]
+    '';
+  in
+  ''
+    cp ${rolesYml} ${config.services.elasticsearch.dataDir}/config/roles.yml
+  '';
 }
