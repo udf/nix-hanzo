@@ -17,7 +17,6 @@ in
       port = floodUIPort;
       host = containerIP;
       authMessage = "What say you in your defense?";
-      rewrite = false;
     };
     "qbt" = {
       port = webUIPort;
@@ -42,7 +41,7 @@ in
           enable = true;
           port = floodUIPort;
           host = containerIP;
-          baseURI = "/flood/";
+          baseURI = "/";
           allowedPaths = [ "/mnt/downloads" ];
           qbURL = "http://127.0.0.1:${toString webUIPort}";
           qbUser = "admin";

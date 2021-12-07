@@ -143,7 +143,7 @@ in
           '"$http_user_agent" "$http_x_forwarded_for"';
       '';
 
-      virtualHosts = mkMerge [
+      virtualHosts = mkMerge ([
         {
           # default server block (i.e. wrong/no domain)
           "_" = {
@@ -172,33 +172,14 @@ in
                 return 410;
               '';
 
-              "~ \.htpasswd$".extraConfig = ''
-                deny all;
-              '';
-
-              "/files".extraConfig = ''
-                rewrite ^/files/(.*) https://files.withsam.org/$1 permanent;
+              "~ ^/(.*)".extraConfig = ''
+                rewrite ^/(.*)/(.*) https://$1.withsam.org/$2 permanent;
               '';
 
               "/configtoolmachine".extraConfig = ''
                 try_files $uri /configtoolmachine/index.html;
               '';
-            } // lib.attrsets.mapAttrs' (
-              path: opts: {
-                name = "/${path}/";
-                value = {
-                  proxyPass = "http://${opts.host}:${toString opts.port}";
-                  extraConfig = ''
-                    ${if opts.rewrite then "rewrite /${path}/(.*) /$1 break;" else ""}
-                    proxy_set_header X-Forwarded-Host $host;
-                    proxy_set_header X-Forwarded-Proto $scheme;
-                    proxy_set_header X-Forwarded-Prefix /${path}/;
-                    auth_basic "${opts.authMessage}";
-                    auth_basic_user_file /var/www/${path}/.htpasswd;
-                    ${opts.extraConfig}
-                  '';
-                };
-              }) proxyCfg.paths;
+            };
           };
 
           "www.withsam.org" = {
@@ -235,7 +216,25 @@ in
             };
           };
         }
-      ];
+      ] ++ (
+        mapAttrsToList (path: opts: {
+          "${path}.withsam.org" = addErrorPageOpts {
+            useACMEHost = "withsam.org";
+            forceSSL = true;
+            locations."/".extraConfig = "try_files /dev/null @default;";
+            locations."@default" = {
+              proxyPass = "http://${opts.host}:${toString opts.port}";
+              extraConfig = ''
+                proxy_set_header X-Forwarded-Host $host;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                auth_basic "${opts.authMessage}";
+                auth_basic_user_file /var/www/${path}/.htpasswd;
+                ${opts.extraConfig}
+              '';
+            };
+          };
+        }) proxyCfg.paths
+      ));
 
     };
   };

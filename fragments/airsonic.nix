@@ -5,12 +5,11 @@ in
 {
   services.airsonic = {
     enable = true;
-    contextPath = "/airsonic";
+    contextPath = "/";
     maxMemory = 1024;
     port = port;
     jvmOptions = [
       "-Dserver.use-forward-headers=true"
-      "-Dserver.contextPath=/airsonic" # module in nixpkgs was written by a retard
     ];
   };
 
@@ -18,7 +17,6 @@ in
     "airsonic" = {
       port = port;
       authMessage = "Thank you for flying with Air Sonic";
-      rewrite = false;
       extraConfig = ''
         proxy_set_header Host $host;
         proxy_max_temp_file_size 0;
