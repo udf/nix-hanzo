@@ -110,6 +110,12 @@
     '';
   };
 
+  # Trim because l2arc is hungry
+  services.fstrim = {
+    enable = true;
+    interval = "daily";
+  };
+
   # Static IP
   networking.hostName = "hanzo";
   networking = {
