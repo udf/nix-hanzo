@@ -229,6 +229,7 @@ in
           "${path}.withsam.org" = addErrorPageOpts {
             useACMEHost = "withsam.org";
             forceSSL = true;
+            locations."= /favicon.ico".extraConfig = "try_files /dev/null @default;";
             locations."/".extraConfig = "try_files /dev/null @default;";
             locations."@default" = {
               proxyPass = "http://${opts.host}:${toString opts.port}";
