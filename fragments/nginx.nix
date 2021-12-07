@@ -147,95 +147,100 @@ in
           '"$http_user_agent" "$http_x_forwarded_for"';
       '';
 
-      # default server block (i.e. wrong/no domain)
-      virtualHosts."_" = {
-        default = true;
-        addSSL = true;
-        useACMEHost = "tsunderestore.io";
-        extraConfig = ''
-          return 410;
-        '';
-      };
+      virtualHosts = mkMerge [
+        {
+          # default server block (i.e. wrong/no domain)
+          "_" = {
+            default = true;
+            addSSL = true;
+            useACMEHost = "tsunderestore.io";
+            extraConfig = ''
+              return 410;
+            '';
+          };
 
-      virtualHosts."tsunderestore.io" = {
-        enableACME = true;
-        forceSSL = true;
-        root = "/var/www/";
+          "tsunderestore.io" = {
+            enableACME = true;
+            forceSSL = true;
+            root = "/var/www/";
 
-        extraConfig = "error_page ${concatStringsSep " " (attrNames statusCodes)} /error.html;";
+            extraConfig = "error_page ${concatStringsSep " " (attrNames statusCodes)} /error.html;";
 
-        locations = {
-          "= /error.html".extraConfig = ''
-            ssi on;
-            internal;
-          '';
+            locations = {
+              "= /error.html".extraConfig = ''
+                ssi on;
+                internal;
+              '';
 
-          "/food".extraConfig = ''
-            return 410;
-          '';
+              "/food".extraConfig = ''
+                return 410;
+              '';
 
-          "~ \.htpasswd$".extraConfig = ''
-            deny all;
-          '';
+              "~ \.htpasswd$".extraConfig = ''
+                deny all;
+              '';
 
-          "/files".extraConfig = ''
-            rewrite ^/files/(.*) https://files.withsam.org/$1 permanent;
-          '';
+              "/files".extraConfig = ''
+                rewrite ^/files/(.*) https://files.withsam.org/$1 permanent;
+              '';
 
-          "/configtoolmachine".extraConfig = ''
-            try_files $uri /configtoolmachine/index.html;
-          '';
-        } // lib.attrsets.mapAttrs' (
-          path: opts: {
-            name = "/${path}/";
-            value = {
-              proxyPass = "http://${opts.host}:${toString opts.port}";
-              extraConfig = ''
-                ${if opts.rewrite then "rewrite /${path}/(.*) /$1 break;" else ""}
-                proxy_set_header X-Forwarded-Host $host;
-                proxy_set_header X-Forwarded-Proto $scheme;
-                proxy_set_header X-Forwarded-Prefix /${path}/;
-                auth_basic "${opts.authMessage}";
-                auth_basic_user_file /var/www/${path}/.htpasswd;
-                ${opts.extraConfig}
+              "/configtoolmachine".extraConfig = ''
+                try_files $uri /configtoolmachine/index.html;
+              '';
+            } // lib.attrsets.mapAttrs' (
+              path: opts: {
+                name = "/${path}/";
+                value = {
+                  proxyPass = "http://${opts.host}:${toString opts.port}";
+                  extraConfig = ''
+                    ${if opts.rewrite then "rewrite /${path}/(.*) /$1 break;" else ""}
+                    proxy_set_header X-Forwarded-Host $host;
+                    proxy_set_header X-Forwarded-Proto $scheme;
+                    proxy_set_header X-Forwarded-Prefix /${path}/;
+                    auth_basic "${opts.authMessage}";
+                    auth_basic_user_file /var/www/${path}/.htpasswd;
+                    ${opts.extraConfig}
+                  '';
+                };
+              }) proxyCfg.paths;
+          };
+
+          "www.withsam.org" = {
+            useACMEHost = "withsam.org";
+            forceSSL = true;
+            extraConfig = ''
+              rewrite ^/$ https://withsam.org permanent;
+            '';
+          };
+
+          "withsam.org" = recursiveUpdateSafe errorPageOpts {
+            useACMEHost = "withsam.org";
+            forceSSL = true;
+            root = "/var/www";
+
+            locations = {
+              "/".extraConfig = ''
+                return 403;
               '';
             };
-          }) proxyCfg.paths;
-      };
+          };
 
-      virtualHosts."www.withsam.org" = {
-        useACMEHost = "withsam.org";
-        forceSSL = true;
-        extraConfig = ''
-          rewrite ^/$ https://withsam.org permanent;
-        '';
-      };
+          "files.withsam.org" = recursiveUpdateSafe errorPageOpts {
+            useACMEHost = "withsam.org";
+            forceSSL = true;
+            root = "/var/www/files";
 
-      virtualHosts."withsam.org" = recursiveUpdateSafe errorPageOpts {
-        useACMEHost = "withsam.org";
-        forceSSL = true;
-        root = "/var/www";
+            locations = {
+              "~ .*/$".extraConfig = ''
+                autoindex on;
+                auth_basic "Keep trying";
+                auth_basic_user_file /var/www/auth/files.htpasswd;
+              '';
+            };
+          };
+        }
+      ];
 
-        locations = {
-          "/".extraConfig = ''
-            return 403;
-          '';
-        };
-      };
-
-      virtualHosts."files.withsam.org" = recursiveUpdateSafe errorPageOpts {
-        useACMEHost = "withsam.org";
-        forceSSL = true;
-        root = "/var/www/files";
-
-        locations = {
-          "~ .*/$".extraConfig = ''
-            autoindex on;
-            auth_basic "Keep trying";
-            auth_basic_user_file /var/www/auth/files.htpasswd;
-          '';
-        };
-      };
     };
   };
 }
