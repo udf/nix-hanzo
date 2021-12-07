@@ -45,11 +45,6 @@ let
     "599" = "Network Connect Timeout Error";
   };
 
-  # recursive // operator that aborts on conflict
-  recursiveUpdateSafe = lhs: rhs: recursiveUpdateUntil (path: lhs: rhs:
-    !(isAttrs lhs && isAttrs rhs) && abort "Conflicting values at ${concatStringsSep "." path}"
-  ) lhs rhs;
-
   errorPageOpts = {
     extraConfig = ''
       error_page ${concatStringsSep " " (attrNames statusCodes)} /error.html;
@@ -62,7 +57,7 @@ let
         internal;
       '';
 
-      "~ \.(html|ico|webp|png)".extraConfig = ''
+      "~ \.(html|ico|webp|png)$".extraConfig = ''
         root /var/www;
         try_files $uri @default;
       '';
@@ -70,6 +65,7 @@ let
       "@default".extraConfig = "";
     };
   };
+  addErrorPageOpts = opts: mkMerge [ errorPageOpts opts ];
 
   proxyCfg = config.services.nginxProxy;
   proxyPathOpts = { path, ...}: {
@@ -213,7 +209,7 @@ in
             '';
           };
 
-          "withsam.org" = recursiveUpdateSafe errorPageOpts {
+          "withsam.org" = addErrorPageOpts {
             useACMEHost = "withsam.org";
             forceSSL = true;
             root = "/var/www";
@@ -225,7 +221,7 @@ in
             };
           };
 
-          "files.withsam.org" = recursiveUpdateSafe errorPageOpts {
+          "files.withsam.org" = addErrorPageOpts {
             useACMEHost = "withsam.org";
             forceSSL = true;
             root = "/var/www/files";
