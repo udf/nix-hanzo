@@ -44,7 +44,33 @@ let
     "511" = "Network Authentication Required";
     "599" = "Network Connect Timeout Error";
   };
-  mapAttrsToStr = sep: fn: set: lib.strings.concatStringsSep sep (lib.mapAttrsToList fn set);
+  mapAttrsToStr = sep: fn: set: concatStringsSep sep (mapAttrsToList fn set);
+
+  # recursive // operator that aborts on conflict
+  recursiveUpdateSafe = lhs: rhs: recursiveUpdateUntil (path: lhs: rhs:
+    !(isAttrs lhs && isAttrs rhs) && abort "Conflicting values at ${concatStringsSep "." path}"
+  ) lhs rhs;
+
+  errorPageOpts = {
+    extraConfig = ''
+      error_page ${concatStringsSep " " (attrNames statusCodes)} /error.html;
+    '';
+
+    locations = {
+      "= /error.html".extraConfig = ''
+        root /var/www;
+        ssi on;
+        internal;
+      '';
+
+      "~ \.(html|ico|webp|png)".extraConfig = ''
+        root /var/www;
+        try_files $uri @default;
+      '';
+
+      "@default".extraConfig = "";
+    };
+  };
 
   proxyCfg = config.services.nginxProxy;
   proxyPathOpts = { path, ...}: {
@@ -186,50 +212,24 @@ in
         '';
       };
 
-      virtualHosts."withsam.org" = {
+      virtualHosts."withsam.org" = recursiveUpdateSafe errorPageOpts {
         useACMEHost = "withsam.org";
         forceSSL = true;
         root = "/var/www";
 
-        extraConfig = ''
-          error_page ${concatStringsSep " " (attrNames statusCodes)} /error.html;
-        '';
-
         locations = {
-          "= /error.html".extraConfig = ''
-            ssi on;
-            internal;
-          '';
-
           "/".extraConfig = ''
             return 403;
           '';
         };
       };
 
-      virtualHosts."files.withsam.org" = {
+      virtualHosts."files.withsam.org" = recursiveUpdateSafe errorPageOpts {
         useACMEHost = "withsam.org";
         forceSSL = true;
         root = "/var/www/files";
 
-        extraConfig = ''
-          error_page ${concatStringsSep " " (attrNames statusCodes)} /error.html;
-        '';
-
         locations = {
-          "= /error.html".extraConfig = ''
-            root /var/www;
-            ssi on;
-            internal;
-          '';
-
-          "~ \.(html|ico|webp|png)".extraConfig = ''
-            root /var/www;
-            try_files $uri @default;
-          '';
-
-          "@default".extraConfig = "";
-
           "~ .*/$".extraConfig = ''
             autoindex on;
             auth_basic "Keep trying";
