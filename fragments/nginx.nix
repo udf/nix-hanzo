@@ -115,7 +115,6 @@ in
         "tsunderestore.io".email = "tabhooked@gmail.com";
         "withsam.org" = {
           email = "tabhooked@gmail.com";
-          # domain = "*.withsam.org";
           extraDomainNames = [ "*.withsam.org" ];
           dnsProvider = "ovh";
           credentialsFile = "/var/lib/secrets/ovh.certs.secret";
@@ -202,7 +201,16 @@ in
             };
           };
 
-          "files.withsam.org" = addErrorPageOpts {
+          "files.withsam.org" = {
+            useACMEHost = "withsam.org";
+            forceSSL = true;
+            root = "/var/www";
+            extraConfig = ''
+              rewrite ^/$ https://piracy.withsam.org permanent;
+            '';
+          };
+
+          "piracy.withsam.org" = addErrorPageOpts {
             useACMEHost = "withsam.org";
             forceSSL = true;
             root = "/var/www/files";
