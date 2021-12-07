@@ -92,9 +92,17 @@ in
       acceptTerms = true;
       certs = {
         "tsunderestore.io".email = "tabhooked@gmail.com";
+        "withsam.org" = {
+          email = "tabhooked@gmail.com";
+          # domain = "*.withsam.org";
+          extraDomainNames = [ "*.withsam.org" ];
+          dnsProvider = "ovh";
+          credentialsFile = "/var/lib/secrets/ovh.certs.secret";
+        };
       };
     };
 
+    users.groups.acme.members = [ "nginx" ];
     utils.storageDirs.dirs.downloads.readOnlyUsers = [ "nginx" ];
 
     services.nginx = {
@@ -129,12 +137,10 @@ in
         forceSSL = true;
         root = "/var/www/";
 
-        extraConfig = let
-            codes = mapAttrsToStr " " (k: v: "${k}") statusCodes;
-          in "error_page ${codes} /error.html;";
+        extraConfig = "error_page ${concatStringsSep " " (attrNames statusCodes)} /error.html;";
 
         locations = {
-          "/error.html".extraConfig = ''
+          "= /error.html".extraConfig = ''
             ssi on;
             internal;
           '';
@@ -143,14 +149,12 @@ in
             return 410;
           '';
 
-          "/auth".extraConfig = ''
+          "~ \.htpasswd$".extraConfig = ''
             deny all;
           '';
 
-          "~ /files.*/$".extraConfig = ''
-            autoindex on;
-            auth_basic              "Keep trying";
-            auth_basic_user_file    /var/www/auth/files.htpasswd;
+          "/files".extraConfig = ''
+            rewrite ^/files/(.*) https://files.withsam.org/$1 permanent;
           '';
 
           "/configtoolmachine".extraConfig = ''
@@ -172,6 +176,66 @@ in
               '';
             };
           }) proxyCfg.paths;
+      };
+
+      virtualHosts."www.withsam.org" = {
+        useACMEHost = "withsam.org";
+        forceSSL = true;
+        extraConfig = ''
+          rewrite ^/$ https://withsam.org permanent;
+        '';
+      };
+
+      virtualHosts."withsam.org" = {
+        useACMEHost = "withsam.org";
+        forceSSL = true;
+        root = "/var/www";
+
+        extraConfig = ''
+          error_page ${concatStringsSep " " (attrNames statusCodes)} /error.html;
+        '';
+
+        locations = {
+          "= /error.html".extraConfig = ''
+            ssi on;
+            internal;
+          '';
+
+          "/".extraConfig = ''
+            return 403;
+          '';
+        };
+      };
+
+      virtualHosts."files.withsam.org" = {
+        useACMEHost = "withsam.org";
+        forceSSL = true;
+        root = "/var/www/files";
+
+        extraConfig = ''
+          error_page ${concatStringsSep " " (attrNames statusCodes)} /error.html;
+        '';
+
+        locations = {
+          "= /error.html".extraConfig = ''
+            root /var/www;
+            ssi on;
+            internal;
+          '';
+
+          "~ \.(html|ico|webp|png)".extraConfig = ''
+            root /var/www;
+            try_files $uri @default;
+          '';
+
+          "@default".extraConfig = "";
+
+          "~ .*/$".extraConfig = ''
+            autoindex on;
+            auth_basic "Keep trying";
+            auth_basic_user_file /var/www/auth/files.htpasswd;
+          '';
+        };
       };
     };
   };
