@@ -44,7 +44,6 @@ let
     "511" = "Network Authentication Required";
     "599" = "Network Connect Timeout Error";
   };
-  mapAttrsToStr = sep: fn: set: concatStringsSep sep (mapAttrsToList fn set);
 
   # recursive // operator that aborts on conflict
   recursiveUpdateSafe = lhs: rhs: recursiveUpdateUntil (path: lhs: rhs:
@@ -135,7 +134,7 @@ in
       enable = true;
 
       appendHttpConfig = let
-        lines = mapAttrsToStr "\n" (k: v: "${k} ${lib.strings.escapeNixString v};") statusCodes;
+        lines = concatStringsSep "\n" (mapAttrsToList (k: v: "${k} ${lib.strings.escapeNixString v};") statusCodes);
       in ''
         map $status $status_text {
           ${lines}
