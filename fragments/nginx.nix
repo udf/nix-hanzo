@@ -148,9 +148,9 @@ in
           "_" = {
             default = true;
             addSSL = true;
-            useACMEHost = "tsunderestore.io";
+            useACMEHost = "withsam.org";
             extraConfig = ''
-              return 410;
+              return 444;
             '';
           };
 
