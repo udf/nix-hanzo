@@ -104,7 +104,6 @@
       ${pkgs.rsync}/bin/rsync \
         -aAXHxx \
         --delete \
-        --info=progress2 \
         --exclude={/dev,/proc,/sys,/tmp,/run,/lost+found,/nix,/home/syncthing} \
         / /backups/snapshots/root/
     '';
