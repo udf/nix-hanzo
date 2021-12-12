@@ -167,16 +167,12 @@ in
                 internal;
               '';
 
-              "/food".extraConfig = ''
+              "= /food".extraConfig = ''
                 return 410;
               '';
 
               "~ ^/(.*)".extraConfig = ''
                 rewrite ^/(.*)/(.*) https://$1.withsam.org/$2 permanent;
-              '';
-
-              "/configtoolmachine".extraConfig = ''
-                try_files $uri /configtoolmachine/index.html;
               '';
             };
           };
