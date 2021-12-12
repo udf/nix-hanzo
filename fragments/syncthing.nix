@@ -13,6 +13,9 @@
     "syncthing" = {
       port = 8384;
       authMessage = "What are you doing in my swamp?!";
+      extraConfig = ''
+        include /var/lib/secrets/nginx-syncthing-pw.conf;
+      '';
     };
   };
 
