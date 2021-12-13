@@ -42,7 +42,7 @@ in
           port = floodUIPort;
           host = containerIP;
           baseURI = "/";
-          allowedPaths = [ "/mnt/downloads" ];
+          allowedPaths = [ "/mnt/downloads" "/var/lib/qbittorrent" ];
           qbURL = "http://127.0.0.1:${toString webUIPort}";
           qbUser = "admin";
           qbPass = "adminadmin";

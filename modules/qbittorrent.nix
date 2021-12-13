@@ -84,8 +84,6 @@ in {
         User = cfg.user;
         Group = cfg.group;
         LimitNOFILE = cfg.openFilesLimit;
-        IOSchedulingClass = "idle";
-        IOSchedulingPriority = 7;
       };
     };
 
