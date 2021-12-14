@@ -3,8 +3,10 @@ with lib;
 let
   ipPrefix = "192.168.1";
   containerIP = "${ipPrefix}.2";
-  webUIPort = 8080;
-  floodUIPort = 3000;
+  ports = {
+    qbit = { internal = 8080; external = 18080; };
+    flood = { internal = 3000; external = 13000; };
+  };
 in
 {
   imports = [
@@ -14,14 +16,20 @@ in
 
   services.nginxProxy.paths = {
     "flood" = {
-      port = floodUIPort;
+      port = ports.flood.external;
       host = containerIP;
       authMessage = "What say you in your defense?";
+      extraConfig = ''
+        include /var/lib/secrets/nginx-torrents/proxy-pw.conf;
+      '';
     };
     "qbt" = {
-      port = webUIPort;
+      port = ports.qbit.external;
       host = containerIP;
       authMessage = "Stop Right There, Criminal Scum!";
+      extraConfig = ''
+        include /var/lib/secrets/nginx-torrents/proxy-pw.conf;
+      '';
     };
   };
 
@@ -29,6 +37,11 @@ in
     ipPrefix = "192.168.1";
     storageUsers = {
       downloads = [ "qbittorrent" ];
+    };
+    bindMounts = {
+      "/mnt/secrets" = {
+        hostPath = "/var/lib/secrets/nginx-torrents";
+      };
     };
     config = { config, pkgs, ... }: {
       imports = [
@@ -39,11 +52,11 @@ in
       services = {
         flood = {
           enable = true;
-          port = floodUIPort;
-          host = containerIP;
+          port = ports.flood.internal;
+          host = "0.0.0.0";
           baseURI = "/";
           allowedPaths = [ "/mnt/downloads" "/var/lib/qbittorrent" ];
-          qbURL = "http://127.0.0.1:${toString webUIPort}";
+          qbURL = "http://127.0.0.1:${toString ports.qbit.internal}";
           qbUser = "admin";
           qbPass = "adminadmin";
           user = "qbittorrent";
@@ -51,12 +64,24 @@ in
         };
         qbittorrent = {
           enable = true;
-          port = webUIPort;
+          port = ports.qbit.internal;
+        };
+        nginx = {
+          enable = true;
+          virtualHosts = mkMerge (mapAttrsToList (name: ports: {
+            "${name}" = {
+              listen = [ { addr = containerIP; port = ports.external; } ];
+              locations."/" = {
+                proxyPass = "http://127.0.0.1:${toString ports.internal}";
+                basicAuthFile = "/mnt/secrets/.htpasswd";
+              };
+            };
+          }) ports);
         };
       };
 
       networking = {
-        firewall.allowedTCPPorts = [ webUIPort floodUIPort ];
+        firewall.allowedTCPPorts = [ ports.flood.external ports.qbit.external ];
       };
     };
   };
