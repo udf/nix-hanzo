@@ -47,6 +47,7 @@ in
       imports = [
         ../modules/qbittorrent.nix
         ../modules/flood.nix
+        ../modules/watcher-bot.nix
       ];
 
       services = {
@@ -78,6 +79,7 @@ in
             };
           }) ports);
         };
+        watcher-bot.plugins = [ "systemd" "flood" ];
       };
 
       networking = {
