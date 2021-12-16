@@ -7,6 +7,8 @@
     tree
     file
     htop
+    iotop
+    bpytop
     tmux
     python39
     lm_sensors
