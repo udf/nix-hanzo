@@ -89,7 +89,6 @@ in
   systemd.services.hostapd = {
     requires = ["ap-watcher.service"];
     serviceConfig.ExecStartPost = "systemctl restart network-setup.service";
-    enable = false;
   };
 
   services.hostapd = {
