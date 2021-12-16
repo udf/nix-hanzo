@@ -104,7 +104,7 @@
       ${pkgs.rsync}/bin/rsync \
         -aAXHxx \
         --delete \
-        --exclude={/dev,/proc,/sys,/tmp,/run,/lost+found,/nix,/home/syncthing} \
+        --exclude={/dev,/proc,/sys,/tmp,/run,/lost+found,/nix,/home/syncthing,/var/lib/containers/torrents/var/lib/qbittorrent/in_progress} \
         / /backups/snapshots/root/
     '';
   };
