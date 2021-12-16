@@ -8,6 +8,7 @@ in
     # core
     ./fragments/system-packages.nix
     ./fragments/users.nix
+    ./fragments/rpi-nix-gc.nix
 
     # programs
     ./fragments/nvim.nix
@@ -39,20 +40,6 @@ in
   # Required for the Wireless firmware
   hardware.enableRedistributableFirmware = true;
   nixpkgs.config.allowUnfree = true;
-
-  nix = {
-    autoOptimiseStore = true;
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 30d";
-    };
-    # Free up to 1GiB whenever there is less than 100MiB left.
-    extraOptions = ''
-      min-free = ${toString (100 * 1024 * 1024)}
-      max-free = ${toString (1024 * 1024 * 1024)}
-    '';
-  };
 
   time.timeZone = "Africa/Harare";
 

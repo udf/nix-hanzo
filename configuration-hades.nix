@@ -8,6 +8,7 @@ in
     # core
     ./fragments/system-packages.nix
     ./fragments/users.nix
+    ./fragments/rpi-nix-gc.nix
 
     # programs
     ./fragments/nvim.nix
@@ -88,6 +89,7 @@ in
   systemd.services.hostapd = {
     requires = ["ap-watcher.service"];
     serviceConfig.ExecStartPost = "systemctl restart network-setup.service";
+    enable = false;
   };
 
   services.hostapd = {
