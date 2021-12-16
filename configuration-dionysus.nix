@@ -15,6 +15,7 @@ in
     ./constants/vpn.nix
 
     # core
+    ./fragments/system-packages.nix
     ./fragments/users.nix
 
     # programs
@@ -93,14 +94,7 @@ in
 
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
-    git
-    wget
-    tree
-    file
-    htop
     sshfs
-    tmux
-    python39
   ];
 
   networking.wireguard.interfaces = let

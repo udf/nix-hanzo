@@ -6,6 +6,7 @@ in
 {
   imports = [
     # core
+    ./fragments/system-packages.nix
     ./fragments/users.nix
 
     # programs
@@ -56,14 +57,7 @@ in
 
   time.timeZone = "Africa/Harare";
 
-  environment.systemPackages = with pkgs; [
-    git
-    wget
-    tree
-    file
-    htop
-    tmux
-  ];
+  environment.systemPackages = with pkgs; [];
 
   services.openssh.enable = true;
 

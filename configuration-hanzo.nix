@@ -12,6 +12,7 @@
     ./modules/endlessh.nix
 
     # core
+    ./fragments/system-packages.nix
     ./fragments/deterministic-ids.nix
     ./modules/storage-dirs.nix
     ./fragments/nginx.nix
@@ -169,14 +170,6 @@
 
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
-    lm_sensors
-    git
-    wget
-    tree
-    file
-    htop
-    tmux
-    python39
     ffmpeg
     atool
     unzip

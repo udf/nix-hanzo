@@ -6,6 +6,7 @@ in
 {
   imports = [
     # core
+    ./fragments/system-packages.nix
     ./fragments/users.nix
 
     # programs
@@ -81,14 +82,7 @@ in
   services.openssh.enable = true;
 
   environment.systemPackages = with pkgs; [
-    git
-    wget
-    tree
-    file
-    htop
     sshfs
-    tmux
-    lm_sensors
     wol
   ];
 
