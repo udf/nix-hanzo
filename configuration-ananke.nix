@@ -111,6 +111,12 @@ in
       port = "auto";
     };
   };
+  systemd.services.upsd.preStart = ''
+    PIDFILE=/var/state/ups/upsd.pid
+    if [ -f $PIDFILE ]; then
+      [[ "$(basename $(readlink /proc/$(cat $PIDFILE)/exe))" == "upsd" ]] || rm $PIDFILE && echo "Deleted invalid PID file"
+    fi
+  '';
   environment.etc."nut/upsd.conf".source = pkgs.writeText "upsd.conf" ''
     LISTEN 127.0.0.1 3493
     LISTEN 192.168.0.3 3493
