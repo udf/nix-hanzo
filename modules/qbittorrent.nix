@@ -3,7 +3,6 @@ with lib;
 let
   cfg = config.services.qbittorrent;
   configDir = "${cfg.dataDir}/.config";
-  openFilesLimit = 4096;
 in {
   options.services.qbittorrent = {
     enable = mkOption {
@@ -55,7 +54,7 @@ in {
     };
 
     openFilesLimit = mkOption {
-      default = openFilesLimit;
+      default = 65536;
       description = ''
         Number of files to allow qBittorrent to open.
       '';
