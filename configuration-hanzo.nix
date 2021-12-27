@@ -176,9 +176,9 @@
   ];
 
   # Add local clone to NIX_PATH
-  nix.nixPath = options.nix.nixPath.default ++ [
-    "nixpkgs-master=/home/sam/nixpkgs"
-  ];
+  # nix.nixPath = options.nix.nixPath.default ++ [
+  #   "nixpkgs-master=/home/sam/nixpkgs"
+  # ];
 
   nix = {
     daemonCPUSchedPolicy = "idle";
