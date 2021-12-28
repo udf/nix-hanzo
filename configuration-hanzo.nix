@@ -35,6 +35,7 @@
     ./fragments/tagbot.nix
     ./fragments/stringifybot.nix
     ./fragments/murmur.nix
+    ./fragments/nicotine-plus.nix
 
     # programs
     ./fragments/nvim.nix
@@ -105,7 +106,7 @@
       ${pkgs.rsync}/bin/rsync \
         -aAXHxx \
         --delete \
-        --exclude={/dev,/proc,/sys,/tmp,/run,/lost+found,/nix,/home/syncthing,/var/lib/containers/torrents/var/lib/qbittorrent/in_progress} \
+        --exclude={/dev,/proc,/sys,/tmp,/run,/lost+found,/nix,/home/syncthing,/var/lib/containers/torrents/var/lib/qbittorrent/in_progress,/home/nicotine} \
         / /backups/snapshots/root/
     '';
   };
