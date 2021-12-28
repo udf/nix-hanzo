@@ -47,6 +47,7 @@ in
       XDG_DATA_DIRS = "${pkgs.gnome.adwaita-icon-theme}/share";
       XCURSOR_PATH = "/home/nicotine/.icons:${pkgs.gnome.adwaita-icon-theme}/share/icons";
       GDK_PIXBUF_MODULE_FILE = "${pkgs.librsvg.out}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache";
+      DBUS_SESSION_BUS_ADDRESS = "unix:path=/run/user/${toString config.users.users.nicotine.uid}/bus";
     };
 
     serviceConfig = {
