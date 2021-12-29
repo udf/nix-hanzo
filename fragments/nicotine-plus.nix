@@ -68,6 +68,7 @@ in
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIzlWx6yy2nWV8fYcIm9Laap8/KxAlLJd943TIrcldSY archdesktop"
     ];
+    packages = [ pkgs.xpra ];
   };
   utils.storageDirs.dirs.music.users = [ "nicotine" ];
 }
