@@ -1,6 +1,7 @@
 { config, lib, pkgs, ...}:
 let
-  nicotinePkg = pkgs.nicotine-plus.overrideAttrs (oldAttrs: rec {
+  unstable = import <nixpkgs-unstable> {};
+  nicotinePkg = unstable.nicotine-plus.overrideAttrs (oldAttrs: rec {
     preFixup = ''
       gappsWrapperArgs+=(
         --prefix XDG_DATA_DIRS : "${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
