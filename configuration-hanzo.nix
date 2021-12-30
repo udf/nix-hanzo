@@ -20,6 +20,7 @@
     ./modules/zfs-auto-scrub.nix
 
     # services
+    ./modules/watcher-bot.nix
     ./fragments/syncthing.nix
     ./fragments/yt-music-dl.nix
     ./fragments/music-gain-tag.nix

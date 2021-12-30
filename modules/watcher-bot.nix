@@ -38,6 +38,7 @@ in
       isSystemUser = true;
       createHome = true;
       group = "watcher";
+      extraGroups = [ "systemd-journal" ];
     };
     users.groups.watcher = {};
   };

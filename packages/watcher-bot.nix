@@ -1,19 +1,21 @@
-{ lib, buildPythonPackage, fetchFromGitHub, callPackage, aiohttp }:
+{ lib, buildPythonPackage, fetchFromGitHub, callPackage, aiohttp, systemd }:
 
 buildPythonPackage rec {
   pname = "watcher-bot";
-  version = "0.1.1";
+  version = "unstable-2021-12-31";
 
   src = fetchFromGitHub {
     owner = "udf";
     repo = "the-watcher";
-    rev = "760faa03bfcd2bd45ab1de93ec43f675683fde60";
-    sha256 = "0j33wzqm3jrg9qdjqc41q6wn9hlr1ag2ha196nrzhzy60vnilm00";
+    rev = "21164ac032bd88f9568db7beaac11ab2cbf3472b";
+    sha256 = "1mjdf3qavm16fbd72i9rw7xmgy60vclzh50h3041s2k2xyz0p0bk";
+    fetchSubmodules = true;
   };
 
   propagatedBuildInputs = [
     (callPackage ./telethon.nix {})
     aiohttp
+    systemd
   ];
 
   doCheck = false;
