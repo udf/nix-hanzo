@@ -60,6 +60,7 @@ in
       RestartSec = 5;
       WorkingDirectory = "/home/nicotine";
       ExecStart = "${nicotinePkg}/bin/nicotine-plus";
+      UMask = "0002";
     };
   };
 
