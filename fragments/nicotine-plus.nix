@@ -74,4 +74,5 @@ in
     packages = [ pkgs.xpra ];
   };
   utils.storageDirs.dirs.music.users = [ "nicotine" ];
+  services.backup-root.excludePaths = [ "/home/nicotine" ];
 }

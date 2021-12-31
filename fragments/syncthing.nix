@@ -30,4 +30,6 @@
   boot.kernel.sysctl = {
     "fs.inotify.max_user_watches" = 204800;
   };
+
+  services.backup-root.excludePaths = [ "/home/syncthing" ];
 }

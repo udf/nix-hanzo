@@ -19,6 +19,7 @@
     ./fragments/users.nix
     ./fragments/nix-options.nix
     ./modules/zfs-auto-scrub.nix
+    ./fragments/hanzo-backup-root.nix
 
     # services
     ./modules/watcher-bot.nix
@@ -91,27 +92,6 @@
     zfs-snapshot-weekly.enable = false;
     zfs-snapshot-monthly.enable = false;
   };
-  systemd.services.rsync-root = let
-    snapshotServices = (map
-      (n: "zfs-snapshot-${n}.service")
-      (builtins.filter (n: config.services.zfs.autoSnapshot."${n}" > 0) ["hourly" "daily" "weekly" "monthly"])
-    );
-  in {
-    description = "Backups root filesystem to the snapshot dataset";
-    requiredBy = snapshotServices;
-    before = snapshotServices;
-    serviceConfig = {
-      Type = "oneshot";
-      User = "root";
-    };
-    script = ''
-      ${pkgs.rsync}/bin/rsync \
-        -aAXHxx \
-        --delete \
-        --exclude={/dev,/proc,/sys,/tmp,/run,/lost+found,/nix,/home/syncthing,/var/lib/containers/torrents/var/lib/qbittorrent/in_progress,/home/nicotine} \
-        / /backups/snapshots/root/
-    '';
-  };
 
   # Trim because l2arc is hungry
   services.fstrim = {
@@ -182,6 +162,7 @@
   # nix.nixPath = options.nix.nixPath.default ++ [
   #   "nixpkgs-master=/home/sam/nixpkgs"
   # ];
+  services.backup-root.excludePaths = [ "/home/sam/nixpkgs" ];
 
   utils.storageDirs = {
     storagePath = "/booty";
