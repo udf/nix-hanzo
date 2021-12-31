@@ -20,7 +20,7 @@ in
       );
       excludePaths = concatStringsSep ","
         (
-          ["/dev" "/proc" "/sys" "/tmp" "/run" "/lost+found" "/nix"]
+          ["/dev" "/proc" "/sys" "/tmp" "/run" "/lost+found" "/nix" "/var/log/lastlog"]
           ++ cfg.excludePaths
         );
     in {
@@ -35,9 +35,15 @@ in
       script = ''
         ${pkgs.rsync}/bin/rsync \
           -aAXHxx \
-          --delete --ignore-missing-args \
+          --delete \
           --exclude={${excludePaths}} \
           / /backups/snapshots/root/
+        ret=$?
+        # ignore vanished file error
+        if [[ $ret == 24 ]]; then
+          ret=0
+        fi
+        exit $ret
       '';
     };
   };
