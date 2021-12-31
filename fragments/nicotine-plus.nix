@@ -39,6 +39,8 @@ in
     };
   };
 
+  fonts.fonts = with pkgs; [ noto-fonts noto-fonts-cjk ];
+
   systemd.services.nicotine-plus = {
     description = "nicotine-plus running on Xpra";
     after = ["xpra-nicotine.service"];
