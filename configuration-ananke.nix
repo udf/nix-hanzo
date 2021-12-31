@@ -79,7 +79,7 @@ in
 
   services.unifi = {
     enable = true;
-    openPorts = true;
+    openFirewall = true;
     unifiPackage = pkgs.unifiStable;
   };
   programs.ssh.pubkeyAcceptedKeyTypes = [ "+ssh-rsa" ];
