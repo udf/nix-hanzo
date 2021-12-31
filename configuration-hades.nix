@@ -8,7 +8,11 @@ in
     # core
     ./fragments/system-packages.nix
     ./fragments/users.nix
-    ./fragments/rpi-nix-gc.nix
+    ./fragments/nix-options.nix
+    ./fragments/rpi-swapfile.nix
+
+    # services
+    ./modules/watcher-bot.nix
 
     # programs
     ./fragments/nvim.nix
@@ -37,11 +41,6 @@ in
       device = "/dev/disk/by-label/NIXOS_SD";
       fsType = "ext4";
     };
-  };
-
-  swapDevices = [ { device = "/swapfile"; size = 1024; } ];
-  boot.kernel.sysctl = {
-    "vm.swappiness" = 0;
   };
 
   powerManagement.cpuFreqGovernor = lib.mkDefault "ondemand";

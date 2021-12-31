@@ -3,6 +3,7 @@
 {
   nix = {
     autoOptimiseStore = true;
+
     gc = {
       automatic = true;
       dates = "weekly";
@@ -13,5 +14,8 @@
       min-free = ${toString (100 * 1024 * 1024)}
       max-free = ${toString (1024 * 1024 * 1024)}
     '';
+
+    daemonCPUSchedPolicy = "idle";
+    daemonIOSchedPriority = 4;
   };
 }

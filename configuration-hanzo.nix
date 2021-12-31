@@ -17,6 +17,7 @@
     ./modules/storage-dirs.nix
     ./fragments/nginx.nix
     ./fragments/users.nix
+    ./fragments/nix-options.nix
     ./modules/zfs-auto-scrub.nix
 
     # services
@@ -181,11 +182,6 @@
   # nix.nixPath = options.nix.nixPath.default ++ [
   #   "nixpkgs-master=/home/sam/nixpkgs"
   # ];
-
-  nix = {
-    daemonCPUSchedPolicy = "idle";
-    daemonIOSchedPriority = 4;
-  };
 
   utils.storageDirs = {
     storagePath = "/booty";

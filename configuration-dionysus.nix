@@ -13,10 +13,14 @@ in
   imports = [
     ./hardware-configuration-dionysus.nix
     ./constants/vpn.nix
+    ./fragments/nix-options.nix
 
     # core
     ./fragments/system-packages.nix
     ./fragments/users.nix
+
+    # services
+    ./modules/watcher-bot.nix
 
     # programs
     ./fragments/nvim.nix

@@ -8,7 +8,11 @@ in
     # core
     ./fragments/system-packages.nix
     ./fragments/users.nix
-    ./fragments/rpi-nix-gc.nix
+    ./fragments/nix-options.nix
+    ./fragments/rpi-swapfile.nix
+
+    # services
+    ./modules/watcher-bot.nix
 
     # programs
     ./fragments/nvim.nix

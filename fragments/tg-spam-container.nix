@@ -13,6 +13,10 @@
       };
     };
     config = { config, pkgs, ... }: {
+      imports = [
+        ../modules/watcher-bot.nix
+      ];
+
       systemd.services.spamwastaken = {
         description = "@spamwastaken";
         after = ["network.target"];

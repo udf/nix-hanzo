@@ -21,6 +21,7 @@ in
     config = { config, pkgs, ... }: {
       imports = [
         ../modules/hath.nix
+        ../modules/watcher-bot.nix
       ];
 
       services.hath = {
