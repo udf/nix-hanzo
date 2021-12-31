@@ -35,7 +35,7 @@ in
       script = ''
         ${pkgs.rsync}/bin/rsync \
           -aAXHxx \
-          --delete \
+          --delete --ignore-missing-args \
           --exclude={${excludePaths}} \
           / /backups/snapshots/root/
       '';
