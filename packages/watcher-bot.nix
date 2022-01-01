@@ -2,13 +2,13 @@
 
 buildPythonPackage rec {
   pname = "watcher-bot";
-  version = "unstable-2021-12-31";
+  version = "unstable-2022-01-01";
 
   src = fetchFromGitHub {
     owner = "udf";
     repo = "the-watcher";
-    rev = "9dfc4eb4cfeebb7078a5447063a67fa49026465e";
-    sha256 = "1q9hlik9nrnfcikaw83k9gh8ya6nzyb0wrs81xkaz7wrkqk6vkr1";
+    rev = "bae8dcf5f13477a36abf89f80d33e206cad60ce8";
+    sha256 = "1x403w3hh5gxrplk8dygvlwh9bdawnzqiykqh5mshwrq632kp89m";
     fetchSubmodules = true;
   };
 
