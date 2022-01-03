@@ -41,17 +41,23 @@ in
 
   fonts.fonts = with pkgs; [ noto-fonts noto-fonts-cjk ];
 
-  systemd.services.nicotine-plus = {
+  systemd.services.nicotine-plus = let
+    dbusSocket = "/run/user/${toString config.users.users.nicotine.uid}/bus";
+  in
+  {
     description = "nicotine-plus running on Xpra";
     after = ["xpra-nicotine.service"];
     wantedBy = ["multi-user.target"];
-    wants = [ "dbus.socket" ];
     environment = {
       DISPLAY = ":100";
       XDG_DATA_DIRS = "${pkgs.gnome.adwaita-icon-theme}/share";
       XCURSOR_PATH = "/home/nicotine/.icons:${pkgs.gnome.adwaita-icon-theme}/share/icons";
       GDK_PIXBUF_MODULE_FILE = "${pkgs.librsvg.out}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache";
-      DBUS_SESSION_BUS_ADDRESS = "unix:path=/run/user/${toString config.users.users.nicotine.uid}/bus";
+      DBUS_SESSION_BUS_ADDRESS = "unix:path=${dbusSocket}";
+    };
+
+    unitConfig = {
+      ConditionPathExists = dbusSocket;
     };
 
     serviceConfig = {
@@ -74,6 +80,13 @@ in
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIzlWx6yy2nWV8fYcIm9Laap8/KxAlLJd943TIrcldSY archdesktop"
     ];
     packages = [ pkgs.xpra ];
+  };
+  # Garbage distro: https://github.com/NixOS/nixpkgs/issues/3702
+  system.activationScripts = {
+    enableLingering-nicotine = ''
+      mkdir -p /var/lib/systemd/linger
+      touch /var/lib/systemd/linger/nicotine
+    '';
   };
   utils.storageDirs.dirs.music.users = [ "nicotine" ];
   services.backup-root.excludePaths = [ "/home/nicotine" ];
