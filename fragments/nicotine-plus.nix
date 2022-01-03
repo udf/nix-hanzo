@@ -42,22 +42,20 @@ in
   fonts.fonts = with pkgs; [ noto-fonts noto-fonts-cjk ];
 
   systemd.services.nicotine-plus = let
-    dbusSocket = "/run/user/${toString config.users.users.nicotine.uid}/bus";
+    userId = toString config.users.users.nicotine.uid;
+    dbusSocket = "/run/user/${userId}/bus";
   in
   {
     description = "nicotine-plus running on Xpra";
     after = ["xpra-nicotine.service"];
     wantedBy = ["multi-user.target"];
+    wants = ["user@${userId}.service"];
     environment = {
       DISPLAY = ":100";
       XDG_DATA_DIRS = "${pkgs.gnome.adwaita-icon-theme}/share";
       XCURSOR_PATH = "/home/nicotine/.icons:${pkgs.gnome.adwaita-icon-theme}/share/icons";
       GDK_PIXBUF_MODULE_FILE = "${pkgs.librsvg.out}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache";
       DBUS_SESSION_BUS_ADDRESS = "unix:path=${dbusSocket}";
-    };
-
-    unitConfig = {
-      ConditionPathExists = dbusSocket;
     };
 
     serviceConfig = {
