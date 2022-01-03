@@ -37,8 +37,7 @@ in
           -aAXHxx \
           --delete \
           --exclude={${excludePaths}} \
-          / /backups/snapshots/root/
-        ret=$?
+          / /backups/snapshots/root/ || ret=$?
         # ignore vanished file error
         if [[ $ret == 24 ]]; then
           ret=0
