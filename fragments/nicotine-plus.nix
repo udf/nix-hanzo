@@ -45,6 +45,7 @@ in
     description = "nicotine-plus running on Xpra";
     after = ["xpra-nicotine.service"];
     wantedBy = ["multi-user.target"];
+    wants = [ "dbus.socket" ];
     environment = {
       DISPLAY = ":100";
       XDG_DATA_DIRS = "${pkgs.gnome.adwaita-icon-theme}/share";
