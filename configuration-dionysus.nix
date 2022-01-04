@@ -78,7 +78,6 @@ in
     enable = true;
     allowReboot = true;
   };
-  nix.gc.automatic = true;
 
   # Fix DoS when too many nat connections are open
   boot.kernel.sysctl = {
