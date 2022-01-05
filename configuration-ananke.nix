@@ -82,7 +82,10 @@ in
     openFirewall = true;
     unifiPackage = pkgs.unifiStable;
   };
-  programs.ssh.pubkeyAcceptedKeyTypes = [ "+ssh-rsa" ];
+  programs.ssh = {
+    pubkeyAcceptedKeyTypes = [ "+ssh-rsa" ];
+    hostKeyAlgorithms = [ "+ssh-rsa" ];
+  };
 
   systemd = {
     timers.unifi-rebooter = {
