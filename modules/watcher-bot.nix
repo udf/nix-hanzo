@@ -16,7 +16,7 @@ in
   };
 
   config = {
-    environment.etc."watcher-bot/config.py".source = ../constants/private/watcher-config.py;
+    environment.etc."watcher-bot/config.py".source = ../constants/watcher-config.py;
 
     systemd.services.watcher-bot = {
       description = "Watchdog Telegram Bot";
@@ -28,8 +28,9 @@ in
       };
 
       serviceConfig = {
-        User = "watcher";
         Type = "simple";
+        User = "watcher";
+        EnvironmentFile = ../constants/watcher.env;
         Restart = "always";
         RestartSec = 5;
         WorkingDirectory = "/home/watcher/";
