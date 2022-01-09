@@ -30,7 +30,7 @@ in
       serviceConfig = {
         Type = "simple";
         User = "watcher";
-        EnvironmentFile = ../constants/watcher.env;
+        EnvironmentFile = /home/watcher/watcher.env;
         Restart = "always";
         RestartSec = 5;
         WorkingDirectory = "/home/watcher/";
