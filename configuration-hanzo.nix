@@ -114,7 +114,11 @@
     firewall.logRefusedConnections = false;
   };
 
-  nix.gc.automatic = true;
+  system.autoUpgrade = {
+    enable = true;
+    allowReboot = true;
+    dates = "Sat *-*-* 08:00:00";
+  };
 
   # tfw no console access
   systemd.enableEmergencyMode = false;

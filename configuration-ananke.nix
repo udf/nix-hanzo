@@ -70,6 +70,11 @@ in
     "net.ipv6.conf.eth0.accept_ra" = 0;
   };
 
+  system.autoUpgrade = {
+    enable = true;
+    allowReboot = true;
+  };
+
   services.openssh.enable = true;
 
   environment.systemPackages = with pkgs; [
