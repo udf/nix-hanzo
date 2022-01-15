@@ -108,8 +108,16 @@
       address = "5.9.43.79";
       prefixLength = 27;
     }];
+    interfaces.eth0.ipv6.addresses = [{
+      address = "2a01:4f8:161:324f:dab:dab:dab:dab";
+      prefixLength = 64;
+    }];
     defaultGateway.address = "5.9.43.65";
     defaultGateway.metric = 10;
+    defaultGateway6 = {
+      address = "fe80::1";
+      interface = "eth0";
+    };
     nameservers = [ "213.133.98.98" "8.8.8.8" ];
     firewall.logRefusedConnections = false;
   };
