@@ -16,11 +16,16 @@ def systemd_should_ignore(e):
     return e['PRIORITY'] >= LOG_NOTICE
 
   unit = e.get('UNIT', '')
+  #TODO: ignore acme and nginx
   return (
     e['PRIORITY'] >= LOG_NOTICE and (
-      unit == 'backup-root.service'
-      or unit == 'fstrim.service'
-      or unit == 'nix-gc.service'
+      unit in (
+        'backup-root.service',
+        'fstrim.service',
+        'nix-gc.service',
+        'yt-music-dl.service',
+        'zpool-trim.service'
+      )
     )
   ) or (
     e['PRIORITY'] >= LOG_INFO and (
