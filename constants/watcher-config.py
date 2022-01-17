@@ -19,6 +19,7 @@ def systemd_should_ignore(e):
   return (
     e['PRIORITY'] >= LOG_NOTICE and (
       unit == 'backup-root.service'
+      or unit == 'fstrim.service'
     )
   ) or (
     e['PRIORITY'] >= LOG_INFO and (
