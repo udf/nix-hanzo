@@ -6,7 +6,7 @@
 
 {
   imports = [
-    ./hardware-configuration-hanzo.nix
+    ./hardware-configuration-kurisu.nix
 
     # modules
     ./modules/endlessh.nix
@@ -19,7 +19,7 @@
     ./fragments/users.nix
     ./fragments/nix-options.nix
     ./modules/zfs-auto-scrub.nix
-    ./fragments/hanzo-backup-root.nix
+    ./fragments/kurisu-backup-root.nix
 
     # services
     ./modules/watcher-bot.nix
@@ -100,19 +100,19 @@
   };
 
   # Static IP
-  networking.hostName = "hanzo";
+  networking.hostName = "kurisu";
   networking = {
     hostId = "f1d1df42";
     usePredictableInterfaceNames = false;
     interfaces.eth0.ipv4.addresses = [{
-      address = "5.9.43.79";
+      address = "176.9.120.252";
       prefixLength = 27;
     }];
     interfaces.eth0.ipv6.addresses = [{
-      address = "2a01:4f8:161:324f:dab:dab:dab:dab";
+      address = "2a01:4f8:151:74ca:dab:dab:dab:dab";
       prefixLength = 64;
     }];
-    defaultGateway.address = "5.9.43.65";
+    defaultGateway.address = "176.9.120.225";
     defaultGateway.metric = 10;
     defaultGateway6 = {
       address = "fe80::1";

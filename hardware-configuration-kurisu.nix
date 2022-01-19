@@ -33,9 +33,6 @@
     fsType = "zfs";
   };
 
-  swapDevices = [
-    { device = "/dev/disk/by-uuid/a99f5fe3-565c-420b-824f-e65e8f4ee736"; }
-  ];
   boot.kernel.sysctl = {
     "vm.swappiness" = 0;
   };
