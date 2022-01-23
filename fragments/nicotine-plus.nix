@@ -36,6 +36,7 @@ in
           --printing=no \
           :100
       '';
+      ExecStartPost = "${pkgs.coreutils}/bin/sleep 30";
     };
   };
 
