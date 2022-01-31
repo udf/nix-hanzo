@@ -16,7 +16,6 @@ def systemd_should_ignore(e):
     return e['PRIORITY'] >= LOG_NOTICE
 
   unit = e.get('UNIT', '')
-  #TODO: ignore acme and nginx
   return (
     e['PRIORITY'] >= LOG_NOTICE and (
       unit in (
@@ -31,5 +30,7 @@ def systemd_should_ignore(e):
     e['PRIORITY'] >= LOG_INFO and (
       re.match(r'zfs-snapshot-\w+\.service', unit)
       or unit == 'systemd-tmpfiles-clean.service'
+      or re.match(r'acme-.+\.service', unit)
+      or re.match(r'nginx(-config-reload)?\.service', unit)
     )
   )
