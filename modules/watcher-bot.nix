@@ -26,6 +26,9 @@ in
       environment = {
         PYTHONPATH = "/etc/watcher-bot";
       };
+      restartTriggers = [
+        config.environment.etc."watcher-bot/config.py".source
+      ];
 
       serviceConfig = {
         Type = "simple";
