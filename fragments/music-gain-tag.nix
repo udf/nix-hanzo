@@ -23,7 +23,7 @@ in
         Nice = 10;
       };
 
-      script = "r128gain --opus-output-gain -r -s .";
+      script = "r128gain -r -s .";
     };
   };
   
