@@ -1,22 +1,30 @@
-{ lib, buildPythonPackage, fetchPypi, async_generator, rsa, pyaes, openssl, pythonOlder }:
+{ lib, buildPythonPackage, fetchFromGitHub, fetchurl, openssl, rsa, pyaes, pythonOlder }:
 
+let
+  # 134
+  layerSchema = fetchurl {
+    url = "https://raw.githubusercontent.com/telegramdesktop/tdesktop/f839c7f2bb3ad627be437ed067ca5d3bafc9457e/Telegram/Resources/tl/api.tl";
+    sha256 = "0xc1i0n42ch3zzbmrii55ba84pma4rrcy12im1fa6763ifmixknw";
+  };
+in
 buildPythonPackage rec {
   pname = "telethon";
   version = "1.24.0";
 
-  src = fetchPypi {
-    inherit version;
-    pname = "Telethon";
-    sha256 = "0b252wqhb0p42smf1d1d9m3xkgl6jjv8rdm99nx7agzdh49bd341";
+  src = fetchFromGitHub {
+    owner = "LonamiWebs";
+    repo = "Telethon";
+    rev = "v1.24.0";
+    sha256 = "12rvmb5hxadp5cc6dcxh4nlf7m8zg8f73d5saikcxjnmf38v7l0v";
   };
 
   patchPhase = ''
+    cp ${layerSchema} telethon_generator/data/api.tl
     substituteInPlace telethon/crypto/libssl.py --replace \
       "ctypes.util.find_library('ssl')" "'${openssl.out}/lib/libssl.so'"
   '';
 
   propagatedBuildInputs = [
-    async_generator
     rsa
     pyaes
   ];
