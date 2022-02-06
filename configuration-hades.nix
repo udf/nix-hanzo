@@ -10,6 +10,7 @@ in
     ./fragments/users.nix
     ./fragments/nix-options.nix
     ./fragments/rpi-swapfile.nix
+    ./fragments/remote-build-desktop-aarch64.nix
 
     # services
     ./modules/watcher-bot.nix
@@ -40,6 +41,7 @@ in
     "/" = {
       device = "/dev/disk/by-label/NIXOS_SD";
       fsType = "ext4";
+      options = [ "noatime" ];
     };
   };
 

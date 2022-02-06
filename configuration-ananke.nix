@@ -10,6 +10,7 @@ in
     ./fragments/users.nix
     ./fragments/nix-options.nix
     ./fragments/rpi-swapfile.nix
+    ./fragments/remote-build-desktop-aarch64.nix
 
     # services
     ./modules/watcher-bot.nix
@@ -25,6 +26,7 @@ in
     "/" = {
       device = "/dev/disk/by-label/NIXOS_SD";
       fsType = "ext4";
+      options = [ "noatime" ];
     };
   };
   boot.loader.grub.enable = false;
@@ -70,11 +72,6 @@ in
     "net.ipv6.conf.eth0.accept_ra" = 0;
   };
 
-  system.autoUpgrade = {
-    enable = true;
-    allowReboot = true;
-  };
-
   services.openssh.enable = true;
 
   environment.systemPackages = with pkgs; [
@@ -86,6 +83,7 @@ in
     enable = true;
     openFirewall = true;
     unifiPackage = pkgs.unifiStable;
+    # mongodbPackage = pkgs.mongodb-4_2;
   };
   programs.ssh = {
     pubkeyAcceptedKeyTypes = [ "+ssh-rsa" ];
