@@ -28,7 +28,6 @@ in
         uboot.enable = true;
       };
       grub.enable = false;
-      generic-extlinux-compatible.enable = true;
     };
     kernelPackages = pkgs.linuxPackages;
     # kernelParams = ["cma=32M"];
