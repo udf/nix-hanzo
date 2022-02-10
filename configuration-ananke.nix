@@ -72,7 +72,15 @@ in
     "net.ipv6.conf.eth0.accept_ra" = 0;
   };
 
-  services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    extraConfig = ''
+      AuthenticationMethods publickey
+
+      Match Address 192.168.0.0/16
+        AuthenticationMethods publickey password
+    '';
+  };
 
   environment.systemPackages = with pkgs; [
     sshfs
