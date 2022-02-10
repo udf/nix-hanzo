@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 with lib;
 let
-  dirCfgOpts = {name, ...}: {
+  dirCfgOpts = { name, ... }: {
     options = {
       users = mkOption {
         description = "List of users that will be part of this storage group";
@@ -32,11 +32,12 @@ let
   };
   cfg = config.utils.storageDirs;
   setfacl = "${pkgs.acl}/bin/setfacl";
-  mkFACLScript = {default ? true, dirs ? cfg.dirs, skipIfExists ? false}:
-    concatStringsSep "\n" (mapAttrsToList (dir: opts:
-      let
-        getROUserFACL = user: "${setfacl} -R ${optionalString default "-d"} -m u:${user}:r-x ${opts.path}";
-      in
+  mkFACLScript = { default ? true, dirs ? cfg.dirs, skipIfExists ? false }:
+    concatStringsSep "\n" (mapAttrsToList
+      (dir: opts:
+        let
+          getROUserFACL = user: "${setfacl} -R ${optionalString default "-d"} -m u:${user}:r-x ${opts.path}";
+        in
         ''
           ${if skipIfExists then
               "if mkdir ${opts.path} 2>/dev/null ; then"
@@ -47,7 +48,8 @@ let
           ${concatMapStringsSep "\n" getROUserFACL opts.readOnlyUsers}
           ${optionalString skipIfExists "fi"}
         ''
-    ) dirs);
+      )
+      dirs);
 in
 {
   options.utils.storageDirs = {
@@ -68,15 +70,17 @@ in
   config = {
     environment.systemPackages = [
       (pkgs.writeScriptBin "storage-dirs-set-acl" (mkFACLScript { default = false; }))
-      (pkgs.writeScriptBin "storage-dirs-set-acl-default" (mkFACLScript {}))
+      (pkgs.writeScriptBin "storage-dirs-set-acl-default" (mkFACLScript { }))
     ];
 
-    users.groups = mkMerge (mapAttrsToList (name: opts: {
-      "${opts.group}" = {
-        members = cfg.adminUsers ++ opts.users;
-        gid = opts.gid;
-      };
-    }) cfg.dirs);
+    users.groups = mkMerge (mapAttrsToList
+      (name: opts: {
+        "${opts.group}" = {
+          members = cfg.adminUsers ++ opts.users;
+          gid = opts.gid;
+        };
+      })
+      cfg.dirs);
 
     system.activationScripts = {
       storageDirCreator = {

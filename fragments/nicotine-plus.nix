@@ -1,6 +1,6 @@
-{ config, lib, pkgs, ...}:
+{ config, lib, pkgs, ... }:
 let
-  unstable = import <nixpkgs-unstable> {};
+  unstable = import <nixpkgs-unstable> { };
   nicotinePkg = unstable.nicotine-plus.overrideAttrs (oldAttrs: rec {
     preFixup = ''
       gappsWrapperArgs+=(
@@ -13,8 +13,8 @@ in
   # TODO: move this to a generic module if more gui users are needed
   systemd.services.xpra-nicotine = {
     description = "Xpra for nicotine";
-    after = ["network.target"];
-    wantedBy = ["multi-user.target"];
+    after = [ "network.target" ];
+    wantedBy = [ "multi-user.target" ];
 
     serviceConfig = {
       User = "nicotine";
@@ -42,33 +42,34 @@ in
 
   fonts.fonts = with pkgs; [ noto-fonts noto-fonts-cjk ];
 
-  systemd.services.nicotine-plus = let
-    userId = toString config.users.users.nicotine.uid;
-    dbusSocket = "/run/user/${userId}/bus";
-  in
-  {
-    description = "nicotine-plus running on Xpra";
-    after = ["xpra-nicotine.service"];
-    wantedBy = ["multi-user.target"];
-    wants = ["user@${userId}.service"];
-    environment = {
-      DISPLAY = ":100";
-      XDG_DATA_DIRS = "${pkgs.gnome.adwaita-icon-theme}/share";
-      XCURSOR_PATH = "/home/nicotine/.icons:${pkgs.gnome.adwaita-icon-theme}/share/icons";
-      GDK_PIXBUF_MODULE_FILE = "${pkgs.librsvg.out}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache";
-      DBUS_SESSION_BUS_ADDRESS = "unix:path=${dbusSocket}";
-    };
+  systemd.services.nicotine-plus =
+    let
+      userId = toString config.users.users.nicotine.uid;
+      dbusSocket = "/run/user/${userId}/bus";
+    in
+    {
+      description = "nicotine-plus running on Xpra";
+      after = [ "xpra-nicotine.service" ];
+      wantedBy = [ "multi-user.target" ];
+      wants = [ "user@${userId}.service" ];
+      environment = {
+        DISPLAY = ":100";
+        XDG_DATA_DIRS = "${pkgs.gnome.adwaita-icon-theme}/share";
+        XCURSOR_PATH = "/home/nicotine/.icons:${pkgs.gnome.adwaita-icon-theme}/share/icons";
+        GDK_PIXBUF_MODULE_FILE = "${pkgs.librsvg.out}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache";
+        DBUS_SESSION_BUS_ADDRESS = "unix:path=${dbusSocket}";
+      };
 
-    serviceConfig = {
-      User = "nicotine";
-      Type = "simple";
-      Restart = "always";
-      RestartSec = 5;
-      WorkingDirectory = "/home/nicotine";
-      ExecStart = "${nicotinePkg}/bin/nicotine-plus";
-      UMask = "0002";
+      serviceConfig = {
+        User = "nicotine";
+        Type = "simple";
+        Restart = "always";
+        RestartSec = 5;
+        WorkingDirectory = "/home/nicotine";
+        ExecStart = "${nicotinePkg}/bin/nicotine-plus";
+        UMask = "0002";
+      };
     };
-  };
 
   networking.firewall.allowedTCPPorts = [ 2234 ];
 

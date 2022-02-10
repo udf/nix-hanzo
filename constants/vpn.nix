@@ -2,7 +2,7 @@
 with lib;
 let
   private = import ./private.nix;
-  clientCfgOpts= {...}: {
+  clientCfgOpts = { ... }: {
     options = {
       publicKey = mkOption {
         description = "Client public key";
@@ -15,12 +15,12 @@ let
       forwardedTCPPorts = mkOption {
         description = "TCP ports to forward";
         type = types.attrsOf types.port;
-        default = {};
+        default = { };
       };
       forwardedUDPPorts = mkOption {
         description = "UDP ports to forward";
         type = types.attrsOf types.port;
-        default = {};
+        default = { };
       };
     };
   };

@@ -66,13 +66,15 @@ in
     externalInterface = "eth0";
     internalInterfaces = [ "wg0" ];
   };
-  networking.firewall = let
-    getClientAttrValues = (attr: concatMap (cfg: attrValues cfg."${attr}") (attrValues vpnConsts.clients));
-  in {
-    allowedTCPPorts = (getClientAttrValues "forwardedTCPPorts");
-    allowedUDPPorts = [ vpnConsts.serverPort ] ++ (getClientAttrValues "forwardedUDPPorts");
-    logRefusedConnections = false;
-  };
+  networking.firewall =
+    let
+      getClientAttrValues = (attr: concatMap (cfg: attrValues cfg."${attr}") (attrValues vpnConsts.clients));
+    in
+    {
+      allowedTCPPorts = (getClientAttrValues "forwardedTCPPorts");
+      allowedUDPPorts = [ vpnConsts.serverPort ] ++ (getClientAttrValues "forwardedUDPPorts");
+      logRefusedConnections = false;
+    };
 
   system.autoUpgrade = {
     enable = true;
@@ -100,36 +102,39 @@ in
     sshfs
   ];
 
-  networking.wireguard.interfaces = let
-    getPorts = let
-      mergeSets = (s: fold mergeAttrs {} s);
+  networking.wireguard.interfaces =
+    let
+      getPorts =
+        let
+          mergeSets = (s: fold mergeAttrs { } s);
+        in
+        attr: (mergeSets (forEach
+          (attrValues vpnConsts.clients)
+          (cfg: mapAttrs' (_: port: nameValuePair (toString port) cfg.ip) cfg."${attr}"))
+        );
     in
-      attr: (mergeSets (forEach
-        (attrValues vpnConsts.clients)
-        (cfg: mapAttrs' (_: port: nameValuePair (toString port) cfg.ip) cfg."${attr}"))
-      );
-  in {
-    wg0 = (import ./helpers/wireguard-port-forward.nix {
-      lib = lib;
-      pkgs = pkgs;
-      interface = "wg0";
-      externalInterface = "eth0";
-      gatewayIP = vpnConsts.gatewayIP;
-      gatewaySubnet = vpnConsts.gatewaySubnet;
-    }) {
-      ips = [ "${vpnConsts.gatewayIP}/24" ];
-      listenPort = vpnConsts.serverPort;
-      privateKeyFile = "/root/wireguard-keys/private";
+    {
+      wg0 = (import ./helpers/wireguard-port-forward.nix {
+        lib = lib;
+        pkgs = pkgs;
+        interface = "wg0";
+        externalInterface = "eth0";
+        gatewayIP = vpnConsts.gatewayIP;
+        gatewaySubnet = vpnConsts.gatewaySubnet;
+      }) {
+        ips = [ "${vpnConsts.gatewayIP}/24" ];
+        listenPort = vpnConsts.serverPort;
+        privateKeyFile = "/root/wireguard-keys/private";
 
-      forwardedTCPPorts = getPorts "forwardedTCPPorts";
-      forwardedUDPPorts = getPorts "forwardedUDPPorts";
+        forwardedTCPPorts = getPorts "forwardedTCPPorts";
+        forwardedUDPPorts = getPorts "forwardedUDPPorts";
 
-      peers = forEach (attrValues vpnConsts.clients) (cfg: {
-        publicKey = cfg.publicKey;
-        allowedIPs = [ "${cfg.ip}/32" ];
-      });
+        peers = forEach (attrValues vpnConsts.clients) (cfg: {
+          publicKey = cfg.publicKey;
+          allowedIPs = [ "${cfg.ip}/32" ];
+        });
+      };
     };
-  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

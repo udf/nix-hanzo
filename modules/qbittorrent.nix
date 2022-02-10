@@ -3,7 +3,8 @@ with lib;
 let
   cfg = config.services.qbittorrent;
   configDir = "${cfg.dataDir}/.config";
-in {
+in
+{
   options.services.qbittorrent = {
     enable = mkOption {
       type = types.bool;
@@ -99,6 +100,6 @@ in {
     };
 
     users.groups =
-      mkIf (cfg.group == "qbittorrent") { qbittorrent = {}; };
+      mkIf (cfg.group == "qbittorrent") { qbittorrent = { }; };
   };
 }

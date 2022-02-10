@@ -22,8 +22,8 @@ in
       };
     };
     services.yt-music-dl = {
-      after = ["network.target"];
-      before = ["music-gain-tag.service"];
+      after = [ "network.target" ];
+      before = [ "music-gain-tag.service" ];
       path = [
         "/home/yt-music-dl/.local"
         pkgs.ffmpeg
@@ -48,7 +48,7 @@ in
     isSystemUser = true;
     group = "yt-music-dl";
   };
-  users.groups.yt-music-dl = {};
+  users.groups.yt-music-dl = { };
 
   utils.storageDirs.dirs.music.users = [ "yt-music-dl" ];
 }

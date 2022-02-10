@@ -21,13 +21,14 @@ in
   };
 
   # Add role so the postStart script can check if es is up without creds
-  systemd.services.elasticsearch.preStart = let
-    rolesYml = pkgs.writeText "roles.yml" ''
-      anonymous:
-        cluster: [ 'monitor' ]
+  systemd.services.elasticsearch.preStart =
+    let
+      rolesYml = pkgs.writeText "roles.yml" ''
+        anonymous:
+          cluster: [ 'monitor' ]
+      '';
+    in
+    ''
+      cp ${rolesYml} ${config.services.elasticsearch.dataDir}/config/roles.yml
     '';
-  in
-  ''
-    cp ${rolesYml} ${config.services.elasticsearch.dataDir}/config/roles.yml
-  '';
 }

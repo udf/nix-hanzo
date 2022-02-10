@@ -1,10 +1,15 @@
 { config, lib, pkgs, ... }:
 let
-  unstable = import <nixpkgs-unstable> {};
+  unstable = import <nixpkgs-unstable> { };
   python-pkg = unstable.python39.withPackages (ps: with ps; [
-    (callPackage ../packages/telethon.nix {})
-    aiohttp elasticsearch elasticsearch-dsl
-    cachetools boltons regex emoji
+    (callPackage ../packages/telethon.nix { })
+    aiohttp
+    elasticsearch
+    elasticsearch-dsl
+    cachetools
+    boltons
+    regex
+    emoji
   ]);
 in
 {
@@ -13,14 +18,14 @@ in
   ];
 
   users.groups.tagbot = {
-    members = ["syncthing"];
+    members = [ "syncthing" ];
   };
 
   systemd.services.tagbot = {
     description = "@TheTagBot";
-    after = ["network.target" "elasticsearch.service"];
-    wantedBy = ["multi-user.target"];
-    path = [python-pkg];
+    after = [ "network.target" "elasticsearch.service" ];
+    wantedBy = [ "multi-user.target" ];
+    path = [ python-pkg ];
 
     serviceConfig = {
       User = "tagbot";
@@ -37,6 +42,6 @@ in
     description = "TagBot user";
     home = "/home/tagbot";
     isNormalUser = true;
-    extraGroups = ["tagbot"];
+    extraGroups = [ "tagbot" ];
   };
 }

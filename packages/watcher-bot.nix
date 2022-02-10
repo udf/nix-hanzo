@@ -13,7 +13,7 @@ buildPythonPackage rec {
   };
 
   propagatedBuildInputs = [
-    (callPackage ./telethon.nix {})
+    (callPackage ./telethon.nix { })
     aiohttp
     systemd
   ];

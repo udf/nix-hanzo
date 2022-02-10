@@ -100,7 +100,7 @@ in
       };
     };
     services.unifi-rebooter = {
-      after = ["network.target"];
+      after = [ "network.target" ];
       serviceConfig = {
         Type = "oneshot";
         User = "sam";

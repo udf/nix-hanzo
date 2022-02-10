@@ -6,8 +6,8 @@ in
 {
   systemd.services.mc-server = {
     description = "Minecraft server";
-    after = ["network.target"];
-    wantedBy = ["multi-user.target"];
+    after = [ "network.target" ];
+    wantedBy = [ "multi-user.target" ];
 
     serviceConfig = {
       Type = "forking";

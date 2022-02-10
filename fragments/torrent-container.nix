@@ -71,15 +71,17 @@ in
         };
         nginx = {
           enable = true;
-          virtualHosts = mkMerge (mapAttrsToList (name: ports: {
-            "${name}" = {
-              listen = [ { addr = containerIP; port = ports.external; } ];
-              locations."/" = {
-                proxyPass = "http://127.0.0.1:${toString ports.internal}";
-                basicAuthFile = "/mnt/secrets/.htpasswd";
+          virtualHosts = mkMerge (mapAttrsToList
+            (name: ports: {
+              "${name}" = {
+                listen = [{ addr = containerIP; port = ports.external; }];
+                locations."/" = {
+                  proxyPass = "http://127.0.0.1:${toString ports.internal}";
+                  basicAuthFile = "/mnt/secrets/.htpasswd";
+                };
               };
-            };
-          }) ports);
+            })
+            ports);
         };
         watcher-bot.plugins = [ "systemd" "flood" ];
       };

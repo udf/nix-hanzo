@@ -1,4 +1,4 @@
-{config, lib, pkgs, ...}:
+{ config, lib, pkgs, ... }:
 with lib;
 let
   python = pkgs.python37;
@@ -11,11 +11,13 @@ in
   config = lib.mkIf config.services.spoilerobot.enable {
     systemd.services.spoilerobot = {
       description = "Spoilerobot";
-      after = ["network.target" "postgresql.service"];
-      wantedBy = ["multi-user.target"];
+      after = [ "network.target" "postgresql.service" ];
+      wantedBy = [ "multi-user.target" ];
       path = [
         (python.withPackages (ps: with ps; [
-          cryptography psycopg2 python-telegram-bot
+          cryptography
+          psycopg2
+          python-telegram-bot
         ]))
       ];
 

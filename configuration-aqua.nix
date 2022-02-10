@@ -21,7 +21,7 @@
     openFirewall = true;
   };
 
-  swapDevices = [ { device = "/swapfile"; size = 2048; } ];
+  swapDevices = [{ device = "/swapfile"; size = 2048; }];
   boot.kernel.sysctl = {
     "vm.swappiness" = 0;
   };

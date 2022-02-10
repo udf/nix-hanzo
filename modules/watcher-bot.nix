@@ -2,7 +2,7 @@
 with lib;
 let
   python-pkg = pkgs.python39.withPackages (ps: with ps; [
-    (callPackage ../packages/watcher-bot.nix {})
+    (callPackage ../packages/watcher-bot.nix { })
   ]);
   cfg = config.services.watcher-bot;
 in
@@ -20,8 +20,8 @@ in
 
     systemd.services.watcher-bot = {
       description = "Watchdog Telegram Bot";
-      after = ["network.target"];
-      wantedBy = ["multi-user.target"];
+      after = [ "network.target" ];
+      wantedBy = [ "multi-user.target" ];
       path = [ python-pkg ];
       environment = {
         PYTHONPATH = "/etc/watcher-bot";
@@ -49,6 +49,6 @@ in
       group = "watcher";
       extraGroups = [ "systemd-journal" ];
     };
-    users.groups.watcher = {};
+    users.groups.watcher = { };
   };
 }

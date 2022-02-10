@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 with lib;
 let
-  hathPkg = (pkgs.callPackage ../packages/hath.nix {});
+  hathPkg = (pkgs.callPackage ../packages/hath.nix { });
   cfg = config.services.hath;
 in
 {
@@ -101,12 +101,12 @@ in
       isSystemUser = true;
     };
 
-    users.groups = mkIf (cfg.group == "hath") { hath = {}; };
+    users.groups = mkIf (cfg.group == "hath") { hath = { }; };
 
     systemd = {
       services.hath = {
         description = "Hentai@Home service";
-        after = ["network.target"];
+        after = [ "network.target" ];
         wantedBy = [ "multi-user.target" ];
 
         serviceConfig = {

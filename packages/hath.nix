@@ -3,6 +3,7 @@
 stdenv.mkDerivation rec {
   pname = "hath";
   version = "1.6.1";
+  test = "yes";
 
   src = fetchzip {
     url = "https://repo.e-hentai.org/hath/HentaiAtHome_${version}.zip";

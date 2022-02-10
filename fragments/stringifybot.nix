@@ -1,16 +1,16 @@
 { config, lib, pkgs, ... }:
 let
   python-pkg = pkgs.python39.withPackages (ps: with ps; [
-    (callPackage ../packages/telethon.nix {})
-    (callPackage ../packages/bprint.nix {})
+    (callPackage ../packages/telethon.nix { })
+    (callPackage ../packages/bprint.nix { })
   ]);
 in
 {
   systemd.services.stringifybot = {
     description = "Stringify Telegram Bot";
-    after = ["network.target"];
-    wantedBy = ["multi-user.target"];
-    path = [python-pkg];
+    after = [ "network.target" ];
+    wantedBy = [ "multi-user.target" ];
+    path = [ python-pkg ];
 
     serviceConfig = {
       User = "stringifybot";
@@ -28,5 +28,5 @@ in
     isSystemUser = true;
     group = "stringifybot";
   };
-  users.groups.stringifybot = {};
+  users.groups.stringifybot = { };
 }

@@ -7,14 +7,15 @@
       vimAlias = true;
       configure = {
         customRC = ''
-          set tabstop=2
-          set shiftwidth=2
-          set expandtab
-          set number
-          set mouse=a
-        ;
+            set tabstop=2
+            set shiftwidth=2
+            set expandtab
+            set number
+            set mouse=a
+          ;
         '';
       };
     }
-  )];
+    )
+  ];
 }

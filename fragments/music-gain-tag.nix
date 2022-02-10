@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  unstable = import <nixpkgs-unstable> {};
+  unstable = import <nixpkgs-unstable> { };
 in
 {
   systemd = {
@@ -26,13 +26,13 @@ in
       script = "r128gain -r -s .";
     };
   };
-  
+
   users.extraUsers.music-gain-tagger = {
     description = "Tags music with replaygain";
     isSystemUser = true;
     group = "music-gain-tagger";
   };
-  users.groups.music-gain-tagger = {};
+  users.groups.music-gain-tagger = { };
 
   utils.storageDirs.dirs.music.users = [ "music-gain-tagger" ];
 }

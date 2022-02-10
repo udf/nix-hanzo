@@ -68,7 +68,7 @@ let
   addErrorPageOpts = opts: mkMerge [ errorPageOpts opts ];
 
   proxyCfg = config.services.nginxProxy;
-  proxyPathOpts = { path, ...}: {
+  proxyPathOpts = { path, ... }: {
     options = {
       port = mkOption {
         description = "The local port to proxy";
@@ -102,7 +102,7 @@ in
     paths = mkOption {
       description = "Set of paths that will be proxied (without leading/trailing slashes)";
       type = types.attrsOf (types.submodule proxyPathOpts);
-      default = {};
+      default = { };
     };
   };
 
@@ -128,19 +128,21 @@ in
     services.nginx = {
       enable = true;
 
-      appendHttpConfig = let
-        lines = concatStringsSep "\n" (mapAttrsToList (k: v: "${k} ${lib.strings.escapeNixString v};") statusCodes);
-      in ''
-        map $status $status_text {
-          ${lines}
-          default "Something went wrong";
-        }
+      appendHttpConfig =
+        let
+          lines = concatStringsSep "\n" (mapAttrsToList (k: v: "${k} ${lib.strings.escapeNixString v};") statusCodes);
+        in
+        ''
+          map $status $status_text {
+            ${lines}
+            default "Something went wrong";
+          }
 
-        access_log syslog:server=unix:/dev/log;
-        log_format   main '$remote_addr - $remote_user [$time_local] $status '
-          '"$request" $body_bytes_sent "$http_referer" '
-          '"$http_user_agent" "$http_x_forwarded_for"';
-      '';
+          access_log syslog:server=unix:/dev/log;
+          log_format   main '$remote_addr - $remote_user [$time_local] $status '
+            '"$request" $body_bytes_sent "$http_referer" '
+            '"$http_user_agent" "$http_x_forwarded_for"';
+        '';
 
       virtualHosts = mkMerge ([
         {
@@ -221,24 +223,26 @@ in
           };
         }
       ] ++ (
-        mapAttrsToList (path: opts: {
-          "${path}.withsam.org" = addErrorPageOpts {
-            useACMEHost = "withsam.org";
-            forceSSL = true;
-            locations."= /favicon.ico".extraConfig = "try_files /dev/null @default;";
-            locations."/".extraConfig = "try_files /dev/null @default;";
-            locations."@default" = {
-              proxyPass = "http://${opts.host}:${toString opts.port}";
-              extraConfig = ''
-                proxy_set_header X-Forwarded-Host $host;
-                proxy_set_header X-Forwarded-Proto $scheme;
-                auth_basic "${opts.authMessage}";
-                auth_basic_user_file /var/www/${path}/.htpasswd;
-                ${opts.extraConfig}
-              '';
+        mapAttrsToList
+          (path: opts: {
+            "${path}.withsam.org" = addErrorPageOpts {
+              useACMEHost = "withsam.org";
+              forceSSL = true;
+              locations."= /favicon.ico".extraConfig = "try_files /dev/null @default;";
+              locations."/".extraConfig = "try_files /dev/null @default;";
+              locations."@default" = {
+                proxyPass = "http://${opts.host}:${toString opts.port}";
+                extraConfig = ''
+                  proxy_set_header X-Forwarded-Host $host;
+                  proxy_set_header X-Forwarded-Proto $scheme;
+                  auth_basic "${opts.authMessage}";
+                  auth_basic_user_file /var/www/${path}/.htpasswd;
+                  ${opts.extraConfig}
+                '';
+              };
             };
-          };
-        }) proxyCfg.paths
+          })
+          proxyCfg.paths
       ));
 
     };

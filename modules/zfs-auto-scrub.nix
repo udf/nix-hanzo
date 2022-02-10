@@ -7,28 +7,30 @@ in
   options.services.zfs-auto-scrub = mkOption {
     description = "Set of pools to scrub, to when to scrub them";
     type = types.attrsOf types.str;
-    default = {};
+    default = { };
   };
 
-  config.systemd = mkMerge (mapAttrsToList (
-    name: interval: {
-      services."zfs-scrub-${name}" = {
-        description = "ZFS scrub for pool ${name}";
-        after = [ "zfs-import.target" ];
-        serviceConfig = {
-          Type = "oneshot";
+  config.systemd = mkMerge (mapAttrsToList
+    (
+      name: interval: {
+        services."zfs-scrub-${name}" = {
+          description = "ZFS scrub for pool ${name}";
+          after = [ "zfs-import.target" ];
+          serviceConfig = {
+            Type = "oneshot";
+          };
+          script = "${config.boot.zfs.package}/bin/zpool scrub ${name}";
         };
-        script = "${config.boot.zfs.package}/bin/zpool scrub ${name}";
-      };
 
-      timers."zfs-scrub-${name}" = {
-        wantedBy = [ "timers.target" ];
-        after = [ "multi-user.target" ];
-        timerConfig = {
-          OnCalendar = interval;
-          Persistent = "yes";
+        timers."zfs-scrub-${name}" = {
+          wantedBy = [ "timers.target" ];
+          after = [ "multi-user.target" ];
+          timerConfig = {
+            OnCalendar = interval;
+            Persistent = "yes";
+          };
         };
-      };
-    }
-  ) cfg);
+      }
+    )
+    cfg);
 }

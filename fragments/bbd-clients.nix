@@ -23,7 +23,7 @@
       };
     };
   };
-  
+
   users.extraUsers.bbdc = {
     description = "Posts list of BBD clients to Telegram";
     home = "/home/bbdc";
@@ -31,5 +31,5 @@
     isSystemUser = true;
     group = "bbdc";
   };
-  users.groups.bbdc = {};
+  users.groups.bbdc = { };
 }

@@ -7,8 +7,8 @@
       system = "aarch64-linux";
       maxJobs = 12;
       speedFactor = 10;
-      supportedFeatures = ["nixos-test" "benchmark" "big-parallel" "kvm"];
-      mandatoryFeatures = [];
+      supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
+      mandatoryFeatures = [ ];
     }];
     distributedBuilds = true;
     extraOptions = ''

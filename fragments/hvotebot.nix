@@ -2,12 +2,12 @@
 {
   systemd.services.hvotebot = {
     description = "Image vote bot for @JapaneseSpirit";
-    after = ["network.target"];
-    wantedBy = ["multi-user.target"];
+    after = [ "network.target" ];
+    wantedBy = [ "multi-user.target" ];
     path = [
       pkgs.bash
       (pkgs.python38.withPackages (ps: [
-        (ps.callPackage ../packages/telethon.nix {})
+        (ps.callPackage ../packages/telethon.nix { })
         ps.cbor2
       ]))
     ];
@@ -29,5 +29,5 @@
     isSystemUser = true;
     group = "hvotebot";
   };
-  users.groups.hvotebot = {};
+  users.groups.hvotebot = { };
 }

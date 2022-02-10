@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   port = 4040;
-  airsonicPkg = (pkgs.callPackage ../packages/airsonic-advanced.nix {});
+  airsonicPkg = (pkgs.callPackage ../packages/airsonic-advanced.nix { });
 in
 {
   services.airsonic = {

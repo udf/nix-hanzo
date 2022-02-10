@@ -1,4 +1,4 @@
-{config, lib, pkgs, ...}:
+{ config, lib, pkgs, ... }:
 with lib;
 let
   cfg = config.services.endlessh;
@@ -30,18 +30,18 @@ in
     networking.firewall.allowedTCPPorts = mkIf (cfg.openFirewall) [ cfg.port ];
 
     systemd.services.endlessh = {
-     description = "SSH tarpit";
-     after = ["network.target"];
-     wantedBy = ["multi-user.target"];
+      description = "SSH tarpit";
+      after = [ "network.target" ];
+      wantedBy = [ "multi-user.target" ];
 
-     serviceConfig = {
-       Type = "simple";
-       ExecStart = "${pkgs.endlessh}/bin/endlessh -v -p ${toString cfg.port} -d ${toString (cfg.messageDelay * 1000)}";
-       Restart = "always";
-       RestartSec = 3;
-       DynamicUser = true;
-       AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
-     };
+      serviceConfig = {
+        Type = "simple";
+        ExecStart = "${pkgs.endlessh}/bin/endlessh -v -p ${toString cfg.port} -d ${toString (cfg.messageDelay * 1000)}";
+        Restart = "always";
+        RestartSec = 3;
+        DynamicUser = true;
+        AmbientCapabilities = [ "CAP_NET_BIND_SERVICE" ];
+      };
     };
   };
 }

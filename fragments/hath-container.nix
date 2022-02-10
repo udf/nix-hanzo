@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ...}:
+{ config, lib, pkgs, ... }:
 let
   vpnConsts = config.consts.vpn;
 in
@@ -28,7 +28,7 @@ in
         enable = true;
         cacheDir = "/mnt/hath/cache";
         downloadDir = "/mnt/downloads/sync/hath";
-        port = vpnConsts.clients.hath.forwardedTCPPorts.hath; 
+        port = vpnConsts.clients.hath.forwardedTCPPorts.hath;
       };
     };
   };

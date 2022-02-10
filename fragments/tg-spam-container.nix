@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ...}:
+{ config, lib, pkgs, ... }:
 {
   imports = [
     ../constants/vpn.nix
@@ -19,11 +19,11 @@
 
       systemd.services.spamwastaken = {
         description = "@spamwastaken";
-        after = ["network.target"];
-        wantedBy = ["multi-user.target"];
+        after = [ "network.target" ];
+        wantedBy = [ "multi-user.target" ];
         path = [
           (pkgs.python38.withPackages (ps: with ps; [
-            (ps.callPackage ../packages/telethon.nix {})
+            (ps.callPackage ../packages/telethon.nix { })
           ]))
         ];
 

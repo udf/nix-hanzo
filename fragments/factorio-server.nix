@@ -18,24 +18,25 @@ in
 {
   systemd.services.factorio-server = {
     description = "Factorio server";
-    after = ["network.target"];
-    wantedBy = ["multi-user.target"];
+    after = [ "network.target" ];
+    wantedBy = [ "multi-user.target" ];
 
     serviceConfig = {
       Type = "forking";
       WorkingDirectory = "/home/factorio/server";
       KillSignal = "SIGINT";
-      ExecStart = let
-        cmd = toString [
-          "${factorioPkg}/bin/factorio"
-          "--config=${configFile}"
-          "--start-server=autism"
-          "--port=${toString port}"
-          "--mod-directory=mods"
-          "--server-settings=server-settings.json"
-          "--server-adminlist=server-adminlist.json"
-        ];
-      in
+      ExecStart =
+        let
+          cmd = toString [
+            "${factorioPkg}/bin/factorio"
+            "--config=${configFile}"
+            "--start-server=autism"
+            "--port=${toString port}"
+            "--mod-directory=mods"
+            "--server-settings=server-settings.json"
+            "--server-adminlist=server-adminlist.json"
+          ];
+        in
         "${tmux} new-session -d -s fac '${cmd}'";
       ExecStop = "${tmux} kill-session -t fac";
       Restart = "on-failure";

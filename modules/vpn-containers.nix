@@ -1,9 +1,9 @@
 # Module to generate nixos containers that use the vpn server as their only
 # internet connection
-{ config, lib, pkgs, ...}:
+{ config, lib, pkgs, ... }:
 with lib;
 let
-  containerOpts = {...}: {
+  containerOpts = { ... }: {
     options = {
       ipPrefix = mkOption {
         description = "Local (host network) IP prefix of the container, excluding last octet";
@@ -13,12 +13,12 @@ let
       storageUsers = mkOption {
         description = "Map of storage dirs to list of allowed users";
         type = types.attrsOf (types.listOf types.str);
-        default = {};
+        default = { };
       };
       bindMounts = mkOption {
         description = "Additional bind mounts";
         type = types.unspecified;
-        default = {};
+        default = { };
       };
       config = mkOption {
         description = "The configuration of this container, as a NixOS module.";
@@ -30,7 +30,7 @@ let
   vpnConsts = config.consts.vpn;
   # https://gist.github.com/udf/4d9301bdc02ab38439fd64fbda06ea43
   mkMergeTopLevel = names: attrs: getAttrs names (
-    mapAttrs (k: v: mkMerge v) (foldAttrs (n: a: [n] ++ a) [] attrs)
+    mapAttrs (k: v: mkMerge v) (foldAttrs (n: a: [ n ] ++ a) [ ] attrs)
   );
 in
 {
@@ -44,106 +44,114 @@ in
     type = types.attrsOf (types.submodule containerOpts);
   };
 
-  config = (mkMergeTopLevel [ "users" "utils" "networking" "containers" ] (mapAttrsToList (
-    name: opts: {
-      # Create users and groups on host so file owners make sense
-      # deterministic-ids.nix ensures that we have the same ids inside and outside of the container
-      users = let
-        userNames = flatten (attrValues opts.storageUsers);
-      in {
-        users = (genAttrs
-          userNames
-          (u: { isSystemUser = true; group = u; })
-        );
-        groups = (genAttrs
-          userNames
-          (u: { })
-        );
-      };
-
-      utils.storageDirs.dirs = (mapAttrs
-        (dir: users: { users = users; })
-        opts.storageUsers
-      );
-
-      networking.nat.internalInterfaces = ["ve-${name}"];
-
-      containers."${name}" = {
-        autoStart = true;
-        enableTun = true;
-        privateNetwork = true;
-        hostAddress = "${opts.ipPrefix}.1";
-        localAddress = "${opts.ipPrefix}.2";
-        bindMounts = mkMerge ((mapAttrsToList (dir: users: {
-          "/mnt/${dir}" = {
-            hostPath = "${config.utils.storageDirs.dirs."${dir}".path}";
-            isReadOnly = false;
-          };
-        }) opts.storageUsers) ++ [opts.bindMounts]);
-        config = { config, pkgs, ...}: {
-          imports = [
-            ../fragments/deterministic-ids.nix
-            opts.config
-          ];
-
-          environment.systemPackages = with pkgs; [
-            tree
-            file
-            htop
-            wireguard
-          ];
-
-          services.journald.extraConfig = ''
-            MaxRetentionSec=1week
-            SystemMaxUse=1G
-          '';
-
-          users = {
+  config = (mkMergeTopLevel [ "users" "utils" "networking" "containers" ] (mapAttrsToList
+    (
+      name: opts: {
+        # Create users and groups on host so file owners make sense
+        # deterministic-ids.nix ensures that we have the same ids inside and outside of the container
+        users =
+          let
+            userNames = flatten (attrValues opts.storageUsers);
+          in
+          {
             users = (genAttrs
-              (flatten (attrValues opts.storageUsers))
+              userNames
               (u: { isSystemUser = true; group = u; })
             );
-            groups = mkMerge (mapAttrsToList (dir: users: {
-              "st_${dir}".members = users;
-            }) opts.storageUsers);
+            groups = (genAttrs
+              userNames
+              (u: { })
+            );
           };
 
-          networking = {
-            enableIPv6 = false;
-            nameservers = [ "8.8.8.8" ];
-            firewall.allowedTCPPorts = (attrValues vpnConsts.clients."${name}".forwardedTCPPorts);
-            firewall.allowedUDPPorts = [ vpnConsts.serverPort ] ++ (attrValues vpnConsts.clients."${name}".forwardedUDPPorts);
-            # poor man's killswitch
-            firewall.extraCommands = ''
-              ${pkgs.iproute}/bin/ip route del default
+        utils.storageDirs.dirs = (mapAttrs
+          (dir: users: { users = users; })
+          opts.storageUsers
+        );
+
+        networking.nat.internalInterfaces = [ "ve-${name}" ];
+
+        containers."${name}" = {
+          autoStart = true;
+          enableTun = true;
+          privateNetwork = true;
+          hostAddress = "${opts.ipPrefix}.1";
+          localAddress = "${opts.ipPrefix}.2";
+          bindMounts = mkMerge ((mapAttrsToList
+            (dir: users: {
+              "/mnt/${dir}" = {
+                hostPath = "${config.utils.storageDirs.dirs."${dir}".path}";
+                isReadOnly = false;
+              };
+            })
+            opts.storageUsers) ++ [ opts.bindMounts ]);
+          config = { config, pkgs, ... }: {
+            imports = [
+              ../fragments/deterministic-ids.nix
+              opts.config
+            ];
+
+            environment.systemPackages = with pkgs; [
+              tree
+              file
+              htop
+              wireguard
+            ];
+
+            services.journald.extraConfig = ''
+              MaxRetentionSec=1week
+              SystemMaxUse=1G
             '';
-          };
 
-          networking.wireguard.interfaces = {
-            wg0 = {
-              ips = [ "${vpnConsts.clients."${name}".ip}/24" ];
-              listenPort = vpnConsts.serverPort;
-              privateKeyFile = "/root/wireguard-keys/private";
+            users = {
+              users = (genAttrs
+                (flatten (attrValues opts.storageUsers))
+                (u: { isSystemUser = true; group = u; })
+              );
+              groups = mkMerge (mapAttrsToList
+                (dir: users: {
+                  "st_${dir}".members = users;
+                })
+                opts.storageUsers);
+            };
 
-              postSetup = ''
-                ip route add ${vpnConsts.serverIP} via ${opts.ipPrefix}.1 dev eth0
+            networking = {
+              enableIPv6 = false;
+              nameservers = [ "8.8.8.8" ];
+              firewall.allowedTCPPorts = (attrValues vpnConsts.clients."${name}".forwardedTCPPorts);
+              firewall.allowedUDPPorts = [ vpnConsts.serverPort ] ++ (attrValues vpnConsts.clients."${name}".forwardedUDPPorts);
+              # poor man's killswitch
+              firewall.extraCommands = ''
+                ${pkgs.iproute}/bin/ip route del default
               '';
-              postShutdown = ''
-                ip route del ${vpnConsts.serverIP} via ${opts.ipPrefix}.1 dev eth0
-              '';
+            };
 
-              peers = [
-                {
-                  publicKey = vpnConsts.serverPublicKey;
-                  allowedIPs = [ "0.0.0.0/0" ];
-                  endpoint = "${vpnConsts.serverIP}:${toString vpnConsts.serverPort}";
-                  persistentKeepalive = 25;
-                }
-              ];
+            networking.wireguard.interfaces = {
+              wg0 = {
+                ips = [ "${vpnConsts.clients."${name}".ip}/24" ];
+                listenPort = vpnConsts.serverPort;
+                privateKeyFile = "/root/wireguard-keys/private";
+
+                postSetup = ''
+                  ip route add ${vpnConsts.serverIP} via ${opts.ipPrefix}.1 dev eth0
+                '';
+                postShutdown = ''
+                  ip route del ${vpnConsts.serverIP} via ${opts.ipPrefix}.1 dev eth0
+                '';
+
+                peers = [
+                  {
+                    publicKey = vpnConsts.serverPublicKey;
+                    allowedIPs = [ "0.0.0.0/0" ];
+                    endpoint = "${vpnConsts.serverIP}:${toString vpnConsts.serverPort}";
+                    persistentKeepalive = 25;
+                  }
+                ];
+              };
             };
           };
         };
-      };
-    }
-  ) cfg));
+      }
+    )
+    cfg));
 }

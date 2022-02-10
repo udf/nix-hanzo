@@ -19,7 +19,7 @@ in
 
     allowedPaths = mkOption {
       type = types.listOf (types.path);
-      default = [];
+      default = [ ];
       description = ''
         List of paths that Flood is allowed to access (remember to put your downloads directory here because jesec is retarded)
       '';
@@ -105,7 +105,7 @@ in
     systemd = {
       services.flood = {
         description = "Flood web UI service";
-        after = ["network.target"];
+        after = [ "network.target" ];
         wantedBy = [ "multi-user.target" ];
         path = [ pkgs.mediainfo ];
         serviceConfig = {

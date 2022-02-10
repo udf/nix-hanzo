@@ -12,7 +12,11 @@
     enableGlobalCompInit = true;
     setOptions = [
       # history
-      "appendhistory" "histfindnodups" "histignoredups" "histreduceblanks" "INC_APPEND_HISTORY"
+      "appendhistory"
+      "histfindnodups"
+      "histignoredups"
+      "histreduceblanks"
+      "INC_APPEND_HISTORY"
       # cd on dir name
       "autocd"
       # error on failed glob match

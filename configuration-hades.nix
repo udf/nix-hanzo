@@ -58,12 +58,12 @@ in
 
   time.timeZone = "Africa/Harare";
 
-  environment.systemPackages = with pkgs; [];
+  environment.systemPackages = with pkgs; [ ];
 
   services.openssh.enable = true;
 
   systemd.services.ap-watcher = {
-    after = ["network.target"];
+    after = [ "network.target" ];
     serviceConfig = {
       Type = "simple";
       User = "root";
@@ -87,7 +87,7 @@ in
   };
 
   systemd.services.hostapd = {
-    requires = ["ap-watcher.service"];
+    requires = [ "ap-watcher.service" ];
     serviceConfig.ExecStartPost = "systemctl restart network-setup.service";
   };
 

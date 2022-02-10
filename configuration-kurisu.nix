@@ -182,7 +182,7 @@
     dirs = {
       music = { path = "/backups/music"; };
       backups = { path = "/backups"; };
-      downloads = {};
+      downloads = { };
     };
   };
 
@@ -204,7 +204,7 @@
   networking.nat = {
     enable = true;
     externalInterface = "eth0";
-  }; 
+  };
 }
 
 # vim:et:sw=2
