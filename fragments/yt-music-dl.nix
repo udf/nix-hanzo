@@ -80,7 +80,7 @@ in
         pkgs.ffmpeg
       ];
       serviceConfig = {
-        Type = "simple";
+        Type = "oneshot";
         User = "yt-music-dl";
         WorkingDirectory = "${musicDir}";
       };
