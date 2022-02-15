@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   unstable = import <nixpkgs-unstable> { };
+  makeScript = import ../helpers/make-script.nix { inherit lib pkgs; };
 in
 {
   systemd = {
@@ -14,16 +15,19 @@ in
     };
     services.music-gain-tag = {
       path = [
-        unstable.r128gain
+        (pkgs.python3.withPackages (ps: [
+          (ps.toPythonModule pkgs.r128gain)
+        ]))
       ];
       serviceConfig = {
         Type = "oneshot";
         User = "music-gain-tagger";
         WorkingDirectory = "${config.utils.storageDirs.dirs.music.path}";
         Nice = 10;
+        IOSchedulingClass = "idle";
+        IOSchedulingPriority = 7;
+        ExecStart = makeScript ../scripts/rg.py;
       };
-
-      script = "r128gain -r -s .";
     };
   };
 
