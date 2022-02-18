@@ -2,7 +2,7 @@
 let
   unstable = import <nixpkgs-unstable> { };
   python-pkg = unstable.python39.withPackages (ps: with ps; [
-    (callPackage ../packages/telethon.nix { })
+    (callPackage ../packages/telethon-old.nix { })
     aiohttp
     elasticsearch
     elasticsearch-dsl
