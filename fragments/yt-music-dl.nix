@@ -86,7 +86,7 @@ in
       };
 
       script = ''
-        ${pkgs.python38.pkgs.pip}/bin/pip install --user -U yt-dlp
+        ${pkgs.python39.pkgs.pip}/bin/pip install --user -U yt-dlp
         cd ${musicDir}/favourites
         ${builtins.concatStringsSep "\n"
           (mapAttrsToList (k: v: getDownloadCmd { dir = k; url = v; }) playlists)}

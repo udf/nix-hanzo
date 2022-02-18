@@ -22,7 +22,7 @@
         after = [ "network.target" ];
         wantedBy = [ "multi-user.target" ];
         path = [
-          (pkgs.python38.withPackages (ps: with ps; [
+          (pkgs.python39.withPackages (ps: with ps; [
             (ps.callPackage ../packages/telethon.nix { })
           ]))
         ];
