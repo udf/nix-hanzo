@@ -1,8 +1,10 @@
 { config, lib, pkgs, ... }:
 with lib;
 let
+  unstable = import <nixpkgs-unstable> { config = { allowUnfree = true; }; };
   cfg = config.services.qbittorrent;
   configDir = "${cfg.dataDir}/.config";
+  qbitPkg = unstable.qbittorrent-nox;
 in
 {
   options.services.qbittorrent = {
@@ -73,10 +75,10 @@ in
       after = [ "network.target" ];
       description = "qBittorrent Daemon";
       wantedBy = [ "multi-user.target" ];
-      path = [ pkgs.qbittorrent ];
+      path = [ qbitPkg ];
       serviceConfig = {
         ExecStart = ''
-          ${pkgs.qbittorrent-nox}/bin/qbittorrent-nox \
+          ${qbitPkg}/bin/qbittorrent-nox \
             --profile=${configDir} \
             --webui-port=${toString cfg.port}
         '';
