@@ -18,6 +18,7 @@ in
           roles: anonymous
           authz_exception: true 
     '';
+    extraJavaOptions = ["-Xmx2048m"];
   };
 
   # Add role so the postStart script can check if es is up without creds

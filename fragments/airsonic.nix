@@ -7,7 +7,7 @@ in
   services.airsonic = {
     enable = true;
     contextPath = "/";
-    maxMemory = 1024;
+    maxMemory = 256;
     port = port;
     jre = pkgs.openjdk11;
     war = "${airsonicPkg}/webapps/airsonic.war";
