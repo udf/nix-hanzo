@@ -57,6 +57,7 @@
     options zfs l2arc_mfuonly=1
     options zfs l2arc_noprefetch=0
     options zfs l2arc_trim_ahead=50
+    options zfs zfs_arc_max=${toString (8 * 1024 * 1024 * 1024)}
   '';
   nixpkgs.config.packageOverrides = pkgs: {
     zfs = pkgs.zfs.override { enableMail = true; };
