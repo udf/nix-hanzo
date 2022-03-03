@@ -17,6 +17,7 @@ in
       path = [
         (pkgs.python3.withPackages (ps: [
           (ps.toPythonModule pkgs.r128gain)
+          ps.mutagen
         ]))
       ];
       serviceConfig = {
