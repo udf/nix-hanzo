@@ -44,7 +44,7 @@ let
     "Strobe Music" = "https://www.youtube.com/c/StrobeMusic";
     "SuicideSheeep" = "https://www.youtube.com/user/SuicideSheeep";
     "Syfer Music" = "https://www.youtube.com/c/SyferMusic";
-    "Synthion" = "https://www.youtube.com/channel/UCKAwc0NMXjkPGNkb-khG8Qg";
+    "Synthion" = "https://www.youtube.com/playlist?list=PLfhXxN0xXN4J22w4cPl1s5YyjFmzKqwed";
     "Tasty" = "https://www.youtube.com/channel/UC0n9yiP-AD2DpuuYCDwlNxQ";
     "The Dub Rebellion" = "https://www.youtube.com/channel/UCH3V-b6weBfTrDuyJgFioOw";
     "Trap City" = "https://www.youtube.com/channel/UC65afEgL62PGFWXY7n6CUbA";
