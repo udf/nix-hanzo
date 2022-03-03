@@ -8,6 +8,7 @@ import mutagen
 
 logging.basicConfig(level=logging.INFO)
 PATHS_FILE = 'paths.json'
+fprint = lambda *args, **kwargs: print(*args, flush=True, **kwargs)
 
 remove_tags = [
   'replaygain_album_gain',
@@ -41,7 +42,7 @@ def clean_tags(path):
 
   if not modified:
     return False
-  print(f'Cleaned {path}')
+  fprint(f'Cleaned {path}')
   mf.save()
   return True
 
@@ -54,16 +55,16 @@ except FileNotFoundError:
   pass
 
 in_paths = {str(f): get_identifier(f) for f in walk_files('.') if r128gain.is_audio_filepath(f)}
-print(f'<4>Found {len(in_paths)} files')
+fprint(f'<4>Found {len(in_paths)} files')
 # prune deleted paths
 old_paths = {f: t for f, t in old_paths.items() if f in in_paths}
 # only process paths that changed or are new
 in_paths = {f: t for f, t in in_paths.items() if old_paths.get(f) != t}
-print(f'<4>Tagging {len(in_paths)} files')
+fprint(f'<4>Tagging {len(in_paths)} files')
 
 num_cleaned = sum(clean_tags(f) for f in in_paths.keys())
 if num_cleaned:
-  print(f'<4>Cleaned {num_cleaned} path(s)')
+  fprint(f'<4>Cleaned {num_cleaned} path(s)')
 
 err_count = r128gain.process(in_paths)
 in_paths = {f: get_identifier(Path(f)) for f, t in in_paths.items()}
