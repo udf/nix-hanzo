@@ -80,6 +80,10 @@ in
         publicKey = "z5oHAMmuI9ewM9aaZtzTl7EFm09AIKO74IPsUCSy2wk=";
         ip = "10.100.0.5";
       };
+      win-vm = {
+        publicKey = "U6dexqKACO1Mnx4lLnBbT/QpmRHAgd5ajFLoCkrYw2k=";
+        ip = "10.100.0.6";
+      };
     };
   };
 }
