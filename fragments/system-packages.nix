@@ -13,5 +13,6 @@
     python39
     lm_sensors
     ncdu
+    pv
   ];
 }
