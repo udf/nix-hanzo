@@ -6,7 +6,6 @@ let
     "cool stuff" = "https://www.youtube.com/playlist?list=PLjgVd_07uAd9LSrikWrxkUKQs9NmVKx69";
     "weeb shit" = "https://www.youtube.com/playlist?list=PLjgVd_07uAd-JL2Wz1Zr9q7aVKG8pBdZA";
   };
-  # TODO: --playlist-end 100
   channels = {
     "AirwaveMusicTV" = "https://www.youtube.com/c/AirwaveMusicTV";
     "Au5" = "https://www.youtube.com/channel/UCznSBwEKa4xU8HmbEXCv6Yw";
@@ -21,10 +20,12 @@ let
     "Far Too Loud" = "https://www.youtube.com/channel/UCRpyx8avnqPAaAbLIWDFlpw";
     "Fox Stevenson" = "https://www.youtube.com/channel/UClAxKFEVmERwGhcUhpCzlWw";
     "Hay Tea" = "https://www.youtube.com/c/HayFlavouredTea";
+    "HiTech Trance" = "https://www.youtube.com/c/hitechtrance";
     "iblank2apples" = "https://www.youtube.com/c/iblank2apples";
     "INF1N1TE" = "https://www.youtube.com/channel/UC9ivTxVsmSPFvQzUPMb9JgA";
     "Inspector Dubplate" = "https://www.youtube.com/user/InspectorDubplate";
     "K-391" = "https://www.youtube.com/channel/UC1XoTfl_ctHKoEbe64yUC_g";
+    "luggi spikes" = "https://www.youtube.com/channel/UC5_I30UR32Pr-274nkXHQ_g";
     "Madeon" = "https://www.youtube.com/channel/UCqMDNf3Pn5L7pcNkuSEeO3w";
     "MDK" = "https://www.youtube.com/c/MDKOfficialYT";
     "Monstercat" = "https://www.youtube.com/channel/UCJ6td3C9QlPO9O_J5dF4ZzA";
@@ -34,6 +35,7 @@ let
     "NoCopyrightSounds" = "https://www.youtube.com/channel/UC_aEa8K-EOJ3D6gOs7HcyNg";
     "NXS" = "https://www.youtube.com/channel/UCl4UOc8h1ZnO-inFPgAu7gw";
     "Owata P" = "https://www.youtube.com/playlist?list=PLTHHOGhQjO3Lau2C605abjcHLV4L5n67x";
+    "OxiDaksi" = "https://www.youtube.com/c/OxiDaksi";
     "Proximity" = "https://www.youtube.com/channel/UC3ifTl5zKiCAhHIBQYcaTeg";
     "ReclusiveLemming" = "https://www.youtube.com/user/ReclusiveLemming";
     "Reinelex Music" = "https://www.youtube.com/c/Reinelex";
@@ -46,6 +48,7 @@ let
     "Syfer Music" = "https://www.youtube.com/c/SyferMusic";
     "Synthion" = "https://www.youtube.com/playlist?list=PLfhXxN0xXN4J22w4cPl1s5YyjFmzKqwed";
     "Tasty" = "https://www.youtube.com/channel/UC0n9yiP-AD2DpuuYCDwlNxQ";
+    "Technical Hitch" = "https://www.youtube.com/c/hitechsergio/";
     "The Dub Rebellion" = "https://www.youtube.com/channel/UCH3V-b6weBfTrDuyJgFioOw";
     "Trap City" = "https://www.youtube.com/channel/UC65afEgL62PGFWXY7n6CUbA";
     "Trap Nation" = "https://www.youtube.com/channel/UCa10nxShhzNrCE1o2ZOPztg";
