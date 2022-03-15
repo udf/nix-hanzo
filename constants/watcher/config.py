@@ -30,6 +30,7 @@ def systemd_should_ignore(e):
     e['PRIORITY'] >= LOG_INFO and (
       re.match(r'zfs-snapshot-\w+\.service', unit)
       or unit == 'systemd-tmpfiles-clean.service'
+      or unit == 'logrotate.service'
       or re.match(r'acme-.+\.service', unit)
       or re.match(r'nginx(-config-reload)?\.service', unit)
     )

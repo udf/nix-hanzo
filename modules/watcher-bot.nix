@@ -16,19 +16,14 @@ in
   };
 
   config = {
-    environment.etc."watcher-bot/config.py".source = ../constants/watcher-config.py;
-
     systemd.services.watcher-bot = {
       description = "Watchdog Telegram Bot";
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
       path = [ python-pkg ];
       environment = {
-        PYTHONPATH = "/etc/watcher-bot";
+        PYTHONPATH = "${../constants/watcher}";
       };
-      restartTriggers = [
-        config.environment.etc."watcher-bot/config.py".source
-      ];
 
       serviceConfig = {
         Type = "simple";
