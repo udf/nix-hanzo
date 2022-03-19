@@ -54,9 +54,12 @@
   # ZFS
   boot.supportedFilesystems = [ "zfs" ];
   boot.extraModprobeConfig = ''
-    options zfs l2arc_mfuonly=1
+    options zfs l2arc_mfuonly=0
     options zfs l2arc_noprefetch=0
     options zfs l2arc_trim_ahead=50
+    options zfs l2arc_meta_percent=100
+    optionz zfs l2arc_headroom=4
+    options zfs l2arc_write_max=${toString (32 * 1024 * 1024)}
     options zfs zfs_arc_max=${toString (8 * 1024 * 1024 * 1024)}
   '';
   nixpkgs.config.packageOverrides = pkgs: {
