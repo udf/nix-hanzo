@@ -6,6 +6,7 @@
     # core
     ./fragments/system-packages.nix
     ./fragments/users.nix
+    ./fragments/nix-options.nix
 
     # services
     ./modules/watcher-bot.nix
