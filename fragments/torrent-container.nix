@@ -83,7 +83,7 @@ in
             })
             ports);
         };
-        watcher-bot.plugins = [ "systemd" "flood" ];
+        watcher-bot.plugins = [ "systemd" "status" "flood" ];
       };
 
       networking = {

@@ -10,7 +10,7 @@ in
   options.services.watcher-bot = {
     plugins = mkOption {
       type = types.listOf types.str;
-      default = [ "systemd" ];
+      default = [ "systemd" "status" ];
       description = "List of builtin plugins to load";
     };
   };
