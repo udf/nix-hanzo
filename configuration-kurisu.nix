@@ -129,7 +129,7 @@
   system.autoUpgrade = {
     enable = true;
     allowReboot = true;
-    dates = "Sat *-*-* 08:00:00";
+    dates = "Fri *-*-* 20:00:00";
   };
 
   # tfw no console access
