@@ -6,9 +6,10 @@ in
 {
   imports = [
     (import ../_autoload.nix ./.)
-    ../_shared/fragments/rpi-swapfile.nix
-    ../_shared/fragments/remote-build-desktop-aarch64.nix
   ];
+
+  custom.rpi-remote-build-desktop.enable = true;
+  custom.rpi-swapfile.enable = true;
 
   # Assuming this is installed on top of the disk image.
   fileSystems = {
