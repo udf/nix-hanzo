@@ -9,6 +9,7 @@ in
 {
   imports = (
     (listFiles ./_common/fragments)
+    ++ (listFiles ./_common/modules)
     ++ (listFiles (sourceDir + "/fragments"))
   );
 }
