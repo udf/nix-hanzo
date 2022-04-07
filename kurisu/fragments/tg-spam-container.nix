@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 {
   imports = [
-    ../constants/vpn.nix
+    ../../constants/vpn.nix
     ../modules/vpn-containers.nix
   ];
 
@@ -13,17 +13,13 @@
       };
     };
     config = { config, pkgs, ... }: {
-      imports = [
-        ../modules/watcher-bot.nix
-      ];
-
       systemd.services.spamwastaken = {
         description = "@spamwastaken";
         after = [ "network.target" ];
         wantedBy = [ "multi-user.target" ];
         path = [
           (pkgs.python39.withPackages (ps: with ps; [
-            (ps.callPackage ../packages/telethon.nix { })
+            (ps.callPackage ../../_common/packages/telethon.nix { })
           ]))
         ];
 

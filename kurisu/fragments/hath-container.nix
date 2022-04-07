@@ -4,7 +4,7 @@ let
 in
 {
   imports = [
-    ../constants/vpn.nix
+    ../../constants/vpn.nix
     ../modules/vpn-containers.nix
   ];
 
@@ -21,7 +21,6 @@ in
     config = { config, pkgs, ... }: {
       imports = [
         ../modules/hath.nix
-        ../modules/watcher-bot.nix
       ];
 
       services.hath = {

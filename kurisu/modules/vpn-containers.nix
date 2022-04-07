@@ -35,8 +35,8 @@ let
 in
 {
   imports = [
-    ../constants/vpn.nix
-    ../fragments/deterministic-ids.nix
+    ../../constants/vpn.nix
+    ../../_common/fragments/deterministic-ids.nix
   ];
 
   options.services.vpnContainers = mkOption {
@@ -87,7 +87,8 @@ in
             opts.storageUsers) ++ [ opts.bindMounts ]);
           config = { config, pkgs, ... }: {
             imports = [
-              ../fragments/deterministic-ids.nix
+              ../../_common/fragments/deterministic-ids.nix
+              ../../_common/modules/watcher-bot.nix
               opts.config
             ];
 

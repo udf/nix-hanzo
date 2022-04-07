@@ -85,7 +85,7 @@ let
           type = package;
         };
         telethon = mkOption {
-          default = ../packages/telethon.nix;
+          default = ../../_common/packages/telethon.nix;
           description = ''Telethon package to use.'';
           type = attrPackageType;
         };

@@ -10,7 +10,7 @@ let
 in
 {
   imports = [
-    ../constants/vpn.nix
+    ../../constants/vpn.nix
     ../modules/vpn-containers.nix
   ];
 
@@ -49,7 +49,6 @@ in
       imports = [
         ../modules/qbittorrent.nix
         ../modules/flood.nix
-        ../modules/watcher-bot.nix
       ];
 
       services = {

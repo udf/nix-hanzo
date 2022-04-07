@@ -22,7 +22,7 @@ in
       wantedBy = [ "multi-user.target" ];
       path = [ python-pkg ];
       environment = {
-        PYTHONPATH = "${../constants/watcher}";
+        PYTHONPATH = "${../../constants/watcher}";
       };
 
       serviceConfig = {

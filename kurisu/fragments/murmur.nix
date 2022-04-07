@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   port = 64738;
-  private = import ../constants/private.nix;
+  private = import ../../constants/private.nix;
 in
 {
   services.murmur = {

@@ -7,7 +7,7 @@
     path = [
       pkgs.bash
       (pkgs.python39.withPackages (ps: [
-        (ps.callPackage ../packages/telethon.nix { })
+        (ps.callPackage ../../_common/packages/telethon.nix { })
         ps.cbor2
       ]))
     ];
