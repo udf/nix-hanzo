@@ -1,1 +1,0 @@
-./kurisu/configuration.nix
