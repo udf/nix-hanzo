@@ -4,7 +4,6 @@ let
 in
 {
   imports = [
-    ../../constants/vpn.nix
     ../modules/vpn-containers.nix
   ];
 

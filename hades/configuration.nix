@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  private = import ../constants/private.nix;
+  private = import ../_common/constants/private.nix;
 in
 {
   imports = [

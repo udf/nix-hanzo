@@ -35,7 +35,7 @@ let
 in
 {
   imports = [
-    ../../constants/vpn.nix
+    ../../_common/constants/vpn.nix
     ../../_common/fragments/deterministic-ids.nix
   ];
 

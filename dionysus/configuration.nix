@@ -6,14 +6,14 @@
 
 with lib;
 let
-  private = import ../constants/private.nix;
+  private = import ../_common/constants/private.nix;
   vpnConsts = config.consts.vpn;
 in
 {
   imports = [
     ./hardware-configuration.nix
     (import ../_autoload.nix ./.)
-    ../constants/vpn.nix
+    ../_common/constants/vpn.nix
   ];
 
   # Use the GRUB 2 boot loader.

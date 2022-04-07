@@ -1,7 +1,6 @@
 { config, lib, pkgs, ... }:
 {
   imports = [
-    ../../constants/vpn.nix
     ../modules/vpn-containers.nix
   ];
 

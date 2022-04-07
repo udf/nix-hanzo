@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  private = (import ../constants/private.nix).ananke;
+  private = (import ../_common/constants/private.nix).ananke;
 in
 {
   imports = [
