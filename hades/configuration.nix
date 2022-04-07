@@ -6,7 +6,6 @@ in
 {
   imports = [
     (import ../_autoload.nix ./.)
-    ../_shared/fragments/msmtp-gmail.nix
     ../_shared/fragments/rpi-swapfile.nix
     ../_shared/fragments/remote-build-desktop-aarch64.nix
   ];

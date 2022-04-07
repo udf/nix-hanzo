@@ -8,7 +8,6 @@
   imports = [
     ./hardware-configuration.nix
     (import ../_autoload.nix ./.)
-    ../_shared/fragments/msmtp-gmail.nix
   ];
 
   # Use the GRUB 2 boot loader.

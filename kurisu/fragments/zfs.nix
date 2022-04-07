@@ -17,6 +17,7 @@
   nixpkgs.config.packageOverrides = pkgs: {
     zfs = pkgs.zfs.override { enableMail = true; };
   };
+
   services.zfs.zed = {
     enableMail = true;
     settings = {
@@ -33,6 +34,8 @@
     booty = "Sat *-*-* 01:00:00";
     backups = "Sun *-*-* 01:00:00";
   };
+  custom.msmtp-gmail.enable = true;
+
   services.zfs.autoSnapshot = {
     enable = true;
     flags = "-k -p -u";
