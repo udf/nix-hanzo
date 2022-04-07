@@ -88,7 +88,7 @@ in
           config = { config, pkgs, ... }: {
             imports = [
               ../../_common/fragments/deterministic-ids.nix
-              ../../_common/modules/watcher-bot.nix
+              ../../_common/fragments/watcher-bot.nix
               opts.config
             ];
 

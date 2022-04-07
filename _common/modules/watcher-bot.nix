@@ -8,6 +8,7 @@ let
 in
 {
   options.services.watcher-bot = {
+    enable = mkEnableOption "Enable watcher bot service";
     plugins = mkOption {
       type = types.listOf types.str;
       default = [ "systemd" "status" ];
@@ -15,7 +16,7 @@ in
     };
   };
 
-  config = {
+  config = mkIf cfg.enable {
     systemd.services.watcher-bot = {
       description = "Watchdog Telegram Bot";
       after = [ "network.target" ];
