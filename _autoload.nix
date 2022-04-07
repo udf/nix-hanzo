@@ -8,7 +8,7 @@ let
 in
 {
   imports = (
-    (listFiles ./_common/fragments) ++ (listFiles ./_common/modules)
-    ++ (listFiles (sourceDir + "/fragments")) ++ (listFiles (sourceDir + "/modules"))
+    (listFiles ./_common/fragments)
+    ++ (listFiles (sourceDir + "/fragments"))
   );
 }
