@@ -8,6 +8,7 @@ let
   };
   channels = {
     "AirwaveMusicTV" = "https://www.youtube.com/c/AirwaveMusicTV";
+    "Astrophysics" = "https://www.youtube.com/c/Astrophysicsynth";
     "Au5" = "https://www.youtube.com/channel/UCznSBwEKa4xU8HmbEXCv6Yw";
     "Black Out Records" = "https://www.youtube.com/channel/UCr_af7byyrsIKPVY5E7ZiqA";
     "BlackmillMusic" = "https://www.youtube.com/channel/UCH1-EnWEmTSECo-gDIweFDA";
