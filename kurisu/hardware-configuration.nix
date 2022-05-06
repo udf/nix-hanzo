@@ -35,6 +35,7 @@
 
   boot.kernel.sysctl = {
     "vm.swappiness" = 0;
+    "net.ipv6.route.max_size" = 16384;
   };
 
   powerManagement.cpuFreqGovernor = lib.mkDefault "performance";
