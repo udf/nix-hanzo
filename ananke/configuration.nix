@@ -80,7 +80,7 @@ in
   services.unifi = {
     enable = true;
     openFirewall = true;
-    unifiPackage = pkgs.unifiStable;
+    unifiPackage = pkgs.unifi7;
     # mongodbPackage = pkgs.mongodb-4_2;
   };
   programs.ssh = {
