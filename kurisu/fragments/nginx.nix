@@ -123,7 +123,10 @@ in
     };
 
     users.groups.acme.members = [ "nginx" ];
-    utils.storageDirs.dirs.downloads.readOnlyUsers = [ "nginx" ];
+    utils.storageDirs.dirs = {
+      downloads.readOnlyUsers = [ "nginx" ];
+      music.readOnlyUsers = [ "nginx" ];
+    };
 
     services.nginx = {
       enable = true;
