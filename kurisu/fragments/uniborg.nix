@@ -16,11 +16,6 @@
           "aiohttp"
         ];
       };
-      cath = {
-        enable = true;
-        user = "sam";
-        subdir = "uniborg_cath";
-      };
     };
   };
 }
