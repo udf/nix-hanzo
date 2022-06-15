@@ -66,13 +66,18 @@ in
 
     script = ''
       sleep 60
+      fails=0
       while true; do
         if ping -W 1 -c 1 192.168.0.8 >/dev/null ; then
           systemctl stop hostapd
+          fails=0
         else
+          fails="$((fails+1))"
+        fi
+        if (( fails == 5 )); then
           systemctl start hostapd
         fi
-        sleep 5
+        sleep 1
       done
     '';
   };
