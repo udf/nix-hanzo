@@ -96,7 +96,7 @@ in
               tree
               file
               htop
-              wireguard
+              wireguard-tools
             ];
 
             services.journald.extraConfig = ''
