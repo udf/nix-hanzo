@@ -21,7 +21,7 @@ in
         );
         excludePaths = concatStringsSep ","
           (
-            [ "/dev" "/proc" "/sys" "/tmp" "/run" "/lost+found" "/nix" "/var/log/lastlog" ]
+            [ "/dev" "/proc" "/sys" "/tmp" "/run" "/lost+found" "/nix" "/var/log/lastlog" "/zfs_backups_l2arc" "/zfs_booty_l2arc" ]
             ++ cfg.excludePaths
           );
       in
