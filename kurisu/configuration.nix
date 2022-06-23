@@ -36,6 +36,7 @@
     };
     nameservers = [ "213.133.98.98" "8.8.8.8" ];
     firewall.logRefusedConnections = false;
+    dhcpcd.enable = false;
   };
 
   system.autoUpgrade = {
@@ -108,7 +109,7 @@
   systemd.services.syncplay.environment = {
     SYNCPLAY_PASSWORD = "hentai";
   };
-  networking.firewall.allowedTCPPorts = [ config.services.syncplay.port 10800 ];
+  networking.firewall.allowedTCPPorts = [ config.services.syncplay.port ];
 
   networking.nat = {
     enable = true;

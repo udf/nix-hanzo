@@ -60,10 +60,11 @@ in
       getClientAttrValues = (attr: concatMap (cfg: attrValues cfg."${attr}") (attrValues vpnConsts.clients));
     in
     {
-      allowedTCPPorts = [ 10800 ] ++ (getClientAttrValues "forwardedTCPPorts");
+      allowedTCPPorts = (getClientAttrValues "forwardedTCPPorts");
       allowedUDPPorts = [ vpnConsts.serverPort ] ++ (getClientAttrValues "forwardedUDPPorts");
       logRefusedConnections = false;
     };
+  networking.dhcpcd.enable = false;
 
   system.autoUpgrade = {
     enable = true;
