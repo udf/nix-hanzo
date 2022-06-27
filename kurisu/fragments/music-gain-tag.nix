@@ -1,6 +1,5 @@
 { config, lib, pkgs, ... }:
 let
-  unstable = import <nixpkgs-unstable> { };
   makeScript = import ../helpers/make-script.nix { inherit lib pkgs; };
 in
 {

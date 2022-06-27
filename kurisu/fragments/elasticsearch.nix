@@ -1,7 +1,4 @@
 { config, lib, pkgs, ... }:
-let
-  unstable = import <nixpkgs-unstable> { config.allowUnfree = true; };
-in
 {
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
     "elasticsearch"
@@ -18,7 +15,7 @@ in
           roles: anonymous
           authz_exception: true 
     '';
-    extraJavaOptions = ["-Xmx2048m"];
+    extraJavaOptions = [ "-Xmx2048m" ];
   };
 
   # Add role so the postStart script can check if es is up without creds
