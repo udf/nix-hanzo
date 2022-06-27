@@ -1,14 +1,4 @@
 { config, lib, pkgs, ... }:
-let
-  unstable = import <nixpkgs-unstable> { };
-  nicotinePkg = unstable.nicotine-plus.overrideAttrs (oldAttrs: rec {
-    preFixup = ''
-      gappsWrapperArgs+=(
-        --prefix XDG_DATA_DIRS : "${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}"
-      )
-    '';
-  });
-in
 {
   # TODO: move this to a generic module if more gui users are needed
   systemd.services.xpra-nicotine = {
@@ -66,7 +56,7 @@ in
         Restart = "always";
         RestartSec = 5;
         WorkingDirectory = "/home/nicotine";
-        ExecStart = "${nicotinePkg}/bin/nicotine-plus";
+        ExecStart = "${pkgs.nicotine-plus}/bin/nicotine-plus";
         UMask = "0002";
       };
     };
