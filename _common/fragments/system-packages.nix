@@ -14,5 +14,6 @@
     lm_sensors
     ncdu
     pv
+    lsof
   ];
 }
