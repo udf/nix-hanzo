@@ -18,6 +18,7 @@
     };
     kernelPackages = pkgs.linuxPackages;
     # kernelParams = ["cma=32M"];
+    blacklistedKernelModules = [ "i2c_bcm2835" ];
   };
 
   hardware.enableRedistributableFirmware = true;
