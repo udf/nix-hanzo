@@ -60,11 +60,53 @@ let
     "Wobblecraft" = "https://www.youtube.com/channel/UCqrxoI6XuLkVEY4S-oXibnA";
     "Yume" = "https://www.youtube.com/c/YumeNetwork";
   };
+  bandcampUsers = [
+    "0101"
+    "astrophysicsbrazil"
+    "breakbchild"
+    "chipzelmusic"
+    "dissolve3"
+    "dissolve3"
+    "dredcollective"
+    "dubmood"
+    "glitchtrode"
+    "gnbchili"
+    "harmfullogic666"
+    "joy-less"
+    "kaizoslumber"
+    "knowermusic"
+    "lapfox"
+    "llwll"
+    "lolinearly20s"
+    "lukhash"
+    "m0-ney"
+    "machinegirl"
+    "masterbootrecord"
+    "mimosa"
+    "myheadhurts"
+    "nanode"
+    "nfract"
+    "nitgrit"
+    "noagreements"
+    "orqzeu"
+    "plasmapool"
+    "sfork"
+    "strxwberrymilk"
+    "toomuchofme"
+    "treyfrey"
+    "yurisimaginarylabel"
+    "zenithplight"
+  ];
   getDownloadCmd = { dir, url, archive ? dir }: ''
     yt-dlp -o '${dir}/%(title)s-%(id)s.%(ext)s' --download-archive '${archive}.txt' \
     --match-filter 'duration >= 90 & duration <= 660' \
     --no-progress --no-post-overwrites -ciwx -f bestaudio \
     --add-metadata --replace-in-metadata 'album' '.' "" --parse-metadata 'title:%(track)s' --parse-metadata 'uploader:%(artist)s' '${url}' || true
+  '';
+  getBandcampCmd = user: ''
+    yt-dlp --add-metadata -ix -f 'flac/mp3' --download-archive '${user}.txt' \
+    --no-post-overwrites -o '${user}/%(album,track)s/%(playlist_index)s. %(title)s.%(ext)s' \
+    https://${user}.bandcamp.com/music || true
   '';
   musicDir = config.utils.storageDirs.dirs.music.path;
 in
@@ -99,6 +141,8 @@ in
         cd ${musicDir}/pending/yt
         ${builtins.concatStringsSep "\n"
           (mapAttrsToList (k: v: getDownloadCmd { dir = "%(upload_date)s/${k}"; archive = k; url = v; }) channels)}
+        cd ${musicDir}/pending/bandcamp
+        ${builtins.concatStringsSep "\n" (map getBandcampCmd bandcampUsers)}
       '';
     };
   };
