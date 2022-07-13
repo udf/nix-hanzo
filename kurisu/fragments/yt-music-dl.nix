@@ -72,6 +72,8 @@ let
     "dubmood"
     "glitchtrode"
     "gnbchili"
+    "goreshit"
+    "goreshitarchive"
     "harmfullogic666"
     "joy-less"
     "kaizoslumber"
