@@ -47,7 +47,30 @@ in
     channel = 7;
     extraConfig = ''
       ht_capab=[SHORT-GI-20][SHORT-GI-40][TX-STBC][DELAYED-BA][LSIG-TXOP-PROT]
-      bridge=br0
     '';
   };
+
+  services.dnsmasq = {
+    enable = true;
+    servers = [
+      "10.0.0.1"
+    ];
+    extraConfig = ''
+      interface=wlan0
+      listen-address=10.0.0.1
+      port=0
+      dhcp-range=10.0.0.2,10.0.0.150,12h
+      dhcp-option=6,10.0.0.1
+    '';
+  };
+
+  networking.nat = {
+    enable = true;
+    externalInterface = "eth0";
+    internalIPs = [
+      "10.0.0.0/24"
+    ];
+  };
+
+  networking.firewall.trustedInterfaces = [ "wlan0" ];
 }

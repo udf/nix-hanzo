@@ -38,12 +38,15 @@
     hostName = "hades";
     defaultGateway = "192.168.1.1";
     nameservers = [ "1.1.1.1" "8.8.8.8" ];
-    interfaces.br0.ipv4.addresses = [{
+    interfaces.eth0.ipv4.addresses = [{
       address = "192.168.1.2";
       prefixLength = 24;
     }];
+    interfaces.wlan0.ipv4.addresses = [{
+      address = "10.0.0.1";
+      prefixLength = 24;
+    }];
     dhcpcd.enable = false;
-    bridges.br0.interfaces = [ "eth0" ];
   };
 
   time.timeZone = "Africa/Harare";
