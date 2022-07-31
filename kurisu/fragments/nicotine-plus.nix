@@ -16,6 +16,10 @@ in
       Restart = "always";
       RestartSec = 5;
       WorkingDirectory = "/home/nicotine";
+      ExecStartPre = [
+        "${pkgs.xpra}/bin/xpra list"
+        "${pkgs.coreutils}/bin/rm -fr /run/user/${userId}/xpra/100"
+      ];
       ExecStart = ''
         ${pkgs.xpra}/bin/xpra start \
           --daemon=off \
@@ -39,6 +43,7 @@ in
   systemd.services.nicotine-plus = {
     description = "nicotine-plus running on Xpra";
     requires = [ "xpra-nicotine.service" ];
+    after = [ "xpra-nicotine.service" ];
     wantedBy = [ "multi-user.target" ];
 
     environment = {
