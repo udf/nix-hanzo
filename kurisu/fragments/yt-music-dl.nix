@@ -58,11 +58,13 @@ let
     "UKF Dubstep" = "https://www.youtube.com/channel/UCfLFTP1uTuIizynWsZq2nkQ";
     "UndreamedPanic" = "https://www.youtube.com/channel/UC5u0K5MNm_P5jmK3ByM0lpw";
     "Wobblecraft" = "https://www.youtube.com/channel/UCqrxoI6XuLkVEY4S-oXibnA";
+    "xMerciAx" = "https://www.youtube.com/playlist?list=PLb1K-m5QT703CWP_Jhyblpwasjrgl_W81";
     "Yume" = "https://www.youtube.com/c/YumeNetwork";
   };
   bandcampUsers = [
     "0101"
     "astrophysicsbrazil"
+    "atariteenageriot"
     "blacksmithfl"
     "breakbchild"
     "chipzelmusic"
@@ -70,25 +72,30 @@ let
     "dissolve3"
     "dredcollective"
     "dubmood"
+    "end-user"
     "familyjules7x"
     "glitchtrode"
     "gnbchili"
     "goreshit"
     "goreshitarchive"
     "harmfullogic666"
+    "jacksonifyer"
     "joy-less"
     "kaizoslumber"
     "knowermusic"
     "lapfox"
     "llwll"
     "lolinearly20s"
+    "lostfrog"
     "lukhash"
     "m0-ney"
     "machinegirl"
     "masterbootrecord"
     "mimosa"
+    "monstercatmedia"
     "myheadhurts"
     "nanode"
+    "nanoray"
     "nfract"
     "nitgrit"
     "noagreements"
@@ -102,8 +109,11 @@ let
     "strxwberrymilk"
     "stupiddecisions"
     "synthion"
+    "theworstlabel"
+    "tokyopill"
     "toomuchofme"
     "treyfrey"
+    "vixenvy"
     "yurisimaginarylabel"
     "zenithplight"
   ];
