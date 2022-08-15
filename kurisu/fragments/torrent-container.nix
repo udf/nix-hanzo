@@ -32,7 +32,7 @@ in
     };
   };
 
-  services.backup-root.excludePaths = [ "/var/lib/containers/torrents/var/lib/qbittorrent/in_progress" ];
+  services.backup-root.excludePaths = [ "/var/lib/nixos-containers/torrents/var/lib/qbittorrent/in_progress" ];
 
   services.vpnContainers.torrents = rec {
     ipPrefix = "192.168.1";
