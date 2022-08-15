@@ -7,6 +7,7 @@ let
     "weeb shit" = "https://www.youtube.com/playlist?list=PLjgVd_07uAd-JL2Wz1Zr9q7aVKG8pBdZA";
   };
   channels = {
+    "Absurdismworld" = "https://www.youtube.com/c/Absurdismworldsarchivechannel";
     "AirwaveMusicTV" = "https://www.youtube.com/c/AirwaveMusicTV";
     "Astrophysics" = "https://www.youtube.com/c/Astrophysicsynth";
     "Au5" = "https://www.youtube.com/channel/UCznSBwEKa4xU8HmbEXCv6Yw";
@@ -15,6 +16,7 @@ let
     "Blackout Music" = "https://www.youtube.com/channel/UCXLGu6onmiH8ZA_i-dIO5Lg";
     "Camellia" = "https://www.youtube.com/channel/UCV4ggxLd_Vz-I-ePGSKfFog";
     "Cider Party" = "https://www.youtube.com/c/CiderParty";
+    "Circus Records" = "https://www.youtube.com/c/circusrecords";
     "DjEphixa" = "https://www.youtube.com/channel/UCGfBXs27YPr0U8CFim-RefQ";
     "DJT" = "https://www.youtube.com/channel/UC09L_fOVn3Tg0NKNJl9njCA";
     "Dubstep uNk" = "https://www.youtube.com/c/DubstepuNkOfficial";
@@ -113,6 +115,8 @@ let
     "tokyopill"
     "toomuchofme"
     "treyfrey"
+    "untitledexe"
+    "vertigoaway"
     "vixenvy"
     "yurisimaginarylabel"
     "zenithplight"
