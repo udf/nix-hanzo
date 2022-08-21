@@ -32,7 +32,11 @@ def get_identifier(path: Path):
 
 
 def clean_tags(path):
-  mf = mutagen.File(path)
+  try:
+    mf = mutagen.File(path)
+  except Exception as e:
+    fprint('<3>Failed to open file for cleaning', path, ':', e)
+    return False
   modified = False
 
   for t in remove_tags:
