@@ -67,6 +67,7 @@ let
     "0101"
     "astrophysicsbrazil"
     "atariteenageriot"
+    "au5music"
     "blacksmithfl"
     "breakbchild"
     "chipzelmusic"
