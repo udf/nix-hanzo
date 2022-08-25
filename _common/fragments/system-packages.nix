@@ -15,5 +15,6 @@
     ncdu
     pv
     lsof
+    aria
   ];
 }
