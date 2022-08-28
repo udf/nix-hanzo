@@ -11,6 +11,7 @@
     bpytop
     tmux
     python39
+    python39Packages.pip
     lm_sensors
     ncdu
     pv
