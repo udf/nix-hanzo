@@ -13,6 +13,7 @@
     options zfs l2arc_headroom=4
     options zfs l2arc_write_max=${toString (32 * 1024 * 1024)}
     options zfs zfs_arc_max=${toString (8 * 1024 * 1024 * 1024)}
+    options zfs zfs_arc_shrinker_limit=0
   '';
   nixpkgs.config.packageOverrides = pkgs: {
     zfs = pkgs.zfs.override { enableMail = true; };

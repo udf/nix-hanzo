@@ -38,5 +38,7 @@
     "net.ipv6.route.max_size" = 16384;
   };
 
+  swapDevices = [{ device = "/swapfile"; size = 8192; }];
+
   powerManagement.cpuFreqGovernor = lib.mkDefault "performance";
 }
