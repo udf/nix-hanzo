@@ -112,7 +112,6 @@ in
     security.acme = {
       acceptTerms = true;
       certs = {
-        "tsunderestore.io".email = "tabhooked@gmail.com";
         "withsam.org" = {
           email = "tabhooked@gmail.com";
           extraDomainNames = [ "*.withsam.org" ];
@@ -157,29 +156,6 @@ in
             extraConfig = ''
               return 444;
             '';
-          };
-
-          "tsunderestore.io" = {
-            enableACME = true;
-            forceSSL = true;
-            root = "/var/www/";
-
-            extraConfig = "error_page ${concatStringsSep " " (attrNames statusCodes)} /error.html;";
-
-            locations = {
-              "= /error.html".extraConfig = ''
-                ssi on;
-                internal;
-              '';
-
-              "= /food".extraConfig = ''
-                return 410;
-              '';
-
-              "~ ^/(.*)".extraConfig = ''
-                rewrite ^/(.*)/(.*) https://$1.withsam.org/$2 permanent;
-              '';
-            };
           };
 
           "www.withsam.org" = {
