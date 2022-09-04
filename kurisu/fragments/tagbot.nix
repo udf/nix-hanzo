@@ -9,7 +9,16 @@ let
     cachetools
     boltons
     regex
-    emoji
+    (emoji.overrideAttrs
+      (oldAttrs: rec {
+        version = "1.7.0";
+        src = pkgs.fetchFromGitHub {
+          owner = "carpedm20";
+          repo = "emoji";
+          rev = "v${version}";
+          sha256 = "sha256-vKQ51RP7uy57vP3dOnHZRSp/Wz+YDzeLUR8JnIELE/I=";
+        };
+      }))
   ]);
 in
 {
