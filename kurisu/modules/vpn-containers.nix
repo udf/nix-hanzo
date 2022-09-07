@@ -107,7 +107,7 @@ in
             users = {
               users = (genAttrs
                 (flatten (attrValues opts.storageUsers))
-                (u: { isSystemUser = true; group = u; })
+                (u: { isSystemUser = true; group = mkDefault u; })
               );
               groups = mkMerge (mapAttrsToList
                 (dir: users: {

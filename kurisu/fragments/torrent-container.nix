@@ -7,6 +7,7 @@ let
     qbit = { internal = 8080; external = 18080; };
     flood = { internal = 3000; external = 13000; };
   };
+  hostCfg = config;
 in
 {
   imports = [
@@ -61,11 +62,12 @@ in
           qbUser = "admin";
           qbPass = "adminadmin";
           user = "qbittorrent";
-          group = "qbittorrent";
+          group = hostCfg.utils.storageDirs.dirs.downloads.group;
         };
         qbittorrent = {
           enable = true;
           port = ports.qbit.internal;
+          group = hostCfg.utils.storageDirs.dirs.downloads.group;
         };
         nginx = {
           enable = true;
