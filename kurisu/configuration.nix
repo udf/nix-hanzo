@@ -93,16 +93,6 @@
   # ];
   services.backup-root.excludePaths = [ "/home/sam/nixpkgs" ];
 
-  utils.storageDirs = {
-    storagePath = "/booty";
-    adminUsers = [ "sam" ];
-    dirs = {
-      music = { path = "/backups/music"; };
-      backups = { path = "/backups"; };
-      downloads = { };
-    };
-  };
-
   services.syncplay = {
     enable = true;
   };
@@ -115,6 +105,7 @@
     enable = true;
     externalInterface = "eth0";
   };
+
 }
 
 # vim:et:sw=2
