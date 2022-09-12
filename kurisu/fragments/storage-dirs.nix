@@ -8,7 +8,7 @@
     storagePath = "/booty";
     adminUsers = [ "sam" ];
     dirs = {
-      music = { path = "/backups/music"; };
+      music = { path = "/cum/music"; genACL = false; };
       backups = { path = "/backups"; };
       downloads = { };
     };

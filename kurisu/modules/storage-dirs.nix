@@ -28,11 +28,16 @@ let
         type = types.str;
         default = "${cfg.storagePath}/${name}";
       };
+      genACL = mkOption {
+        description = "Whether or not to generate ACL rules for this directory";
+        type = types.bool;
+        default = true;
+      };
     };
   };
   cfg = config.utils.storageDirs;
   setfacl = "${pkgs.acl}/bin/setfacl";
-  mkFACLScript = { default ? true, dirs ? cfg.dirs, skipIfExists ? false }:
+  mkFACLScript = { default ? true, dirs ? (filterAttrs (k: v: v.genACL) cfg.dirs), skipIfExists ? false }:
     concatStringsSep "\n" (mapAttrsToList
       (dir: opts:
         let
