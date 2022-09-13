@@ -87,6 +87,7 @@ in
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIzlWx6yy2nWV8fYcIm9Laap8/KxAlLJd943TIrcldSY archdesktop"
     ];
     packages = [ pkgs.xpra ];
+    group = config.utils.storageDirs.dirs.music.group;
   };
   utils.storageDirs.dirs.music.users = [ "nicotine" ];
   services.backup-root.excludePaths = [ "/home/nicotine" ];

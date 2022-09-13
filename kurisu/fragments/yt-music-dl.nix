@@ -110,6 +110,7 @@ let
     "noagreements"
     "notnedaj"
     "orqzeu"
+    "owslarecords"
     "plasmapool"
     "princewhateverer"
     "psykorecords"
@@ -127,6 +128,7 @@ let
     "tokyopill"
     "toomuchofme"
     "treyfrey"
+    "undreamedpanic"
     "untitledexe"
     "vdhd"
     "vertigoaway"
@@ -135,15 +137,16 @@ let
     "yurisimaginarylabel"
     "zenithplight"
   ];
+  common-args = "--no-progress --no-post-overwrites --add-metadata -P 'temp:/home/yt-music-dl/tmp'";
   getDownloadCmd = { dir, url, archive ? dir }: ''
-    yt-dlp -o '${dir}/%(title)s-%(id)s.%(ext)s' --download-archive '${archive}.txt' \
+    yt-dlp ${common-args} -o '${dir}/%(title)s-%(id)s.%(ext)s' --download-archive '${archive}.txt' \
     --match-filter 'duration >= 90 & duration <= 660' \
-    --no-progress --no-post-overwrites -ciwx -f bestaudio \
+    -ciwx -f bestaudio \
     --add-metadata --replace-in-metadata 'album' '.' "" --parse-metadata 'title:%(track)s' --parse-metadata 'uploader:%(artist)s' '${url}' || true
   '';
   getBandcampCmd = user: ''
-    yt-dlp --add-metadata -ix -f 'flac/mp3' --download-archive '${user}.txt' \
-    --no-post-overwrites -o '${user}/%(album,track)s/%(playlist_index)s. %(title)s.%(ext)s' \
+    yt-dlp ${common-args} -ix -f 'flac/mp3' --download-archive '${user}.txt' \
+    -o '${user}/%(album,track)s/%(playlist_index)s. %(title)s.%(ext)s' \
     https://${user}.bandcamp.com/music || true
   '';
   musicDir = config.utils.storageDirs.dirs.music.path;
@@ -176,10 +179,10 @@ in
         cd ${musicDir}/favourites
         ${builtins.concatStringsSep "\n"
           (mapAttrsToList (k: v: getDownloadCmd { dir = k; url = v; }) playlists)}
-        cd ${musicDir}/pending/yt
+        cd ${musicDir}/lossy-downloads/yt
         ${builtins.concatStringsSep "\n"
           (mapAttrsToList (k: v: getDownloadCmd { dir = "%(upload_date)s/${k}"; archive = k; url = v; }) channels)}
-        cd ${musicDir}/pending/bandcamp
+        cd ${musicDir}/lossy-downloads/bandcamp
         ${builtins.concatStringsSep "\n" (map getBandcampCmd bandcampUsers)}
       '';
     };
@@ -190,7 +193,7 @@ in
     home = "/home/yt-music-dl";
     createHome = true;
     isSystemUser = true;
-    group = "yt-music-dl";
+    group = config.utils.storageDirs.dirs.music.group;
   };
   users.groups.yt-music-dl = { };
 
