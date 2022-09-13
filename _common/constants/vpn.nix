@@ -72,9 +72,11 @@ in
         ip = "10.100.0.3";
         forwardedTCPPorts = { hath = 6969; };
       };
-      tg-spam = {
-        publicKey = "+41lQrWtn66Q/Gv4jQxyb9s/wUqvRD5M42oBoQntPCk=";
+      torrents-priv = {
+        publicKey = "pA4VTNQsJMCci525GMy6tsyKq6oyMcIdY8xf9lFbzjo=";
         ip = "10.100.0.4";
+        forwardedTCPPorts = { torrentListen = 10811; };
+        forwardedUDPPorts = { torrentListen = 10811; };
       };
       desktop = {
         publicKey = "z5oHAMmuI9ewM9aaZtzTl7EFm09AIKO74IPsUCSy2wk=";
