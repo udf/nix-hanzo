@@ -32,6 +32,9 @@ let
   mkMergeTopLevel = names: attrs: getAttrs names (
     mapAttrs (k: v: mkMerge v) (foldAttrs (n: a: [ n ] ++ a) [ ] attrs)
   );
+  topLevelConfig = {
+    networking.nat.internalInterfaces = [ "ve-+" ];
+  };
 in
 {
   imports = [
@@ -44,7 +47,7 @@ in
     type = types.attrsOf (types.submodule containerOpts);
   };
 
-  config = (mkMergeTopLevel [ "users" "utils" "networking" "containers" ] (mapAttrsToList
+  config = (mkMergeTopLevel [ "users" "utils" "networking" "containers" ] ((mapAttrsToList
     (
       name: opts: {
         # Create users and groups on host so file owners make sense
@@ -68,8 +71,6 @@ in
           (dir: users: { users = users; })
           opts.storageUsers
         );
-
-        networking.nat.internalInterfaces = [ "ve-${name}" ];
 
         containers."${name}" = {
           autoStart = true;
@@ -154,5 +155,5 @@ in
         };
       }
     )
-    cfg));
+    cfg) ++ [topLevelConfig]));
 }
