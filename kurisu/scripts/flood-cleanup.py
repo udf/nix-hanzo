@@ -16,20 +16,33 @@ def sizeof_fmt(num, suffix="B"):
 
 
 def cleanup(torrents, tag, last_stats, target_size):
-  candidates = {k: v for k, v in torrents.items() if tag in v['tags']}
+  candidates = {k: t for k, t in torrents.items() if tag in t['tags'] and t['percentComplete'] == 100}
   total_size = sum(t['sizeBytes'] for t in candidates.values())
 
   if total_size < target_size:
-    print(f'Total size of tag {tag!r}={sizeof_fmt(total_size)} target={sizeof_fmt(target_size)}')
+    print(f'Total size of (completed) tag {tag!r}={sizeof_fmt(total_size)} target={sizeof_fmt(target_size)}')
     return
 
-  candidates = {k: v for k, v in candidates.items() if v['percentComplete'] == 100}
-  s = sorted(((k, (v['upTotal'] - last_stats.get(k, 0)) / (v['sizeBytes'] / 1024 / 1024)**2) for k, v in candidates.items()), key=lambda v: v[1])
+  for k, t in candidates.items():
+    recentUp = t['upTotal'] - last_stats.get(k, 0)
+    sizeMiB = t['sizeBytes'] / (1024 * 1024)
+    # add recent upload to prefer keeping active torrents
+    # size^2 to prefer keeping smaller torrents (use MiB to prevent scores being too small)
+    score = (t['upTotal'] + recentUp) / sizeMiB**2
+    t['score'] = score
+
+  # split based on ratio to prefer removing higher ratio first
+  low_ratio = [k for k, t in candidates.items() if t['ratio'] < 2]
+  high_ratio = [k for k, t in candidates.items() if t['ratio'] >= 2]
+
+  low_ratio.sort(key=lambda k: candidates[k]['score'])
+  high_ratio.sort(key=lambda k: candidates[k]['score'])
+  by_score = high_ratio + low_ratio
 
   need_to_free = total_size - target_size
   total_cleaned = 0
   to_clean = []
-  for k, score in s:
+  for k in by_score:
     total_cleaned += candidates[k]['sizeBytes']
     to_clean.append(k)
     if total_cleaned >= need_to_free:
@@ -45,7 +58,8 @@ def cleanup(torrents, tag, last_stats, target_size):
       f'ratio={round(t["ratio"], 2)} '
       f'up={sizeof_fmt(t["upTotal"])} '
       f'Δratio={round(delta_up / t["sizeBytes"], 2)} '
-      f'Δup={sizeof_fmt(delta_up)}'
+      f'Δup={sizeof_fmt(delta_up)} '
+      f'score={t["score"]}'
     )
 
   r = session.post(
@@ -80,7 +94,7 @@ except FileNotFoundError:
   last_stats = {}
 
 cleanup(torrents, 'seed', last_stats, 500 * 1024 * 1024 * 1024)
-cleanup(torrents, 'RSS', last_stats, 250 * 1024 * 1024 * 1024)
+cleanup(torrents, 'RSS', last_stats, 300 * 1024 * 1024 * 1024)
 
 with open('lastStats.json', 'w') as f:
-  json.dump({k: v['upTotal'] for k, v in torrents.items()}, f)
+  json.dump({k: t['upTotal'] for k, t in torrents.items()}, f)
