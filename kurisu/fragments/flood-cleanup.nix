@@ -8,7 +8,7 @@ in
       wantedBy = [ "timers.target" ];
       partOf = [ "flood-cleanup.service" ];
       timerConfig = {
-        OnCalendar = "01/6:00";
+        OnCalendar = "*-*-* 01:30:00";
         Persistent = true;
       };
     };

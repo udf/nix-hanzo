@@ -28,7 +28,8 @@ def cleanup(torrents, tag, last_stats, target_size):
     sizeMiB = t['sizeBytes'] / (1024 * 1024)
     # add recent upload to prefer keeping active torrents
     # size^2 to prefer keeping smaller torrents (use MiB to prevent scores being too small)
-    score = (t['upTotal'] + recentUp) / sizeMiB**2
+    # then scale by how much upload was recent (plus an offset to prevent scores from being 0)
+    score = (t['upTotal'] + recentUp * 2) / sizeMiB**2 * (recentUp / (t['upTotal'] + 1) + 0.5)
     t['score'] = score
 
   # split based on ratio to prefer removing higher ratio first
