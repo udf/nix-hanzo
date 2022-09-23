@@ -173,7 +173,7 @@ in
 
             locations = {
               "/".extraConfig = ''
-                return 403;
+                rewrite ^/$ https://blog.withsam.org;
               '';
             };
           };
