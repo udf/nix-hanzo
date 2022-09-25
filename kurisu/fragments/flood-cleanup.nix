@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   makeScript = import ../helpers/make-script.nix { inherit lib pkgs; };
+  script = makeScript ../scripts/flood-cleanup.py;
 in
 {
   systemd = {
@@ -8,7 +9,7 @@ in
       wantedBy = [ "timers.target" ];
       partOf = [ "flood-cleanup.service" ];
       timerConfig = {
-        OnCalendar = "*-*-* 01:30:00";
+        OnCalendar = "*-*-* *:30:00";
         Persistent = true;
       };
     };
@@ -23,8 +24,11 @@ in
         User = "flood-cleaner";
         Group = "flood-cleaner";
         WorkingDirectory = "/home/flood-cleaner";
-        ExecStart = makeScript ../scripts/flood-cleanup.py;
       };
+      script = ''
+        ${script} seed 450 500
+        ${script} RSS 250 300
+      '';
     };
   };
 
