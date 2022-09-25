@@ -42,6 +42,10 @@ def cleanup(torrents, tag, target_size, max_size):
   if total_size < max_size:
     return
 
+  if not candidates:
+    print(f'<3>Can\'t find anything to clean for tag {tag}')
+    return
+
   for k, t in candidates.items():
     recentUp = t['recentUpTotal']
     sizeMiB = t['sizeBytes'] / (1024 * 1024)
@@ -125,7 +129,12 @@ try:
 except FileNotFoundError:
   pass
 
+# delete old entries
+for k in last_stats.keys():
+  if k not in torrents:
+    del last_stats[k]
 
+# update stats
 for k, t in torrents.items():
   last_stats[k].append(t['upTotal'])
   i = len(last_stats[k]) - args.n
