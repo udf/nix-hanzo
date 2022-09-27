@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from collections import defaultdict
+from collections import defaultdict, Counter
 import json
 import re
 import base64
@@ -24,26 +24,31 @@ def check_positive(value):
   return ivalue
 
 
-def cleanup(torrents, tag, target_size, max_size):
+def cleanup(torrents, tag, target_size):
   candidates = {
     k: t
     for k, t in torrents.items()
     if 'recentUpTotal' in t and t['percentComplete'] == 100
   }
   total_size = sum(t['sizeBytes'] for t in torrents.values())
-  candidate_size = sum(t['sizeBytes'] for t in torrents.values())
+  candidate_size = sum(t['sizeBytes'] for t in candidates.values())
+  need_to_free = total_size - target_size
 
   print(
-    f'Total size of (completed) tag {tag!r}={sizeof_fmt(total_size)} '
-    f'cleanable={sizeof_fmt(candidate_size)} '
-    f'target={sizeof_fmt(target_size)}'
-    f'max={sizeof_fmt(max_size)}'
+    f'Total size of tag {tag!r}={sizeof_fmt(total_size)}',
+    f'cleanable={sizeof_fmt(candidate_size)}',
+    f'target={sizeof_fmt(target_size)}',
+    f'to_free={sizeof_fmt(max(0, need_to_free))}',
   )
-  if total_size < max_size:
+  if total_size < target_size:
     return
 
+  if candidate_size < need_to_free:
+    print(
+      f'<3>Can\'t find enough items to delete for tag {tag!r}!',
+      f'Want to free {sizeof_fmt(need_to_free)} but can only free {sizeof_fmt(candidate_size)}'
+    )
   if not candidates:
-    print(f'<3>Can\'t find anything to clean for tag {tag}')
     return
 
   for k, t in candidates.items():
@@ -52,8 +57,7 @@ def cleanup(torrents, tag, target_size, max_size):
     # add recent upload to prefer keeping active torrents
     # size^2 to prefer keeping smaller torrents (use MiB to prevent scores being too small)
     # then scale by how much upload was recent (plus an offset to prevent scores from being 0)
-    score = (t['upTotal'] + recentUp * 2) / sizeMiB**2 * (recentUp / (t['upTotal'] + 1) + 0.5)
-    t['score'] = score
+    t['score'] = (t['upTotal'] + recentUp * 2) / sizeMiB**2 * (recentUp / (t['upTotal'] + 1) + 0.5)
 
   # split based on ratio to prefer removing higher ratio first
   low_ratio = [k for k, t in candidates.items() if t['ratio'] < 2]
@@ -63,7 +67,6 @@ def cleanup(torrents, tag, target_size, max_size):
   high_ratio.sort(key=lambda k: candidates[k]['score'])
   by_score = high_ratio + low_ratio
 
-  need_to_free = total_size - target_size
   total_cleaned = 0
   to_clean = []
   for k in by_score:
@@ -77,13 +80,13 @@ def cleanup(torrents, tag, target_size, max_size):
     t = candidates[k]
     delta_up = t['recentUpTotal']
     print(
-      f'{t["name"]} '
-      f'size={sizeof_fmt(t["sizeBytes"])} '
-      f'ratio={round(t["ratio"], 2)} '
-      f'up={sizeof_fmt(t["upTotal"])} '
-      f'Δratio={round(delta_up / t["sizeBytes"], 2)} '
-      f'Δup={sizeof_fmt(delta_up)} '
-      f'score={t["score"]}'
+      f'{t["name"]}',
+      f'size={sizeof_fmt(t["sizeBytes"])}',
+      f'ratio={round(t["ratio"], 2)}',
+      f'up={sizeof_fmt(t["upTotal"])}',
+      f'Δratio={round(delta_up / t["sizeBytes"], 2)}',
+      f'Δup={sizeof_fmt(delta_up)}',
+      f'score={t["score"]}',
     )
 
   r = session.post(
@@ -100,7 +103,6 @@ def cleanup(torrents, tag, target_size, max_size):
 parser = argparse.ArgumentParser()
 parser.add_argument('tag')
 parser.add_argument('target', metavar='GiB-target', type=check_positive)
-parser.add_argument('max', metavar='GiB-max', type=check_positive)
 parser.add_argument('--n', default=24, type=check_positive)
 args = parser.parse_args()
 
@@ -130,25 +132,34 @@ except FileNotFoundError:
   pass
 
 # delete old entries
-for k in last_stats.keys():
+for k in list(last_stats.keys()):
   if k not in torrents:
     del last_stats[k]
 
 # update stats
+age_dist = Counter()
 for k, t in torrents.items():
-  last_stats[k].append(t['upTotal'])
-  i = len(last_stats[k]) - args.n
+  stats = last_stats[k]
+  stats.append(t['upTotal'])
+  stat_count = len(stats)
+  age_dist[stat_count] += 1
+
+  i = stat_count - args.n
   if i <= 0:
     continue
-  l = last_stats[k]
-  overflow, last_stats[k] = l[:i], l[i:]
+  overflow, last_stats[k] = stats[:i], stats[i:]
   t['recentUpTotal'] = overflow[-1]
+
+print(
+  f'Age distribution ({args.tag!r}):',
+  *(f'{age}: {count}' for age, count in sorted(age_dist.items(), reverse=True)),
+  sep='\n'
+)
 
 cleanup(
   torrents,
   args.tag,
   args.target * 1024 * 1024 * 1024,
-  args.max * 1024 * 1024 * 1024,
 )
 
 with open(STATS_FILE, 'w') as f:

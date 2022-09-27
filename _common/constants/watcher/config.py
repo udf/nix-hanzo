@@ -23,6 +23,7 @@ def systemd_should_ignore(e):
         'fstrim.service',
         'nix-gc.service',
         'yt-music-dl.service',
+        'flood-cleanup.service',
         'zpool-trim.service'
       )
     )
