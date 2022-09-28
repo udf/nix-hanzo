@@ -55,9 +55,9 @@ def cleanup(torrents, tag, target_size):
     recentUp = t['recentUpTotal']
     sizeMiB = t['sizeBytes'] / (1024 * 1024)
     # add recent upload to prefer keeping active torrents
-    # size^2 to prefer keeping smaller torrents (use MiB to prevent scores being too small)
+    # size^1.5 to prefer keeping smaller torrents (use MiB to prevent scores being too small)
     # then scale by how much upload was recent (plus an offset to prevent scores from being 0)
-    t['score'] = (t['upTotal'] + recentUp * 2) / sizeMiB**2 * (recentUp / (t['upTotal'] + 1) + 0.5)
+    t['score'] = (t['upTotal'] + recentUp * 2) / sizeMiB**1.5 * (recentUp / (t['upTotal'] + 1) + 0.5)
 
   # split based on ratio to prefer removing higher ratio first
   low_ratio = [k for k, t in candidates.items() if t['ratio'] < 2]
@@ -80,6 +80,7 @@ def cleanup(torrents, tag, target_size):
     t = candidates[k]
     delta_up = t['recentUpTotal']
     print(
+      f'{k}',
       f'{t["name"]}',
       f'size={sizeof_fmt(t["sizeBytes"])}',
       f'ratio={round(t["ratio"], 2)}',
