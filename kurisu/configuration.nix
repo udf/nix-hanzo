@@ -95,6 +95,8 @@
 
   services.syncplay = {
     enable = true;
+    group = "acme";
+    certDir = "/var/lib/acme/withsam.org/";
   };
   systemd.services.syncplay.environment = {
     SYNCPLAY_PASSWORD = "hentai";
