@@ -59,13 +59,7 @@ def cleanup(torrents, tag, target_size):
     # then scale by how much upload was recent (plus an offset to prevent scores from being 0)
     t['score'] = (t['upTotal'] + recentUp * 2) / sizeMiB**1.5 * (recentUp / (t['upTotal'] + 1) + 0.5)
 
-  # split based on ratio to prefer removing higher ratio first
-  low_ratio = [k for k, t in candidates.items() if t['ratio'] < 2]
-  high_ratio = [k for k, t in candidates.items() if t['ratio'] >= 2]
-
-  low_ratio.sort(key=lambda k: candidates[k]['score'])
-  high_ratio.sort(key=lambda k: candidates[k]['score'])
-  by_score = high_ratio + low_ratio
+  by_score = sorted(candidates.keys(), key=lambda k: candidates[k]['score'])
 
   total_cleaned = 0
   to_clean = []
@@ -92,7 +86,7 @@ def cleanup(torrents, tag, target_size):
 
   r = session.post(
     f'{base_url}/api/torrents/delete',
-    data={
+    json={
       'hashes': to_clean,
       'deleteData': True
     }
