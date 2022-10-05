@@ -66,6 +66,7 @@ let
   };
   bandcampUsers = [
     "0101"
+    "anamanaguchi"
     "astrophysicsbrazil"
     "atariteenageriot"
     "au5music"
