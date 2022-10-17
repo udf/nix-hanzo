@@ -67,6 +67,7 @@ let
   bandcampUsers = [
     "0101"
     "anamanaguchi"
+    "antennae"
     "astrophysicsbrazil"
     "atariteenageriot"
     "au5music"
@@ -115,6 +116,7 @@ let
     "plasmapool"
     "princewhateverer"
     "psykorecords"
+    "purityfilter"
     "quantumdigitsrecordings"
     "rampagerecordings"
     "rispaa"
