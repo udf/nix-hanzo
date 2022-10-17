@@ -42,7 +42,7 @@ in
   networking = {
     hostName = "ananke";
     defaultGateway = "192.168.0.1";
-    nameservers = [ "1.1.1.1" "8.8.8.8" ];
+    nameservers = [ "1.1.1.1" ];
     interfaces.eth0.ipv4.addresses = [{
       address = "192.168.0.3";
       prefixLength = 24;

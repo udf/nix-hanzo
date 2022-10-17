@@ -47,7 +47,7 @@ in
     };
     defaultGateway.address = "104.244.77.1";
     defaultGateway.metric = 10;
-    nameservers = [ "1.1.1.1" "8.8.8.8" ];
+    nameservers = [ "1.1.1.1" ];
   };
 
   networking.nat = {

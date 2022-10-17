@@ -119,7 +119,7 @@ in
 
             networking = {
               enableIPv6 = false;
-              nameservers = [ "8.8.8.8" ];
+              nameservers = [ "1.1.1.1" ];
               firewall.allowedTCPPorts = (attrValues vpnConsts.clients."${name}".forwardedTCPPorts);
               firewall.allowedUDPPorts = [ vpnConsts.serverPort ] ++ (attrValues vpnConsts.clients."${name}".forwardedUDPPorts);
               # poor man's killswitch
