@@ -52,6 +52,7 @@ in
 
   services.dnsmasq = {
     enable = true;
+    resolveLocalQueries = false;
     servers = [
       "10.0.0.1"
     ];
