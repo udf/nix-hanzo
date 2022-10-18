@@ -56,6 +56,7 @@ in
       interface = "eth0";
     };
     firewall.allowedTCPPorts = [ 8443 3493 ];
+    dhcpcd.enable = false;
   };
 
   boot.kernel.sysctl = {

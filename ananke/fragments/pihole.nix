@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  serverIP = "192.168.1.2";
+  serverIP = "192.168.0.3";
 in
 {
   virtualisation.oci-containers.containers.pihole = {

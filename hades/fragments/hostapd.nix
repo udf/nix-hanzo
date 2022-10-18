@@ -54,12 +54,11 @@ in
     enable = true;
     resolveLocalQueries = false;
     servers = [
-      "10.0.0.1"
+      "1.1.1.1"
     ];
     extraConfig = ''
       interface=wlan0
       listen-address=10.0.0.1
-      port=0
       dhcp-range=10.0.0.2,10.0.0.150,12h
       dhcp-option=6,10.0.0.1
     '';
