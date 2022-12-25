@@ -3,12 +3,12 @@ let
   userId = toString config.users.users.nicotine.uid;
   XDisplay = "100";
   nicotinePkg = pkgs.nicotine-plus.overrideAttrs (oldAttrs: rec {
-    version = "3.2.5";
+    version = "3.2.7";
     src = pkgs.fetchFromGitHub {
       owner = "nicotine-plus";
       repo = "nicotine-plus";
       rev = "refs/tags/${version}";
-      sha256 = "sha256-4ljJ2IkwsUYWklfQXNlNMsxO2E96w/RVy2OGM6z87Hg=";
+      sha256 = "sha256-MPhMKbDBKZAF5fktzA6bZBlVkyDrBnhEFhRWkRbXP/A=";
     };
 
     postInstall = ''
