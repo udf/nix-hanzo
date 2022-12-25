@@ -140,7 +140,8 @@ let
     "yurisimaginarylabel"
     "zenithplight"
   ];
-  common-args = "--no-progress --no-post-overwrites --add-metadata -P 'temp:/home/yt-music-dl/tmp'";
+  tmpDir = "/home/yt-music-dl/tmp";
+  common-args = "--no-progress --no-post-overwrites --add-metadata -P 'temp:${tmpDir}'";
   getDownloadCmd = { dir, url, archive ? dir }: ''
     yt-dlp ${common-args} -o '${dir}/%(title)s-%(id)s.%(ext)s' --download-archive '${archive}.txt' \
     --match-filter 'duration >= 90 & duration <= 660' \
@@ -178,6 +179,7 @@ in
       };
 
       script = ''
+        mkdir -p ${tmpDir}
         ${pkgs.python39.pkgs.pip}/bin/pip install --user -U yt-dlp
         cd ${musicDir}/favourites
         ${builtins.concatStringsSep "\n"
@@ -187,6 +189,8 @@ in
           (mapAttrsToList (k: v: getDownloadCmd { dir = "%(upload_date)s/${k}"; archive = k; url = v; }) channels)}
         cd ${musicDir}/lossy-downloads/bandcamp
         ${builtins.concatStringsSep "\n" (map getBandcampCmd bandcampUsers)}
+        # this is fine
+        rm -rf ${tmpDir}
       '';
     };
   };
