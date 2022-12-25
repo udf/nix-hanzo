@@ -60,6 +60,10 @@ in
               "/mnt/secrets" = {
                 hostPath = "/var/lib/secrets/nginx-${containerName}";
               };
+              "/mnt/cloud" = {
+                hostPath = "/cum/qbit";
+                isReadOnly = false;
+              };
             };
             config = { config, pkgs, ... }: {
               imports = [
@@ -73,7 +77,7 @@ in
                   port = ports.flood.internal;
                   host = "0.0.0.0";
                   baseURI = "/";
-                  allowedPaths = [ "/mnt/downloads" "/var/lib/qbittorrent" ];
+                  allowedPaths = [ "/mnt/downloads" "/var/lib/qbittorrent" "/mnt/cloud" ];
                   qbURL = "http://127.0.0.1:${toString ports.qbit.internal}";
                   qbUser = "admin";
                   qbPass = "adminadmin";
