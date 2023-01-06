@@ -45,38 +45,18 @@ in
           --pulseaudio=no \
           --html=off \
           --printing=no \
+          --env="XDG_DATA_DIRS=${pkgs.gnome.adwaita-icon-theme}/share" \
+          --env="XCURSOR_PATH=/home/nicotine/.icons:${pkgs.gnome.adwaita-icon-theme}/share/icons" \
+          --env="GDK_PIXBUF_MODULE_FILE=${pkgs.librsvg.out}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache" \
+          --start-child="${nicotinePkg}/bin/nicotine-plus" \
+          --exit-with-children=yes \
           :${XDisplay}
       '';
-      ExecStartPost = "${pkgs.coreutils}/bin/sleep 30";
+      UMask = "0002";
     };
   };
 
   fonts.fonts = with pkgs; [ noto-fonts noto-fonts-cjk ];
-
-  systemd.services.nicotine-plus = {
-    description = "nicotine-plus running on Xpra";
-    requires = [ "xpra-nicotine.service" ];
-    after = [ "xpra-nicotine.service" ];
-    wantedBy = [ "multi-user.target" ];
-
-    environment = {
-      DISPLAY = ":${XDisplay}";
-      XDG_DATA_DIRS = "${pkgs.gnome.adwaita-icon-theme}/share";
-      XCURSOR_PATH = "/home/nicotine/.icons:${pkgs.gnome.adwaita-icon-theme}/share/icons";
-      GDK_PIXBUF_MODULE_FILE = "${pkgs.librsvg.out}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache";
-    };
-
-    serviceConfig = {
-      User = "nicotine";
-      EnvironmentFile = "/run/user/${userId}/xpra/${XDisplay}/dbus.env";
-      Type = "simple";
-      Restart = "always";
-      RestartSec = 5;
-      WorkingDirectory = "/home/nicotine";
-      ExecStart = "${nicotinePkg}/bin/nicotine-plus";
-      UMask = "0002";
-    };
-  };
 
   networking.firewall.allowedTCPPorts = [ 2234 ];
 
