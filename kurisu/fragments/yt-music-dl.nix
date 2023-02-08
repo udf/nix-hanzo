@@ -119,6 +119,7 @@ let
     "purityfilter"
     "quantumdigitsrecordings"
     "rampagerecordings"
+    "resurrectionrecords"
     "rispaa"
     "sageisdead"
     "sfork"
