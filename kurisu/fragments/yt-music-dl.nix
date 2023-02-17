@@ -93,6 +93,7 @@ let
     "joy-less"
     "kaizoslumber"
     "knowermusic"
+    "lainwired"
     "lapfox"
     "llwll"
     "lolinearly20s"
