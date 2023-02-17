@@ -115,6 +115,7 @@ r = session.get(f'{base_url}/api/auth/verify')
 assert r.status_code == 200
 
 r = session.get(f'{base_url}/api/torrents')
+assert r.status_code == 200, f'Getting torrents returned status code: {r.status_code}'
 torrents = json.loads(r.text)['torrents']
 
 torrents = {k: t for k, t in torrents.items() if args.tag in t['tags']}
