@@ -124,6 +124,7 @@ let
     "rispaa"
     "sageisdead"
     "sfork"
+    "solarheavy"
     "sorryaboutmyface"
     "spurme"
     "strxwberrymilk"
