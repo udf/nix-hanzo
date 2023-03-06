@@ -30,6 +30,15 @@ in
       "max_conns=4"
     ];
   };
+  fileSystems."/cum/music_ro" = {
+    device = "${host}:music";
+    fsType = "fuse.sshfs";
+    options = sshfsOptions ++ [
+      "max_conns=2"
+      "uid=nginx"
+      "ro"
+    ];
+  };
   fileSystems."/cum/soulseek-downloads" = {
     device = "${host}:soulseek-downloads";
     fsType = "fuse.sshfs";
