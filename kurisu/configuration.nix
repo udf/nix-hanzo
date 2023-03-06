@@ -70,9 +70,9 @@
   # Enable the OpenSSH daemon.
   services.openssh = {
     enable = true;
-    ports = [ 69 ];
     openFirewall = true;
   };
+  custom.fail2endlessh.enable = true;
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database
@@ -101,7 +101,8 @@
   systemd.services.syncplay.environment = {
     SYNCPLAY_PASSWORD = "hentai";
   };
-  networking.firewall.allowedTCPPorts = [ config.services.syncplay.port ];
+  networking.firewall.allowedTCPPorts = [ config.services.syncplay.port 6969 ];
+  networking.firewall.allowedUDPPorts = [ 6969 ];
 
   networking.nat = {
     enable = true;

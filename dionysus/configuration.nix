@@ -83,9 +83,9 @@ in
   # Enable the OpenSSH daemon.
   services.openssh = {
     enable = true;
-    ports = [ 69 ];
     openFirewall = true;
   };
+  custom.fail2endlessh.enable = true;
 
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
