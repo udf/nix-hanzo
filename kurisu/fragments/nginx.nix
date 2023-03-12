@@ -191,12 +191,18 @@ in
             useACMEHost = "withsam.org";
             forceSSL = true;
             root = "/var/www/files";
-
+            extraConfig = ''
+              dav_ext_methods PROPFIND OPTIONS;
+            '';
             locations = {
               "~ .*/$".extraConfig = ''
                 autoindex on;
                 auth_basic "Keep trying";
                 auth_basic_user_file /var/www/auth/files.htpasswd;
+                location ~ ^/music {
+                  auth_basic "An otter in my water?";
+                  auth_basic_user_file /var/www/auth/music.htpasswd;
+                }
               '';
             };
           };
