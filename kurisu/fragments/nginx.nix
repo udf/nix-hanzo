@@ -66,6 +66,7 @@ let
     };
   };
   addErrorPageOpts = opts: mkMerge [ errorPageOpts opts ];
+  denyWriteMethods = "limit_except GET PROPFIND OPTIONS { deny all; }";
 
   proxyCfg = config.services.nginxProxy;
   proxyPathOpts = { path, ... }: {
@@ -191,18 +192,35 @@ in
             useACMEHost = "withsam.org";
             forceSSL = true;
             root = "/var/www/files";
-            extraConfig = ''
-              dav_ext_methods PROPFIND OPTIONS;
-            '';
+            extraConfig = "dav_ext_methods PROPFIND OPTIONS;";
             locations = {
+              "/".extraConfig = ''
+                ${denyWriteMethods}
+                # prevent viewing directories without auth
+                if ($request_method = PROPFIND) {
+                  rewrite ^(.*[^/])$ $1/ last; 
+                }
+              '';
               "~ .*/$".extraConfig = ''
+                ${denyWriteMethods}
                 autoindex on;
                 auth_basic "Keep trying";
                 auth_basic_user_file /var/www/auth/files.htpasswd;
-                location ~ ^/music {
-                  auth_basic "An otter in my water?";
-                  auth_basic_user_file /var/www/auth/music.htpasswd;
-                }
+              '';
+            };
+          };
+
+          "music.withsam.org" = addErrorPageOpts {
+            useACMEHost = "withsam.org";
+            forceSSL = true;
+            root = "/var/www/files/music";
+            extraConfig = "dav_ext_methods PROPFIND OPTIONS;";
+            locations = {
+              "/".extraConfig = ''
+                ${denyWriteMethods}
+                autoindex on;
+                auth_basic "An otter in my water?";
+                auth_basic_user_file /var/www/auth/music.htpasswd;
               '';
             };
           };
