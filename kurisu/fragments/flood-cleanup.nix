@@ -26,7 +26,7 @@ in
         WorkingDirectory = "/home/flood-cleaner";
       };
       script = ''
-        ${script} RSS 400
+        ${script} RSS 1024
       '';
     };
   };

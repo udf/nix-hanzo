@@ -66,6 +66,7 @@ let
   };
   bandcampUsers = [
     "0101"
+    "aikamusics"
     "anamanaguchi"
     "antennae"
     "astrophysicsbrazil"
@@ -76,11 +77,13 @@ let
     "breakbchild"
     "chipzelmusic"
     "clowncore"
+    "darkman007"
     "dissolve3"
     "dredcollective"
     "dubmood"
     "end-user"
     "familyjules7x"
+    "fantomenk"
     "glitchtrode"
     "gnbchili"
     "goreshit"
