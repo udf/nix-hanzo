@@ -22,12 +22,16 @@ in
     sshfs
   ];
 
+  users.groups = {
+    cl_qbit.members = [ "sam" ];
+  };
+
   fileSystems."/cum/qbit" = {
     device = "${host}:qbit";
     fsType = "fuse.sshfs";
     options = sshfsOptions ++ [
       "uid=sam"
-      # "gid=st_downloads"
+      "gid=cl_qbit"
       "max_conns=4"
     ];
   };
