@@ -4,6 +4,9 @@ let
   ports = { qbit = 18080; flood = 3000; };
 in
 {
+  networking.firewall.allowedTCPPorts = [ 7709 ];
+  networking.firewall.allowedUDPPorts = [ 7709 ];
+
   services = {
     nginxProxy.paths = {
       "flood" = {
