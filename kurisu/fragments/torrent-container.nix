@@ -60,10 +60,6 @@ in
               "/mnt/secrets" = {
                 hostPath = "/var/lib/secrets/nginx-${containerName}";
               };
-              "/mnt/cloud" = {
-                hostPath = "/cum/qbit";
-                isReadOnly = false;
-              };
             };
             config = { config, pkgs, ... }: {
               imports = [

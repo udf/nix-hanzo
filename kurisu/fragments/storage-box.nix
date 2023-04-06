@@ -55,13 +55,4 @@ in
       "gid=${toString config.users.groups.st_backups.gid}"
     ];
   };
-  fileSystems."/cum/qbit" = {
-    device = "${host}:qbit";
-    fsType = "fuse.sshfs";
-    options = sshfsOptions ++ [
-      "uid=qbittorrent"
-      "gid=st_downloads"
-      "max_conns=4"
-    ];
-  };
 }
