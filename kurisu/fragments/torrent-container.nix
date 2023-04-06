@@ -67,8 +67,8 @@ in
             };
             config = { config, pkgs, ... }: {
               imports = [
-                ../modules/qbittorrent.nix
-                ../modules/flood.nix
+                ../../_common/modules/qbittorrent.nix
+                ../../_common/modules/flood.nix
               ];
 
               services = {
