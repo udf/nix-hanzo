@@ -9,7 +9,9 @@
   zramSwap.enable = true;
   networking.hostName = "durga";
   networking.domain = "";
+
   services.openssh.enable = true;
+  custom.fail2endlessh.enable = true;
 
   time.timeZone = "UTC";
   system.stateVersion = "22.11";
