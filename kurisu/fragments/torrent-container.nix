@@ -7,10 +7,10 @@ let
       ipPrefix = "192.168.1";
       externalPorts = { qbit = 18080; flood = 13000; };
     };
-    "-priv" = {
-      ipPrefix = "192.168.3";
-      externalPorts = { qbit = 18081; flood = 13001; };
-    };
+    # "-priv" = {
+    #   ipPrefix = "192.168.3";
+    #   externalPorts = { qbit = 18081; flood = 13001; };
+    # };
   };
 in
 {
