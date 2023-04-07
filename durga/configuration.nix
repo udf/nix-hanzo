@@ -41,4 +41,9 @@
     atool
     unzip
   ];
+
+  networking.nat = {
+    enable = true;
+    externalInterface = "enp0s3";
+  };
 }

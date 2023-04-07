@@ -7,25 +7,23 @@ in
     ../modules/vpn-containers.nix
   ];
 
-  utils.storageDirs.dirs = {
-    hath = { path = "/backups/hath"; };
-  };
-
+  # TODO: take this out of a container
   services.vpnContainers.hath = {
     ipPrefix = "192.168.2";
-    storageUsers = {
-      hath = [ "hath" ];
-      downloads = [ "hath" ];
+    bindMounts = {
+      "/mnt/downloads" = {
+        hostPath = "/shared/hath";
+        isReadOnly = false;
+      };
     };
     config = { config, pkgs, ... }: {
       imports = [
         ../modules/hath.nix
       ];
-
       services.hath = {
         enable = true;
-        cacheDir = "/mnt/hath/cache";
-        downloadDir = "/mnt/downloads/sync/hath";
+        cacheDir = "/home/hath/cache";
+        downloadDir = "/mnt/downloads";
         port = vpnConsts.clients.hath.forwardedTCPPorts.hath;
       };
     };

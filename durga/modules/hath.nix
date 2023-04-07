@@ -99,6 +99,7 @@ in
       home = cfg.homeDir;
       createHome = true;
       isSystemUser = true;
+      group = cfg.group;
     };
 
     users.groups = mkIf (cfg.group == "hath") { hath = { }; };
