@@ -15,6 +15,7 @@ let
     "allow_other"
     "default_permissions"
     "umask=0007"
+    "Compression=no"
   ];
 in
 {
@@ -43,6 +44,7 @@ in
     options = sshfsOptions ++ [
       "uid=nicotine"
       "gid=cl_music"
+      "max_conns=2"
     ];
   };
 
