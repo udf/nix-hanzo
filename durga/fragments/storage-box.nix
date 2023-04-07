@@ -24,6 +24,7 @@ in
 
   users.groups = {
     cl_qbit.members = [ "sam" ];
+    cl_music.members = [ "sam" ];
   };
 
   fileSystems."/cum/qbit" = {
@@ -32,7 +33,25 @@ in
     options = sshfsOptions ++ [
       "uid=sam"
       "gid=cl_qbit"
-      "max_conns=4"
+      "max_conns=2"
+    ];
+  };
+
+  fileSystems."/cum/music" = {
+    device = "${host}:music";
+    fsType = "fuse.sshfs";
+    options = sshfsOptions ++ [
+      "uid=nicotine"
+      "gid=cl_music"
+    ];
+  };
+
+  fileSystems."/cum/soulseek-downloads" = {
+    device = "${host}:soulseek-downloads";
+    fsType = "fuse.sshfs";
+    options = sshfsOptions ++ [
+      "uid=nicotine"
+      "gid=cl_music"
     ];
   };
 }

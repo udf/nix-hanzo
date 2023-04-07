@@ -3,12 +3,12 @@ let
   userId = toString config.users.users.nicotine.uid;
   XDisplay = "100";
   nicotinePkg = pkgs.nicotine-plus.overrideAttrs (oldAttrs: rec {
-    version = "3.2.8";
+    version = "3.2.9";
     src = pkgs.fetchFromGitHub {
       owner = "nicotine-plus";
       repo = "nicotine-plus";
       rev = "refs/tags/${version}";
-      sha256 = "sha256-/l31w7ohBgjeE+Ywuo7aaDZBzVNLFD3dqMRr/P3ge+s=";
+      sha256 = "sha256-PxtHsBbrzcIAcLyQKD9DV8yqf3ljzGS7gT/ZRfJ8qL4=";
     };
 
     postInstall = ''
@@ -67,8 +67,6 @@ in
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIzlWx6yy2nWV8fYcIm9Laap8/KxAlLJd943TIrcldSY archdesktop"
     ];
     packages = [ pkgs.xpra ];
-    group = config.utils.storageDirs.dirs.music.group;
+    group = "cl_music";
   };
-  utils.storageDirs.dirs.music.users = [ "nicotine" ];
-  services.backup-root.excludePaths = [ "/home/nicotine" ];
 }
