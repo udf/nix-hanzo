@@ -12,7 +12,7 @@ in
     ipPrefix = "192.168.2";
     bindMounts = {
       "/mnt/downloads" = {
-        hostPath = "/shared/hath";
+        hostPath = "/cum/qbit/sync/hath";
         isReadOnly = false;
       };
     };
@@ -20,11 +20,13 @@ in
       imports = [
         ../modules/hath.nix
       ];
+      users.groups.cl_qbit.members = [ "hath" ];
       services.hath = {
         enable = true;
         cacheDir = "/home/hath/cache";
         downloadDir = "/mnt/downloads";
         port = vpnConsts.clients.hath.forwardedTCPPorts.hath;
+        group = "cl_qbit";
       };
     };
   };

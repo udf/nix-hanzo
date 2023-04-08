@@ -26,6 +26,7 @@ in
   users.groups = {
     cl_qbit.members = [ "sam" ];
     cl_music.members = [ "sam" ];
+    cl_backups.members = [ "sam" ];
   };
 
   fileSystems."/cum/qbit" = {
@@ -54,6 +55,15 @@ in
     options = sshfsOptions ++ [
       "uid=nicotine"
       "gid=cl_music"
+    ];
+  };
+
+  fileSystems."/cum/backups" = {
+    device = "${host}:backups";
+    fsType = "fuse.sshfs";
+    options = sshfsOptions ++ [
+      "uid=sam"
+      "gid=cl_backups"
     ];
   };
 }

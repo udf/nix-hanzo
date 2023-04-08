@@ -37,11 +37,4 @@ in
       "ro"
     ];
   };
-  fileSystems."/cum/backups" = {
-    device = "${host}:backups";
-    fsType = "fuse.sshfs";
-    options = sshfsOptions ++ [
-      "gid=${toString config.users.groups.st_backups.gid}"
-    ];
-  };
 }
