@@ -115,7 +115,7 @@ in
       certs = {
         "durga.withsam.org" = {
           email = "tabhooked@gmail.com";
-          extraDomainNames = [ "*.durga.withsam.org" ];
+          extraDomainNames = [ "*.durga.withsam.org" "piracy.withsam.org" "music.withsam.org" ];
           dnsProvider = "ovh";
           credentialsFile = "/var/lib/secrets/ovh.certs.secret";
         };
@@ -175,7 +175,7 @@ in
             };
           };
 
-          "piracy.durga.withsam.org" = addErrorPageOpts {
+          "piracy.withsam.org" = addErrorPageOpts {
             useACMEHost = "durga.withsam.org";
             forceSSL = true;
             root = "/var/www/files";
@@ -197,7 +197,7 @@ in
             };
           };
 
-          "music.durga.withsam.org" = addErrorPageOpts {
+          "music.withsam.org" = addErrorPageOpts {
             useACMEHost = "durga.withsam.org";
             forceSSL = true;
             root = "/var/www/files/music";

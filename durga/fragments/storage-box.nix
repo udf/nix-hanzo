@@ -27,6 +27,7 @@ in
     cl_qbit.members = [ "sam" ];
     cl_music.members = [ "sam" ];
     cl_backups.members = [ "sam" ];
+    cl_allro.members = [ "sam" ];
   };
 
   fileSystems."/cum/qbit" = {
@@ -64,6 +65,16 @@ in
     options = sshfsOptions ++ [
       "uid=sam"
       "gid=cl_backups"
+    ];
+  };
+
+  fileSystems."/cum/all_ro" = {
+    device = "${host}:/home";
+    fsType = "fuse.sshfs";
+    options = sshfsOptions ++ [
+      "uid=nginx"
+      "gid=cl_allro"
+      "ro"
     ];
   };
 }
