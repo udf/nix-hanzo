@@ -125,7 +125,6 @@ in
     users.groups.acme.members = [ "nginx" ];
     utils.storageDirs.dirs = {
       downloads.readOnlyUsers = [ "nginx" ];
-      music.readOnlyUsers = [ "nginx" ];
     };
 
     services.nginx = {
@@ -175,52 +174,6 @@ in
             locations = {
               "/".extraConfig = ''
                 rewrite ^/$ https://blog.withsam.org;
-              '';
-            };
-          };
-
-          "files.withsam.org" = {
-            useACMEHost = "withsam.org";
-            forceSSL = true;
-            root = "/var/www";
-            extraConfig = ''
-              rewrite ^/$ https://piracy.withsam.org permanent;
-            '';
-          };
-
-          "piracy.withsam.org" = addErrorPageOpts {
-            useACMEHost = "withsam.org";
-            forceSSL = true;
-            root = "/var/www/files";
-            extraConfig = "dav_ext_methods PROPFIND OPTIONS;";
-            locations = {
-              "/".extraConfig = ''
-                ${denyWriteMethods}
-                # prevent viewing directories without auth
-                if ($request_method = PROPFIND) {
-                  rewrite ^(.*[^/])$ $1/ last; 
-                }
-              '';
-              "~ .*/$".extraConfig = ''
-                ${denyWriteMethods}
-                autoindex on;
-                auth_basic "Keep trying";
-                auth_basic_user_file /var/www/auth/files.htpasswd;
-              '';
-            };
-          };
-
-          "music.withsam.org" = addErrorPageOpts {
-            useACMEHost = "withsam.org";
-            forceSSL = true;
-            root = "/var/www/files/music";
-            extraConfig = "dav_ext_methods PROPFIND OPTIONS;";
-            locations = {
-              "/".extraConfig = ''
-                ${denyWriteMethods}
-                autoindex on;
-                auth_basic "An otter in my water?";
-                auth_basic_user_file /var/www/auth/music.htpasswd;
               '';
             };
           };

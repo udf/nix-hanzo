@@ -159,7 +159,7 @@ let
     -o '${user}/%(album,track)s/%(playlist_index)s. %(title)s.%(ext)s' \
     https://${user}.bandcamp.com/music || true
   '';
-  musicDir = config.utils.storageDirs.dirs.music.path;
+  musicDir = "/cum/music";
 in
 {
   systemd = {
@@ -206,9 +206,6 @@ in
     home = "/home/yt-music-dl";
     createHome = true;
     isSystemUser = true;
-    group = config.utils.storageDirs.dirs.music.group;
+    group = "cl_music";
   };
-  users.groups.yt-music-dl = { };
-
-  utils.storageDirs.dirs.music.users = [ "yt-music-dl" ];
 }
