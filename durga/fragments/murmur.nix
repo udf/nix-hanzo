@@ -9,8 +9,8 @@ in
     welcometext = "Congratulation! You have earned one (1) autism!";
     bandwidth = 144000;
     password = private.murmurPassword;
-    sslCert = "/var/lib/acme/withsam.org/fullchain.pem";
-    sslKey = "/var/lib/acme/withsam.org/key.pem";
+    sslCert = "/var/lib/acme/durga.withsam.org/fullchain.pem";
+    sslKey = "/var/lib/acme/durga.withsam.org/key.pem";
   };
 
   users.groups.acme.members = [ "murmur" ];
