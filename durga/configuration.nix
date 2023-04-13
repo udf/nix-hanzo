@@ -21,6 +21,12 @@
   time.timeZone = "UTC";
   system.stateVersion = "22.11";
 
+  system.autoUpgrade = {
+    enable = true;
+    allowReboot = true;
+    dates = "Fri *-*-* 20:00:00";
+  };
+
   security.pam.loginLimits = [
     {
       domain = "*";
