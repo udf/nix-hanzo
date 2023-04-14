@@ -186,7 +186,7 @@ in
 
       script = ''
         mkdir -p ${tmpDir}
-        ${pkgs.python39.pkgs.pip}/bin/pip install --user -U yt-dlp
+        ${pkgs.python310.pkgs.pip}/bin/pip install --user -U yt-dlp
         cd ${musicDir}/favourites
         ${builtins.concatStringsSep "\n"
           (mapAttrsToList (k: v: getDownloadCmd { dir = k; url = v; }) playlists)}

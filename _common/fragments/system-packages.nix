@@ -8,10 +8,10 @@
     file
     htop
     iotop
-    bpytop
+    btop
     tmux
-    python39
-    python39Packages.pip
+    python310
+    python310Packages.pip
     lm_sensors
     ncdu
     pv
