@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 {
   users.users = {
     sam = {
@@ -9,6 +9,7 @@
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB/M7Ba3GQSuRFjMTInCAv/mZIvlc4KxyrJZkklL0yhv phone"
       ];
       uid = 1000;
+      packages = [ pkgs.python310 pkgs.python310Packages.pip ];
     };
   };
 }

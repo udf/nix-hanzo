@@ -10,8 +10,6 @@
     iotop
     btop
     tmux
-    python310
-    python310Packages.pip
     lm_sensors
     ncdu
     pv
