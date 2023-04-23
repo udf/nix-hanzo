@@ -15,7 +15,7 @@ in
     (import ../_autoload.nix ./.)
   ];
 
-  custom.rpi-remote-build-desktop.enable = true;
+  custom.rpi-remote-build-durga.enable = true;
   custom.rpi-swapfile.enable = true;
 
   # Assuming this is installed on top of the disk image.

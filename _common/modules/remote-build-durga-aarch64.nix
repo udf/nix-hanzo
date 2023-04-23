@@ -1,19 +1,19 @@
 { config, lib, pkgs, ... }:
 with lib;
 let
-  cfg = config.custom.rpi-remote-build-desktop;
+  cfg = config.custom.rpi-remote-build-durga;
 in
 {
-  options.custom.rpi-remote-build-desktop = {
-    enable = mkEnableOption "Enable using desktop as a remote aarch64 builder";
+  options.custom.rpi-remote-build-durga = {
+    enable = mkEnableOption "Enable using Oracle Cloud (durga) as a remote aarch64 builder";
   };
 
   config = mkIf cfg.enable {
     nix = {
       buildMachines = [{
-        hostName = "karen-chan";
+        hostName = "durga";
         system = "aarch64-linux";
-        maxJobs = 12;
+        maxJobs = 4;
         speedFactor = 10;
         supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
         mandatoryFeatures = [ ];
