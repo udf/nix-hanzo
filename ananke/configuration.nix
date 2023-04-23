@@ -2,6 +2,13 @@
 
 let
   private = (import ../_common/constants/private.nix).ananke;
+  pinnedUnstable = import
+    (builtins.fetchTarball {
+      name = "nixos-unstable-2023-04-14";
+      url = "https://github.com/nixos/nixpkgs/archive/c58e6fbf258df1572b535ac1868ec42faf7675dd.tar.gz";
+      sha256 = "18pna0yinvdprhhcmhyanlgrmgf81nwpc0j2z9fy9mc8cqkx3937";
+    })
+    { config.allowUnfree = true; };
 in
 {
   imports = [
@@ -82,7 +89,7 @@ in
     enable = true;
     openFirewall = true;
     unifiPackage = pkgs.unifi7;
-    # mongodbPackage = pkgs.mongodb-4_2;
+    mongodbPackage = pinnedUnstable.pkgs.mongodb-4_2;
   };
   programs.ssh = {
     pubkeyAcceptedKeyTypes = [ "+ssh-rsa" ];
