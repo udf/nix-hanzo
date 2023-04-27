@@ -2,7 +2,7 @@
 
 {
   nix = {
-    # settings.auto-optimise-store = true;
+    settings.auto-optimise-store = true;
 
     gc = {
       automatic = true;
