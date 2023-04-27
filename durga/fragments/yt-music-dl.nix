@@ -119,6 +119,7 @@ let
     "owslarecords"
     "plasmapool"
     "princewhateverer"
+    "proloxx"
     "psykorecords"
     "purityfilter"
     "quantumdigitsrecordings"
