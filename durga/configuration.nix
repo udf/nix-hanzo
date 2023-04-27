@@ -7,9 +7,12 @@
 
   boot.cleanTmpDir = true;
 
-  zramSwap.enable = true;
+  zramSwap = {
+    enable = true;
+    memoryPercent = 33;
+  };
   boot.kernel.sysctl = {
-    "vm.swappiness" = 0;
+    "vm.swappiness" = 15;
   };
 
   networking.hostName = "durga";
