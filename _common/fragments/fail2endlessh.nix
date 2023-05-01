@@ -39,7 +39,19 @@ in
         mode = aggressive
         port = ${concatMapStringsSep "," (p: toString p) config.services.openssh.ports}
       '';
+      jails.sshd-manual = ''
+        action = endlessh
+        enabled = true
+        bantime = -1
+        filter = empty
+      '';
     };
+
+    environment.etc."fail2ban/filter.d/empty.conf".source = pkgs.writeText "empty.conf" ''
+      [Definition]
+      failregex=
+      ignoreregex=
+    '';
 
     environment.etc."fail2ban/action.d/endlessh.conf".source = let
       dport = toString cfg.sshdPort;
