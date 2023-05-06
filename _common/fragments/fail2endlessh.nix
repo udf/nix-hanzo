@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, options, ... }:
 with lib;
 let
   cfg = config.custom.fail2endlessh;
@@ -33,6 +33,10 @@ in
     services.fail2ban = {
       enable = true;
       bantime-increment.enable = true;
+      daemonConfig = options.services.fail2ban.daemonConfig.default + ''
+        [DEFAULT]
+        dbpurgeage = -1
+      '';
       jails.sshd = ''
         action = endlessh
         enabled = true
