@@ -35,7 +35,7 @@ in
       bantime-increment.enable = true;
       daemonConfig = options.services.fail2ban.daemonConfig.default + ''
         [DEFAULT]
-        dbpurgeage = -1
+        dbpurgeage = 99y
       '';
       jails.sshd = ''
         action = endlessh
@@ -46,14 +46,19 @@ in
       jails.sshd-manual = ''
         action = endlessh
         enabled = true
+        usedns = raw
         bantime = -1
-        filter = empty
+        findtime = 99y
+        maxretry = 1
+        filter = hostlist
+        logpath = /var/lib/permabans.txt
+        backend = pyinotify
       '';
     };
 
-    environment.etc."fail2ban/filter.d/empty.conf".source = pkgs.writeText "empty.conf" ''
+    environment.etc."fail2ban/filter.d/hostlist.conf".source = pkgs.writeText "hostlist.conf" ''
       [Definition]
-      failregex=
+      failregex=^ - <F-ID/>$
       ignoreregex=
     '';
 
