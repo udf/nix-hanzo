@@ -4,7 +4,7 @@
     (import ../_autoload.nix ./.)
   ];
 
-  custom.rpi-remote-build-desktop.enable = true;
+  custom.rpi-remote-build-durga.enable = true;
   custom.rpi-swapfile.enable = true;
 
   boot = {
@@ -36,7 +36,6 @@
 
   networking = {
     hostName = "hades";
-    defaultGateway = "192.168.1.1";
     nameservers = [ "1.1.1.1" ];
     interfaces.eth0.ipv4.addresses = [{
       address = "192.168.1.2";
@@ -47,10 +46,17 @@
       prefixLength = 24;
     }];
     dhcpcd.enable = false;
+    firewall.extraCommands = ''
+      #TODO: interface might not exist over here
+      iptables -I FORWARD -o ppp0 -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
+    '';
   };
 
   time.timeZone = "Africa/Harare";
 
-  services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    openFirewall = false;
+  };
   services.haveged.enable = true;
 }

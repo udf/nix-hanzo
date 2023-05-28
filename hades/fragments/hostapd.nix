@@ -3,40 +3,6 @@ let
   private = (import ../../_common/constants/private.nix).hades;
 in
 {
-  systemd.services.ap-watcher = {
-    after = [ "network.target" ];
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "simple";
-      User = "root";
-      Restart = "always";
-    };
-    path = [
-      pkgs.iputils
-    ];
-
-    script = ''
-      sleep 60
-      fails=0
-      while true; do
-        if ping -W 1 -c 1 192.168.0.8 >/dev/null ; then
-          systemctl stop hostapd
-          fails=0
-        else
-          fails="$((fails+1))"
-        fi
-        if (( fails == 5 )); then
-          systemctl start hostapd
-        fi
-        sleep 1
-      done
-    '';
-  };
-
-  systemd.services.hostapd = {
-    wantedBy = lib.mkForce [ ];
-  };
-
   services.hostapd = {
     enable = true;
     interface = "wlan0";
@@ -66,7 +32,7 @@ in
 
   networking.nat = {
     enable = true;
-    externalInterface = "eth0";
+    externalInterface = "ppp0";
     internalIPs = [
       "10.0.0.0/24"
     ];
