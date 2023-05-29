@@ -87,6 +87,7 @@ in
     openFirewall = true;
   };
   custom.fail2endlessh.enable = true;
+  custom.fail2ban-persistent.enable = true;
 
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [

@@ -43,24 +43,7 @@ in
         mode = aggressive
         port = ${concatMapStringsSep "," (p: toString p) config.services.openssh.ports}
       '';
-      jails.sshd-manual = ''
-        action = endlessh
-        enabled = true
-        usedns = raw
-        bantime = -1
-        findtime = 99y
-        maxretry = 1
-        filter = hostlist
-        logpath = /var/lib/permabans.txt
-        backend = pyinotify
-      '';
     };
-
-    environment.etc."fail2ban/filter.d/hostlist.conf".source = pkgs.writeText "hostlist.conf" ''
-      [Definition]
-      failregex=^ - <F-ID/>$
-      ignoreregex=
-    '';
 
     environment.etc."fail2ban/action.d/endlessh.conf".source = let
       dport = toString cfg.sshdPort;

@@ -21,6 +21,13 @@
 
   services.openssh.enable = true;
   custom.fail2endlessh.enable = true;
+  custom.fail2ban-persistent = {
+    enable = true;
+    exceptPorts = [
+      2234 # soulseek
+      7709 # torrents
+    ];
+  };
 
   time.timeZone = "UTC";
   system.stateVersion = "22.11";
