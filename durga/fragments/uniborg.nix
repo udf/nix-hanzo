@@ -15,6 +15,7 @@
           "numpy"
           "aiohttp"
         ];
+        python = pkgs.python310;
       };
     };
   };
