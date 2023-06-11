@@ -50,7 +50,7 @@ in
       to-port = toString cfg.endlesshPort;
     in pkgs.writeText "endlessh.conf" ''
       [INCLUDES]
-      before = iptables-common.conf
+      before = iptables.conf
 
       [Definition]
       actionstart = <iptables> -t nat -N f2b-<name>

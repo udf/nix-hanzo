@@ -53,7 +53,7 @@ in
     environment.etc."fail2ban/action.d/iptables-allports-except.conf".source =
       pkgs.writeText "iptables-allports-except.conf" ''
         [INCLUDES]
-        before = iptables-common.conf
+        before = iptables.conf
 
         [Definition]
         actionstart = <iptables> -N f2b-<name>
