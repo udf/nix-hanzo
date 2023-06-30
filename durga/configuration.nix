@@ -5,7 +5,7 @@
     (import ../_autoload.nix ./.)
   ];
 
-  boot.cleanTmpDir = true;
+  boot.tmp.cleanOnBoot = true;
 
   zramSwap = {
     enable = true;

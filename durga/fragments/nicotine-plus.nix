@@ -63,9 +63,7 @@ in
   users.users.nicotine = {
     isNormalUser = true;
     createHome = true;
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIzlWx6yy2nWV8fYcIm9Laap8/KxAlLJd943TIrcldSY archdesktop"
-    ];
+    openssh.authorizedKeys.keys = config.users.users.sam.openssh.authorizedKeys.keys;
     packages = [ pkgs.xpra ];
     group = "cl_music";
   };
