@@ -200,7 +200,7 @@ let
   getBandcampCmd = user: ''
     yt-dlp ${common-args} -ix -f 'flac/mp3' --download-archive '${user}.txt' \
     -o '${user}/%(album,track)s/%(playlist_index)s. %(title)s.%(ext)s' \
-    https://${user}.bandcamp.com/music || true
+    https://${user}.bandcamp.com/music || true; sleep 30
   '';
   musicDir = "/cum/music";
 in
