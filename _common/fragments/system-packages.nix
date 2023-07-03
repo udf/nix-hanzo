@@ -15,5 +15,6 @@
     pv
     lsof
     aria
+    zip
   ];
 }
