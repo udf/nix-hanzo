@@ -190,7 +190,7 @@ let
     "yurisimaginarylabel"
   ];
   tmpDir = "/home/yt-music-dl/tmp";
-  common-args = "--no-progress --no-post-overwrites --add-metadata -P 'temp:${tmpDir}'";
+  common-args = "--no-progress --no-post-overwrites --add-metadata";
   getDownloadCmd = { dir, url, archive ? dir }: ''
     yt-dlp ${common-args} -o '${dir}/%(title)s-%(id)s.%(ext)s' --download-archive '${archive}.txt' \
     --match-filter 'duration >= 90 & duration <= 660' \
@@ -220,26 +220,41 @@ in
       path = [
         "/home/yt-music-dl/.local"
         pkgs.ffmpeg
+        pkgs.rsync
       ];
       serviceConfig = {
         Type = "oneshot";
         User = "yt-music-dl";
-        WorkingDirectory = "${musicDir}";
+        WorkingDirectory = "/home/yt-music-dl";
       };
 
       script = ''
-        mkdir -p ${tmpDir}
         ${pkgs.python310.pkgs.pip}/bin/pip install --break-system-packages --user -U yt-dlp
-        cd ${musicDir}/favourites
+
+        # copy download archives
+        rsync -rmv \
+        --include=favourites/ \
+        --include=lossy-downloads/ \
+        --include=lossy-downloads/yt/ \
+        --include=lossy-downloads/bandcamp/ \
+        --include="*.txt" \
+        --exclude="*" \
+        ${musicDir}/ ${tmpDir}/
+
+        cd ${tmpDir}/favourites
         ${builtins.concatStringsSep "\n"
           (mapAttrsToList (k: v: getDownloadCmd { dir = k; url = v; }) playlists)}
-        cd ${musicDir}/lossy-downloads/yt
+
+        cd ${tmpDir}/lossy-downloads/yt
         ${builtins.concatStringsSep "\n"
           (mapAttrsToList (k: v: getDownloadCmd { dir = "%(upload_date)s/${k}"; archive = k; url = v; }) channels)}
-        cd ${musicDir}/lossy-downloads/bandcamp
+
+        cd ${tmpDir}/lossy-downloads/bandcamp
         ${builtins.concatStringsSep "\n" (map getBandcampCmd bandcampUsers)}
-        # this is fine
-        rm -rf ${tmpDir}
+
+        # move downloads to music dir
+        rsync -rv --remove-source-files ${tmpDir}/ ${musicDir}/
+        find ${tmpDir} -type d -empty -delete
       '';
     };
   };
