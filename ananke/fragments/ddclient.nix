@@ -4,7 +4,7 @@ let
 in
 {
   services.ddclient = {
-    enable = true;
+    enable = false;
     protocol = "ovh";
     use = "web, web=api.ipify.org";
     ssl = true;
