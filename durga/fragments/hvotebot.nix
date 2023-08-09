@@ -6,7 +6,7 @@
     wantedBy = [ "multi-user.target" ];
     path = [
       pkgs.bash
-      (pkgs.python39.withPackages (ps: [
+      (pkgs.python310.withPackages (ps: [
         (ps.callPackage ../../_common/packages/telethon.nix { })
         ps.cbor2
       ]))

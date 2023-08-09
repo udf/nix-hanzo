@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  python-pkg = pkgs.python39.withPackages (ps: with ps; [
+  python-pkg = pkgs.python310.withPackages (ps: with ps; [
     (callPackage ../../_common/packages/telethon.nix { })
     (callPackage ../packages/bprint.nix { })
   ]);
