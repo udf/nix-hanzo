@@ -16,6 +16,8 @@ let
     "default_permissions"
     "umask=0007"
     "Compression=no"
+    "dcache_max_size=1000000"
+    "dcache_timeout=3900"
   ];
 in
 {
