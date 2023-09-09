@@ -2,12 +2,7 @@
 with lib;
 let
   unstable = import <nixpkgs-unstable> { config = { allowUnfree = true; }; };
-  floodPkg = unstable.nodePackages.flood.override (oldAttrs: {
-    src = pkgs.fetchurl {
-      url = "https://registry.npmjs.org/@jesec/flood/-/flood-0.0.0-master.7aec1e2.tgz";
-      sha512 = "sha512-Z0WG+2+PMHUATIjuEQmFa+KxsVLc+n0L2HLdlZ0wYroKrdPs9EN2MPcQmdXuTBxo4ozEzbAnjQmKmtDJAbHglw==";
-    };
-  });
+  floodPkg = unstable.nodePackages.flood;
   cfg = config.services.flood;
 in
 {
