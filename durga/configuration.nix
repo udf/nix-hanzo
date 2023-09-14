@@ -35,6 +35,7 @@
   system.autoUpgrade = {
     enable = true;
     allowReboot = true;
+    flags = [ "--upgrade-all" ];
     dates = "Fri *-*-* 20:00:00";
   };
 
