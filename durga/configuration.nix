@@ -21,7 +21,7 @@
 
   services.openssh.enable = true;
   custom.fail2endlessh.enable = true;
-  custom.fail2ban-persistent = {
+  custom.ipset-block = {
     enable = true;
     exceptPorts = [
       2234 # soulseek

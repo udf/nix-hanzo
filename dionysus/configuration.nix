@@ -87,7 +87,7 @@ in
     openFirewall = true;
   };
   custom.fail2endlessh.enable = true;
-  custom.fail2ban-persistent = {
+  custom.ipset-block = {
     enable = true;
     exceptPorts = [
       6969 # hath
