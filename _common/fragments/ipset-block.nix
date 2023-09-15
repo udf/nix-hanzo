@@ -90,7 +90,7 @@ in
     networking.firewall =
       let
         ignorePorts = concatMapStringsSep "," (p: toString p) cfg.exceptPorts;
-        iptablesArgs = "-p tcp ${ optionalString (ignorePorts != "") "-m multiport ! --dports ${ignorePorts}" } -m set --match-set ${ipsetName} src -j DROP";
+        iptablesArgs = "-p tcp -m state --state NEW ${ optionalString (ignorePorts != "") "-m multiport ! --dports ${ignorePorts}" } -m set --match-set ${ipsetName} src -j DROP";
       in
       {
         enable = true;
