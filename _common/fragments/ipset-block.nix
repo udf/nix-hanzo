@@ -23,6 +23,7 @@ let
     "51852" # PLI-AS, PA
     "55933" # CLOUDIE-AS-AP Cloudie Limited, HK
     "56380" # AS-ITFRUIT, MD
+    "57043" # HOSTKEY-AS, NL
     "57523" # CHANGWAY-AS, HK
     "57678" # CATTECHNOLOGIES-AS, HK
     "58061" # SCALAXY-AS, LV
@@ -104,11 +105,9 @@ in
         '';
 
         extraStopCommands = ''
-          echo begin stop
           iptables -D INPUT ${iptablesArgs} || true
           iptables -F
           ipset destroy ${ipsetName} || true
-          echo end stop
         '';
       };
   };
