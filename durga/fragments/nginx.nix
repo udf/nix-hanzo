@@ -132,6 +132,8 @@ in
           lines = concatStringsSep "\n" (mapAttrsToList (k: v: "${k} ${lib.strings.escapeNixString v};") statusCodes);
         in
         ''
+          charset utf-8;
+
           map $status $status_text {
             ${lines}
             default "Something went wrong";
