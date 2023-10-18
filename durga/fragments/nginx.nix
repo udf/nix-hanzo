@@ -152,8 +152,12 @@ in
             default = true;
             addSSL = true;
             useACMEHost = "durga.withsam.org";
+            root = "/var/www";
+
             extraConfig = ''
-              return 444;
+              types { } default_type "text/plain; charset=utf-8";
+              add_header Content-Encoding "gzip, gzip";
+              try_files /100g_9_9.gzip.gzip =444;
             '';
           };
 
