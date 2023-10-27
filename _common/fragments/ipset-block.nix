@@ -30,6 +30,7 @@ let
     "58461" # CT-HANGZHOU-IDC No.288,Fu-chun Road, CN
     "61432" # VAIZ-AS ITBks892, UA
     "63949" # AKAMAI-LINODE-AP Akamai Connected Cloud, SG
+    "132203" # TENCENT-NET-AP-CN Tencent Building, Kejizhongyi Avenue, CN
     "135377" # UCLOUD-HK-AS-AP UCLOUD INFORMATION TECHNOLOGY HK LIMITED, HK
     "135636" # RACKH-AS-AP Rackh Lintas Asia, pt, ID
     "136180" # IPIP-CN Beijing Tiantexin Tech. Co., Ltd., CN
