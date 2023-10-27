@@ -192,6 +192,7 @@ let
     "vrtlhvn"
     "yakuithemaid1"
     "yonkagor"
+    "yungkkun"
     "yurisimaginarylabel"
   ];
   tmpDir = "/home/yt-music-dl/tmp";
