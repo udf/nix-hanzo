@@ -1,7 +1,6 @@
 { config, lib, pkgs, ... }:
 let
-  unstable = import <nixpkgs-unstable> { };
-  python-pkg = unstable.python311.withPackages (ps: with ps; [
+  python-pkg = pkgs.python311.withPackages (ps: with ps; [
     (callPackage ../packages/telethon-old.nix { })
     aiohttp
     elasticsearch
