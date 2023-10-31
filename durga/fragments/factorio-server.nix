@@ -10,7 +10,7 @@ let
   factorioPkg = pkgs_x86.factorio-headless.override {
     username = private.factorioUsername;
     token = private.factorioToken;
-    # versions = lib.importJSON ../constants/misc/factorio-versions.json
+    versionsJson = ../constants/factorio-versions.json;
   };
   configFile = pkgs.writeText "factorio.conf" ''
     use-system-read-write-data-directories=true
@@ -20,6 +20,8 @@ let
   '';
 in
 {
+  boot.binfmt.emulatedSystems = [ "x86_64-linux" ];
+
   systemd.services.factorio-server = {
     description = "Factorio server";
     after = [ "network.target" ];
@@ -59,6 +61,7 @@ in
   users.extraUsers.factorio = {
     description = "Factorio server user";
     home = "/home/factorio";
+    openssh.authorizedKeys.keys = config.users.users.sam.openssh.authorizedKeys.keys;
     isNormalUser = true;
   };
 }
