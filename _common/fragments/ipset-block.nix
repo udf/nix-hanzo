@@ -16,7 +16,9 @@ let
     "20473" # AS-CHOOPA, US
     "21859" # ZEN-ECN, US
     "25820" # IT7NET, CA
+    "37963" # ALIBABA-CN-NET Hangzhou Alibaba Advertising Co.,Ltd., CN
     "38186" # FTG-AS-AP Forewin Telecom Group Limited, ISP at, HK
+    "49581" # FERDINANDZINK, DE
     "49901" # KUIPER-AS, GB
     "50867" # HOSTKEY-RU-AS, NL
     "51167" # CONTABO, DE
@@ -40,6 +42,7 @@ let
     "201814" # MEVSPACE, PL
     "202425" # INT-NETWORK, SC
     "202685" # AS-PFCLOUD, GB
+    "204428" # SS-NET, BG
     "207812" # DM_AUTO, BG
     "208091" # XHOST-INTERNET-SOLUTIONS, GB
     "209588" # FLYSERVERS-ASN, PA
@@ -48,6 +51,7 @@ let
     "211680" # AS-BITSIGHT, PT
     "212482" # XHOST-INTERNET-SOLUTIONS, GB
     "216354" # MISAKAF-NET, GB
+    "328543" # sun-asn, SC
     "396982" # GOOGLE-CLOUD-PLATFORM, US
     "398324" # CENSYS-ARIN-01, US
     "398705" # CENSYS-ARIN-02, US
