@@ -2,11 +2,11 @@
 
 stdenv.mkDerivation rec {
   pname = "hath";
-  version = "1.6.1";
+  version = "1.6.2";
 
   src = fetchzip {
     url = "https://piracy.withsam.org/shared/HentaiAtHome_${version}.zip";
-    sha256 = "0vc1clb529997zpkswm95ahm6h4m0aj9zbwyw6g4ll77kip79bvb";
+    sha256 = "sha256-0c8ltti19c6QBkcxZThdqHRGN7pDP0YUwwFXcvvmqDM=";
     stripRoot = false;
   };
 
