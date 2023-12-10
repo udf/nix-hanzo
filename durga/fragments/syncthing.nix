@@ -19,7 +19,7 @@
     };
   };
 
-  users.users.syncthing.extraGroups = [ "cl_qbit" "cl_music" "cl_backups" ];
+  users.users.syncthing.extraGroups = [ "cl_qbit" "cl_music" "cl_backups" "factorio" ];
 
   boot.kernel.sysctl = {
     "fs.inotify.max_user_watches" = 204800;

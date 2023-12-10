@@ -64,4 +64,8 @@ in
     openssh.authorizedKeys.keys = config.users.users.sam.openssh.authorizedKeys.keys;
     isNormalUser = true;
   };
+
+  users.groups = {
+    factorio.members = [ "factorio" ];
+  };
 }
