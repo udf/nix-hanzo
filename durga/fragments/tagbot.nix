@@ -4,6 +4,7 @@ let
     (callPackage ../packages/telethon-old.nix { })
     aiohttp
     elasticsearch
+    elastic-transport
     elasticsearch-dsl
     cachetools
     boltons

@@ -56,7 +56,7 @@ in
     };
   };
 
-  fonts.fonts = with pkgs; [ noto-fonts noto-fonts-cjk ];
+  fonts.packages = with pkgs; [ noto-fonts noto-fonts-cjk ];
 
   networking.firewall.allowedTCPPorts = [ 2234 ];
 

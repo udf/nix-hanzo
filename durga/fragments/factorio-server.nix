@@ -20,7 +20,7 @@ let
   '';
 in
 {
-  boot.binfmt.emulatedSystems = [ "x86_64-linux" ];
+  # boot.binfmt.emulatedSystems = [ "x86_64-linux" ];
 
   systemd.services.factorio-server = {
     description = "Factorio server";

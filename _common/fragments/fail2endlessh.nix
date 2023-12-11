@@ -33,16 +33,16 @@ in
     services.fail2ban = {
       enable = true;
       bantime-increment.enable = true;
-      daemonConfig = options.services.fail2ban.daemonConfig.default + ''
-        [DEFAULT]
-        dbpurgeage = 99y
-      '';
-      jails.sshd = ''
-        action = endlessh
-        enabled = true
-        mode = aggressive
-        port = ${concatMapStringsSep "," (p: toString p) config.services.openssh.ports}
-      '';
+      daemonSettings = {
+        DEFAULT = {
+          dbpurgeage = "99y";
+        };
+      };
+      jails.sshd.settings = {
+        action = "endlessh";
+        enabled = true;
+        mode = "aggressive";
+      };
     };
 
     environment.etc."fail2ban/action.d/endlessh.conf".source = let
