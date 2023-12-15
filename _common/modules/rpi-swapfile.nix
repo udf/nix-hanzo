@@ -9,7 +9,7 @@ in
   };
 
   config = mkIf cfg.enable {
-    swapDevices = [{ device = "/swapfile"; size = 1024; }];
+    swapDevices = [{ device = "/swapfile"; size = 4096; }];
     boot.kernel.sysctl = {
       "vm.swappiness" = 0;
     };

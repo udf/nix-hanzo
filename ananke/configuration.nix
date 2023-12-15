@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 let
   private = (import ../_common/constants/private.nix).ananke;
@@ -120,6 +120,7 @@ in
     };
   };
 
+  environment.etc."nut/sam.passwd".source = pkgs.writeText "sam.passwd" "${private.upsd.pw}";
   power.ups = {
     enable = true;
     mode = "netserver";
@@ -127,57 +128,37 @@ in
       driver = "blazer_usb";
       port = "auto";
     };
+    upsd.listen = [
+      { address = "127.0.0.1"; port = 3493; }
+      { address = "192.168.0.3"; port = 3493; }
+    ];
+    users.sam = {
+      passwordFile = "/etc/nut/sam.passwd";
+      instcmds = ["ALL"];
+      actions = ["SET"];
+    };
+    upsmon = {
+      monitor."mecer-vesta-3k@localhost" = {
+        user = "sam";
+        passwordFile = "/etc/nut/sam.passwd";
+      };
+      settings = {
+        MINSUPPLIES = 1;
+        NOTIFYCMD = "/etc/nut/notify.sh";
+        POLLFREQ = 1;
+        POLLFREQALERT = 1;
+      } // (
+        lib.concatMapAttrs
+        (key: value: { "NOTIFYMSG ${key}" = "\"%s\""; "NOTIFYFLAG ${key}" = "EXEC"; })
+        (lib.genAttrs ["ONLINE" "ONBATT" "LOWBATT" "FSD" "COMMOK" "COMMBAD" "SHUTDOWN" "REPLBATT" "NOCOMM" "NOPARENT"] (key: null))
+      );
+    };
   };
-  systemd.services.upsd.preStart = ''
-    PIDFILE=/var/state/ups/upsd.pid
-    if [ -f $PIDFILE ]; then
-      [[ "$(basename $(readlink /proc/$(cat $PIDFILE)/exe))" == "upsd" ]] || rm $PIDFILE && echo "Deleted invalid PID file"
-    fi
-  '';
-  environment.etc."nut/upsd.conf".source = pkgs.writeText "upsd.conf" ''
-    LISTEN 127.0.0.1 3493
-    LISTEN 192.168.0.3 3493
-  '';
-  environment.etc."nut/upsd.users".source = pkgs.writeText "upsd.users" ''
-    [${private.upsd.username}]
-    password = "${private.upsd.pw}"
-    actions = SET
-    instcmds = ALL
-  '';
-  environment.etc."nut/upsmon.conf".source = pkgs.writeText "upsmon.conf" ''
-    MONITOR mecer-vesta-3k@localhost 1 ${private.upsd.username} ${private.upsd.pw} master
-
-    MINSUPPLIES 1
-    NOTIFYCMD /etc/nut/notify.sh
-    POLLFREQ 1
-    POLLFREQALERT 1
-
-    NOTIFYMSG ONLINE "%s"
-    NOTIFYMSG ONBATT "%s"
-    NOTIFYMSG LOWBATT "%s"
-    NOTIFYMSG FSD "%s"
-    NOTIFYMSG COMMOK "%s"
-    NOTIFYMSG COMMBAD "%s"
-    NOTIFYMSG SHUTDOWN "%s"
-    NOTIFYMSG REPLBATT "%s"
-    NOTIFYMSG NOCOMM "%s"
-    NOTIFYMSG NOPARENT "%s"
-
-    NOTIFYFLAG ONLINE EXEC
-    NOTIFYFLAG ONBATT EXEC
-    NOTIFYFLAG LOWBATT EXEC
-    NOTIFYFLAG FSD EXEC
-    NOTIFYFLAG COMMOK EXEC
-    NOTIFYFLAG COMMBAD EXEC
-    NOTIFYFLAG SHUTDOWN EXEC
-    NOTIFYFLAG REPLBATT EXEC
-    NOTIFYFLAG NOCOMM EXEC
-  '';
   environment.etc."nut/notify.sh".source = pkgs.writeScript "notify.sh" ''
     #!${pkgs.bash}/bin/bash
     echo $NOTIFYTYPE on $1 | ${pkgs.systemd}/bin/systemd-cat -p warning -t upsmon-notify
     if [ "$NOTIFYTYPE" == "ONBATT" ]; then
-      ${pkgs.nut}/bin/upscmd -u ${private.upsd.username} -p '${private.upsd.pw}' $1 beeper.toggle
+      ${pkgs.nut}/bin/upscmd -u sam -p '${private.upsd.pw}' $1 beeper.toggle
     fi
   '';
 }
