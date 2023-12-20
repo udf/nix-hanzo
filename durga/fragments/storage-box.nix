@@ -19,6 +19,9 @@ let
     "dcache_max_size=1000000"
     "dcache_timeout=3900"
   ];
+  fileSystemOptions = {
+    noCheck = true;
+  };
 in
 {
   environment.systemPackages = with pkgs; [
@@ -40,7 +43,7 @@ in
       "gid=cl_qbit"
       "max_conns=2"
     ];
-  };
+  } // fileSystemOptions;
 
   fileSystems."/cum/music" = {
     device = "${host}:music";
@@ -50,7 +53,7 @@ in
       "gid=cl_music"
       "max_conns=2"
     ];
-  };
+  } // fileSystemOptions;
 
   fileSystems."/cum/soulseek-downloads" = {
     device = "${host}:soulseek-downloads";
@@ -59,7 +62,7 @@ in
       "uid=nicotine"
       "gid=cl_music"
     ];
-  };
+  } // fileSystemOptions;
 
   fileSystems."/cum/backups" = {
     device = "${host}:backups";
@@ -68,7 +71,7 @@ in
       "uid=sam"
       "gid=cl_backups"
     ];
-  };
+  } // fileSystemOptions;
 
   fileSystems."/cum/all_ro" = {
     device = "${host}:/home";
@@ -78,5 +81,5 @@ in
       "gid=cl_allro"
       "ro"
     ];
-  };
+  } // fileSystemOptions;
 }
