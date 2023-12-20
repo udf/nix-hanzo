@@ -58,6 +58,8 @@
     ffmpeg
     atool
     unzip
+    btrfs-progs
+    compsize
   ];
 
   networking.nat = {

@@ -19,6 +19,7 @@
     };
   };
 
+  users.users.sam.extraGroups = [ "syncthing" ];
   users.users.syncthing.extraGroups = [ "cl_qbit" "cl_music" "cl_backups" "factorio" ];
 
   boot.kernel.sysctl = {
