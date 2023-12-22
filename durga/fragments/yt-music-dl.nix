@@ -200,7 +200,7 @@ let
   common-args = "--no-progress --no-post-overwrites --add-metadata";
   getDownloadCmd = { dir, url, archive ? dir }: ''
     yt-dlp ${common-args} -o '${dir}/%(title)s-%(id)s.%(ext)s' --download-archive '${archive}.txt' \
-    --match-filter 'duration >= 90 & duration <= 660' \
+    --match-filter 'duration >= 90 & duration <= 660 & original_url!*=/shorts/' \
     -ciwx -f bestaudio \
     --add-metadata --replace-in-metadata 'album' '.' "" --parse-metadata 'title:%(track)s' --parse-metadata 'uploader:%(artist)s' '${url}' || true
   '';
