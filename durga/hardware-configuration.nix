@@ -17,12 +17,12 @@
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/098aab8a-579b-4376-b268-fba317eab5d1";
     fsType = "btrfs";
-    options = [ "compress=zstd" "space_cache=v2" ];
+    options = [ "compress-force=zstd:15" "space_cache=v2" ];
   };
   fileSystems."/sync" = {
     device = "/dev/disk/by-uuid/098aab8a-579b-4376-b268-fba317eab5d1";
     fsType = "btrfs";
-    options = [ "compress-force=zstd:15" "noatime" "space_cache=v2" "subvol=sync" ];
+    options = [ "noatime" "space_cache=v2" "subvol=sync" ];
   };
 
   fileSystems."/boot" = {
