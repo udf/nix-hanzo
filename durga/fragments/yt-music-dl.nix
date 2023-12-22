@@ -209,7 +209,7 @@ let
     -o '${user}/%(album,track)s/%(playlist_index)s. %(title)s.%(ext)s' \
     https://${user}.bandcamp.com/music || true; sleep 30
   '';
-  musicDir = "/cum/music";
+  musicDir = "/sync/downloads/lossy-music";
 in
 {
   systemd = {
@@ -271,6 +271,6 @@ in
     home = "/home/yt-music-dl";
     createHome = true;
     isSystemUser = true;
-    group = "cl_music";
+    group = "syncthing";
   };
 }
