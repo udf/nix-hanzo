@@ -198,9 +198,10 @@ let
   ];
   tmpDir = "/home/yt-music-dl/tmp";
   common-args = "--no-progress --no-post-overwrites --add-metadata";
-  getDownloadCmd = { dir, url, archive ? dir }: ''
+  music-filter = "--match-filter 'duration >= 90 & duration <= 660 & original_url!*=/shorts/'";
+  getDownloadCmd = { dir, url, archive ? dir, filter ? music-filter }: ''
     yt-dlp ${common-args} -o '${dir}/%(title)s-%(id)s.%(ext)s' --download-archive '${archive}.txt' \
-    --match-filter 'duration >= 90 & duration <= 660 & original_url!*=/shorts/' \
+    ${filter} \
     -ciwx -f bestaudio \
     --add-metadata --replace-in-metadata 'album' '.' "" --parse-metadata 'title:%(track)s' --parse-metadata 'uploader:%(artist)s' '${url}' || true
   '';
@@ -233,6 +234,7 @@ in
         Type = "oneshot";
         User = "yt-music-dl";
         WorkingDirectory = "/home/yt-music-dl";
+        UMask = "0000";
       };
 
       script = ''
@@ -250,7 +252,7 @@ in
 
         cd ${tmpDir}/favourites
         ${builtins.concatStringsSep "\n"
-          (mapAttrsToList (k: v: getDownloadCmd { dir = k; url = v; }) playlists)}
+          (mapAttrsToList (k: v: getDownloadCmd { dir = k; url = v; filter = ""; }) playlists)}
 
         cd ${tmpDir}/lossy-downloads/yt
         ${builtins.concatStringsSep "\n"
