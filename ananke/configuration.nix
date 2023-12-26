@@ -17,6 +17,7 @@ in
 
   custom.rpi-remote-build-durga.enable = true;
   custom.rpi-swapfile.enable = true;
+  zramSwap.enable = true;
 
   # Assuming this is installed on top of the disk image.
   fileSystems = {
