@@ -4,9 +4,9 @@ let
   private = (import ../_common/constants/private.nix).ananke;
   pinnedUnstable = import
     (builtins.fetchTarball {
-      name = "nixos-unstable-2023-04-14";
-      url = "https://github.com/nixos/nixpkgs/archive/c58e6fbf258df1572b535ac1868ec42faf7675dd.tar.gz";
-      sha256 = "18pna0yinvdprhhcmhyanlgrmgf81nwpc0j2z9fy9mc8cqkx3937";
+      name = "nixos-unstable-2023-12-24";
+      url = "https://github.com/nixos/nixpkgs/archive/5f64a12a728902226210bf01d25ec6cbb9d9265b.tar.gz";
+      sha256 = "0lq73nhcg11485ppazbnpz767qjifbydgqxn5xhj3xxlbfml39ba";
     })
     { config.allowUnfree = true; };
 in
@@ -44,6 +44,7 @@ in
   # Required for the Wireless firmware
   hardware.enableRedistributableFirmware = true;
   nixpkgs.config.allowUnfree = true;
+  system.stateVersion = "23.11";
 
   time.timeZone = "Africa/Harare";
 
@@ -89,8 +90,8 @@ in
   services.unifi = {
     enable = true;
     openFirewall = true;
-    unifiPackage = pkgs.unifi7;
-    mongodbPackage = pinnedUnstable.pkgs.mongodb-4_2;
+    unifiPackage = pkgs.unifi8;
+    mongodbPackage = pinnedUnstable.pkgs.mongodb-4_4;
   };
   programs.ssh = {
     pubkeyAcceptedKeyTypes = [ "+ssh-rsa" ];
