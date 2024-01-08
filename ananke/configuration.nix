@@ -16,7 +16,10 @@ in
   ];
 
   custom.rpi-remote-build-durga.enable = true;
-  custom.rpi-swapfile.enable = true;
+  custom.rpi-swapfile = {
+    enable = true;
+    disableSwappiness = false;
+  };
   zramSwap.enable = true;
 
   # Assuming this is installed on top of the disk image.
