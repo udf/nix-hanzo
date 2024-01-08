@@ -18,6 +18,7 @@ let
     "25820" # IT7NET, CA
     "37963" # ALIBABA-CN-NET Hangzhou Alibaba Advertising Co.,Ltd., CN
     "38186" # FTG-AS-AP Forewin Telecom Group Limited, ISP at, HK
+    "49202" # KISARA-AS, RU
     "49581" # FERDINANDZINK, DE
     "49901" # KUIPER-AS, GB
     "50867" # HOSTKEY-RU-AS, NL
