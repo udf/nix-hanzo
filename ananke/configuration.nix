@@ -21,6 +21,7 @@ in
     disableSwappiness = false;
   };
   zramSwap.enable = true;
+  zramSwap.memoryPercent = 33;
 
   # Assuming this is installed on top of the disk image.
   fileSystems = {
@@ -42,6 +43,13 @@ in
     "console=tty1"
     "cgroup_enable=memory"
   ];
+
+  boot.kernel.sysctl = {
+    "net.ipv6.conf.eth0.accept_ra" = 0;
+    "vm.watermark_boost_factor" = 0;
+    "vm.watermark_scale_factor" = 125;
+    "vm.page-cluster" = 0;
+  };
 
   powerManagement.cpuFreqGovernor = "ondemand";
 
@@ -70,10 +78,6 @@ in
     };
     firewall.allowedTCPPorts = [ 8443 3493 ];
     dhcpcd.enable = false;
-  };
-
-  boot.kernel.sysctl = {
-    "net.ipv6.conf.eth0.accept_ra" = 0;
   };
 
   services.openssh = {
