@@ -40,6 +40,7 @@ in
     "8250.nr_uarts=1" # may be required only when using u-boot
     "console=ttyAMA0,115200"
     "console=tty1"
+    "cgroup_enable=memory"
   ];
 
   powerManagement.cpuFreqGovernor = "ondemand";
