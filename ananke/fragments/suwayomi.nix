@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 {
   virtualisation.oci-containers.containers.suwayomi = {
-    image = "ghcr.io/suwayomi/tachidesk:v0.7.0-r1446";
+    image = "ghcr.io/suwayomi/tachidesk:v0.7.0-r1453";
     ports = [
       "4567:4567"
     ];
@@ -13,6 +13,7 @@
       BASIC_AUTH_ENABLED = "true";
       BASIC_AUTH_USERNAME = "sam";
       BASIC_AUTH_PASSWORD = "hentai";
+      EXTENSION_REPOS = ''[ "https://github.com/keiyoushi/extensions/tree/repo" ]'';
     };
     extraOptions = [
       "--hostname=${config.networking.hostName}"
