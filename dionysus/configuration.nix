@@ -20,6 +20,9 @@ in
   boot.loader.grub.enable = true;
   boot.loader.grub.device = "/dev/vda";
 
+  zramSwap.enable = true;
+  zramSwap.memoryPercent = 250;
+
   # Set your time zone.
   time.timeZone = "UTC";
 
@@ -76,6 +79,10 @@ in
     "net.netfilter.nf_conntrack_generic_timeout" = 120;
     "net.netfilter.nf_conntrack_tcp_timeout_established" = 21600;
     "net.ipv6.route.max_size" = 16384;
+    "vm.watermark_boost_factor" = 0;
+    "vm.watermark_scale_factor" = 125;
+    "vm.page-cluster" = 0;
+    "vm.swappiness" = 150;
   };
 
   systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];

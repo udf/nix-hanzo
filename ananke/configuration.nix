@@ -21,7 +21,7 @@ in
     disableSwappiness = false;
   };
   zramSwap.enable = true;
-  zramSwap.memoryPercent = 33;
+  zramSwap.memoryPercent = 200;
 
   # Assuming this is installed on top of the disk image.
   fileSystems = {
@@ -49,6 +49,7 @@ in
     "vm.watermark_boost_factor" = 0;
     "vm.watermark_scale_factor" = 125;
     "vm.page-cluster" = 0;
+    "vm.swappiness" = 150;
   };
 
   powerManagement.cpuFreqGovernor = "ondemand";
