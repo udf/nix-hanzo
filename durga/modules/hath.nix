@@ -1,7 +1,6 @@
 { config, lib, pkgs, ... }:
 with lib;
 let
-  hathPkg = (pkgs.callPackage ../packages/hath.nix { });
   cfg = config.services.hath;
 in
 {
@@ -117,7 +116,7 @@ in
           Restart = "on-failure";
           WorkingDirectory = cfg.homeDir;
           ExecStart = ''
-            ${pkgs.jdk11}/bin/java -jar ${hathPkg}/bin/HentaiAtHome.jar \
+            ${pkgs.HentaiAtHome}/bin/HentaiAtHome \
               --port=${toString cfg.port} \
               --cache-dir=${cfg.cacheDir} \
               --data-dir=${cfg.dataDir} \
