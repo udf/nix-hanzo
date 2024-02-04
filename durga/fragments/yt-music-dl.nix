@@ -193,6 +193,7 @@ let
     "vrtlhvn"
     "yakuithemaid1"
     "yonkagor"
+    "youngscrolls"
     "yungkkun"
     "yurisimaginarylabel"
   ];
