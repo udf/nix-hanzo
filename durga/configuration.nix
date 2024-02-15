@@ -13,6 +13,7 @@
   };
   boot.kernel.sysctl = {
     "vm.swappiness" = 15;
+    "vm.overcommit_memory" = 1;
   };
 
   networking.hostName = "durga";

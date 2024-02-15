@@ -1,6 +1,6 @@
 import re
 import os
-from systemd.journal import LOG_INFO, LOG_NOTICE
+from systemd.journal import LOG_INFO, LOG_NOTICE, LOG_ERR
 
 owner = 232787997
 token = os.environ['TOKEN']
@@ -9,6 +9,8 @@ flood_server_url = 'http://127.0.0.1:3000'
 
 def systemd_should_ignore(e):
   source = e.get('_COMM') or e.get('SYSLOG_IDENTIFIER')
+  if source.startswith('.php-fpm'):
+    return e['PRIORITY'] >= LOG_ERR
   if source == 'kernel':
     return e['PRIORITY'] >= LOG_INFO
   if source != 'systemd':
@@ -24,7 +26,8 @@ def systemd_should_ignore(e):
         'nix-gc.service',
         'yt-music-dl.service',
         'flood-cleanup.service',
-        'zpool-trim.service'
+        'zpool-trim.service',
+        'nextcloud-cron.service'
       )
     )
   ) or (
