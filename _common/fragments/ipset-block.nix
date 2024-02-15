@@ -37,6 +37,7 @@ let
     "135377" # UCLOUD-HK-AS-AP UCLOUD INFORMATION TECHNOLOGY HK LIMITED, HK
     "135636" # RACKH-AS-AP Rackh Lintas Asia, pt, ID
     "136180" # IPIP-CN Beijing Tiantexin Tech. Co., Ltd., CN
+    "138915" # KAOPU-HK Kaopu Cloud HK Limited, HK
     "138968" # RAINBOWIDC-AS-AP rainbow network limited, JP
     "148981" # CHINANET-HUBEI-SHIYAN-IDC China Telecom, CN
     "150706" # HKZTCL-AS-AP Hong Kong Zhengxing Technology Co., Ltd., HK
