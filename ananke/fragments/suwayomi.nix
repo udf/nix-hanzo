@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 {
   virtualisation.oci-containers.containers.suwayomi = {
-    image = "ghcr.io/suwayomi/tachidesk:v0.7.0-r1480";
+    image = "ghcr.io/suwayomi/tachidesk:v1.0.0-r1498";
     ports = [
       "4567:4567"
     ];
