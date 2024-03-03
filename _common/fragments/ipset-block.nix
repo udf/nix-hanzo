@@ -22,6 +22,7 @@ let
     "49581" # FERDINANDZINK, DE
     "49901" # KUIPER-AS, GB
     "50867" # HOSTKEY-RU-AS, NL
+    "51396" # PFCLOUD, DE
     "51167" # CONTABO, DE
     "51852" # PLI-AS, PA
     "55933" # CLOUDIE-AS-AP Cloudie Limited, HK
@@ -41,9 +42,9 @@ let
     "138968" # RAINBOWIDC-AS-AP rainbow network limited, JP
     "148981" # CHINANET-HUBEI-SHIYAN-IDC China Telecom, CN
     "150706" # HKZTCL-AS-AP Hong Kong Zhengxing Technology Co., Ltd., HK
+    "197183" # OCCENTUS, ES
     "201814" # MEVSPACE, PL
     "202425" # INT-NETWORK, SC
-    "202685" # AS-PFCLOUD, GB
     "204428" # SS-NET, BG
     "207812" # DM_AUTO, BG
     "208091" # XHOST-INTERNET-SOLUTIONS, GB
@@ -77,7 +78,11 @@ let
       asndb = pyasn.pyasn('${../constants/ipasn.dat.gz}')
       nets = set()
       for asn in asns:
-        nets.update(asndb.get_as_prefixes(asn))
+        prefixes = asndb.get_as_prefixes(asn)
+        if not prefixes:
+          print(f'AS{asn} has no prefixes!')
+          continue
+        nets.update(prefixes)
       print(f'Got {len(nets)} nets', file=sys.stderr)
 
       merged = cidr_merge([IPNetwork(ip) for ip in nets])
