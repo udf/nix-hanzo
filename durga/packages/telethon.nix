@@ -2,7 +2,7 @@
 
 buildPythonPackage rec {
   pname = "telethon";
-  version = "1.33.1";
+  version = "1.34.0";
   format = "pyproject";
   disabled = pythonOlder "3.5";
 
@@ -10,7 +10,7 @@ buildPythonPackage rec {
     owner = "LonamiWebs";
     repo = "Telethon";
     rev = "refs/tags/v${version}";
-    hash = "sha256:1b125xhppwjz3rd5xarmwciwcxznjl08f93m226331kwa1ywca1z";
+    hash = "sha256:IwQ8p8MVFvSilLq/eqM6TLoRGiKRyeWlmXhMx7330vc=";
   };
 
   patchPhase = ''
