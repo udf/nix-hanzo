@@ -133,6 +133,7 @@ let
     "m0-ney"
     "machinegirl"
     "madbreaks"
+    "maritumix"
     "masterbootrecord"
     "mayyro"
     "midbooze"
