@@ -14,6 +14,8 @@
           "ffmpeg-python"
           "numpy"
           "aiohttp"
+          "mutagen"
+          "hachoir"
         ];
         python = pkgs.python310;
       };
