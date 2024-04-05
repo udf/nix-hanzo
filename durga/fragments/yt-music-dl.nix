@@ -206,7 +206,8 @@ let
     yt-dlp ${common-args} -o '${dir}/%(title)s-%(id)s.%(ext)s' --download-archive '${archive}.txt' \
     ${filter} \
     -ciwx -f bestaudio \
-    --add-metadata --replace-in-metadata 'album' '.' "" --parse-metadata 'title:%(track)s' --parse-metadata 'uploader:%(artist)s' '${url}' || true
+    --sleep-interval 10 \
+    --add-metadata --replace-in-metadata 'album' '.' "" --parse-metadata 'title:%(track)s' --parse-metadata 'uploader:%(artist)s' '${url}' || true; sleep 60
   '';
   getBandcampCmd = user: ''
     yt-dlp ${common-args} -ix -f 'flac/mp3' --download-archive '${user}.txt' \
