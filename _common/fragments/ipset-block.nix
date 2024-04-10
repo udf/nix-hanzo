@@ -81,7 +81,7 @@ let
       for asn in asns:
         prefixes = asndb.get_as_prefixes(asn)
         if not prefixes:
-          print(f'AS{asn} has no prefixes!')
+          print(f'AS{asn} has no prefixes!', file=sys.stderr)
           continue
         nets.update(prefixes)
       print(f'Got {len(nets)} nets', file=sys.stderr)
