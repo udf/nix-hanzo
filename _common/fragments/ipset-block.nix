@@ -40,6 +40,7 @@ let
     "136180" # IPIP-CN Beijing Tiantexin Tech. Co., Ltd., CN
     "138915" # KAOPU-HK Kaopu Cloud HK Limited, HK
     "138968" # RAINBOWIDC-AS-AP rainbow network limited, JP
+    "142002" # SCLOUDPTELTD-AS Scloud Pte Ltd, SG
     "148981" # CHINANET-HUBEI-SHIYAN-IDC China Telecom, CN
     "150706" # HKZTCL-AS-AP Hong Kong Zhengxing Technology Co., Ltd., HK
     "197183" # OCCENTUS, ES
