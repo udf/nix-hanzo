@@ -4,7 +4,7 @@ let
 in
 {
   virtualisation.oci-containers.containers.pihole = {
-    image = "pihole/pihole:2024.02.2";
+    image = "pihole/pihole:2024.03.2";
     ports = [
       "53:53/tcp"
       "53:53/udp"
