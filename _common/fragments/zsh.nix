@@ -74,8 +74,12 @@
       source "${pkgs.zsh-fast-syntax-highlighting}/share/zsh/site-functions/fast-syntax-highlighting.plugin.zsh"
 
       # fzf
-      source "$(fzf-share)/key-bindings.zsh"
-      source "$(fzf-share)/completion.zsh"
+      if [ -n "''${commands[fzf-share]}" ]; then
+        source "$(fzf-share)/key-bindings.zsh"
+        source "$(fzf-share)/completion.zsh"
+      else
+        eval "$(fzf --zsh)"
+      fi
 
       # CTRL-Y - Paste the selected directory path(s) into the command line
       fzf-dir-widget() {
