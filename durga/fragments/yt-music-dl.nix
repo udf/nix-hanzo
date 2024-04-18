@@ -164,6 +164,7 @@ let
     "resurrectionrecords"
     "rispaa"
     "rorynearly20s"
+    "rosehiprose"
     "sageisdead"
     "serverofuser"
     "sfork"
@@ -190,6 +191,7 @@ let
     "untitledexe"
     "usedcvnt"
     "vertigoaway"
+    "virtualmemory777"
     "vixenvy"
     "voipetsu"
     "voodoo-hoodoo"
@@ -197,6 +199,7 @@ let
     "yakuithemaid1"
     "yonkagor"
     "youngscrolls"
+    "yumeko"
     "yungkkun"
     "yurisimaginarylabel"
   ];
