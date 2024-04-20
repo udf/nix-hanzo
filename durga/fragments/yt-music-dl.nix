@@ -89,6 +89,7 @@ let
     "clonepa"
     "clowncore"
     "cooldownreduction"
+    "crashfaster"
     "cvmpliant"
     "dadaihaiji"
     "darkman007"
