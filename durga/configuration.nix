@@ -19,6 +19,7 @@
   networking.hostName = "durga";
   networking.domain = "";
   networking.enableIPv6 = false;
+  networking.nameservers = [ "1.1.1.1" "1.0.0.1" ];
 
   services.openssh.enable = true;
   custom.fail2endlessh.enable = true;
