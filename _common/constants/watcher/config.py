@@ -9,7 +9,7 @@ flood_server_url = 'http://127.0.0.1:3000'
 
 def systemd_should_ignore(e):
   source = e.get('_COMM') or e.get('SYSLOG_IDENTIFIER')
-  if source.startswith('.php-fpm'):
+  if source.startswith('.php-fpm') or source == 'dockerd':
     return e['PRIORITY'] >= LOG_ERR
   if source == 'kernel':
     return e['PRIORITY'] >= LOG_INFO

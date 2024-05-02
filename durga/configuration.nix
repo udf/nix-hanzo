@@ -3,6 +3,7 @@
   imports = [
     ./hardware-configuration.nix
     (import ../_autoload.nix ./.)
+    ((import ./nix/sources.nix).arion + "/nixos-module.nix")
   ];
 
   boot.tmp.cleanOnBoot = true;
@@ -17,9 +18,16 @@
   };
 
   networking.hostName = "durga";
-  networking.domain = "";
   networking.enableIPv6 = false;
   networking.nameservers = [ "1.1.1.1" "1.0.0.1" ];
+
+  # dhcpcd sucks, i dont want a search domain pls stop adding it
+  environment.etc."resolv.conf" = with lib; with pkgs; {
+    source = writeText "resolv.conf" ''
+      ${concatStringsSep "\n" (map (ns: "nameserver ${ns}") config.networking.nameservers)}
+      options edns0
+    '';
+  };
 
   services.openssh.enable = true;
   custom.fail2endlessh.enable = true;
@@ -62,7 +70,21 @@
     unzip
     btrfs-progs
     compsize
+    docker-client
+    docker-compose
+    arion
   ];
+
+  virtualisation = {
+    # container name dns resolution is absolutely busted on podman
+    # so switch everything to docker
+    docker = {
+      enable = true;
+      storageDriver = "btrfs";
+    };
+    arion.backend = "docker";
+    oci-containers.backend = "docker";
+  };
 
   networking.nat = {
     enable = true;

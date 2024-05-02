@@ -1,0 +1,14 @@
+{
+    "arion": {
+        "branch": "main",
+        "description": "Run docker-compose with help from Nix/NixOS",
+        "homepage": "",
+        "owner": "hercules-ci",
+        "repo": "arion",
+        "rev": "efa008e12f590eea1a3e7f2088877dc9bdcc54b7",
+        "sha256": "0ib6x8v107i4ym4a9ha5xh75j10zyr2cms41qzhl61yqm1zfqjxb",
+        "type": "tarball",
+        "url": "https://github.com/hercules-ci/arion/archive/efa008e12f590eea1a3e7f2088877dc9bdcc54b7.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    }
+}
