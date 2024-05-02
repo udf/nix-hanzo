@@ -90,8 +90,8 @@ let
         default = "Restricted area";
         type = types.str;
       };
-      rewrite = mkOption {
-        description = "Whether or not to rewrite the URL before calling the proxy";
+      useAuth = mkOption {
+        description = "Whether or not to use basic authorisation";
         default = true;
         type = types.bool;
       };
@@ -231,8 +231,10 @@ in
                 extraConfig = ''
                   proxy_set_header X-Forwarded-Host $host;
                   proxy_set_header X-Forwarded-Proto $scheme;
+                  ${optionalString opts.useAuth ''
                   auth_basic "${opts.authMessage}";
                   auth_basic_user_file /var/www/${path}/.htpasswd;
+                  ''}
                   ${opts.extraConfig}
                 '';
               };
