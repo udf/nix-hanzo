@@ -39,5 +39,6 @@ def systemd_should_ignore(e):
       or re.match(r'acme-.+\.service', unit)
       or unit == 'ddclient.service'
       or re.match(r'nginx(-config-reload)?\.service', unit)
+      or re.match(r'run-docker-runtime.+.mount$', unit)
     )
   )
