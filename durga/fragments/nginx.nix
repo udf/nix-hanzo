@@ -81,7 +81,12 @@ let
         type = types.str;
       };
       extraConfig = mkOption {
-        description = "Extra config to add";
+        description = "Extra config to add to the @default location block";
+        default = "";
+        type = types.str;
+      };
+      extraServerConfig = mkOption {
+        description = "Extra config to add to the server block";
         default = "";
         type = types.str;
       };
@@ -224,6 +229,7 @@ in
             "${path}.durga.withsam.org" = addErrorPageOpts {
               useACMEHost = "durga.withsam.org";
               forceSSL = true;
+              extraConfig = opts.extraServerConfig;
               locations."= /favicon.ico".extraConfig = "try_files /dev/null @default;";
               locations."/".extraConfig = "try_files /dev/null @default;";
               locations."@default" = {

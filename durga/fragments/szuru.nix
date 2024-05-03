@@ -74,6 +74,8 @@ in
         proxy_set_header X-Scheme $scheme;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Script-Name /szuru;
+      '';
+      extraServerConfig = ''
         client_max_body_size 25M;
       '';
     };
