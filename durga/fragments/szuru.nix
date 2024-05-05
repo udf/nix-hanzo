@@ -21,7 +21,7 @@ in
     serviceName = "szuru";
     settings.services = {
       server.service = {
-        image = "szurubooru/server:latest";
+        build.context = "/var/lib/szuru/src/server";
         user = USER;
         depends_on = [ "sql" ];
         env_file = [ "/var/lib/szuru/.env" ];
@@ -36,7 +36,7 @@ in
       };
 
       client.service = {
-        image = "szurubooru/client:latest";
+        build.context = "/var/lib/szuru/src/client";
         depends_on = [ "server" ];
         environment = {
           BACKEND_HOST = "server";
@@ -51,7 +51,7 @@ in
       };
 
       sql.service = {
-        image = "postgres:11-alpine";
+        image = "postgres:16-alpine";
         restart = "unless-stopped";
         env_file = [ "/var/lib/szuru/.env" ];
         volumes = [
