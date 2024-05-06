@@ -26,10 +26,6 @@ in
     ./elasticsearch.nix
   ];
 
-  users.groups.tagbot = {
-    members = [ "syncthing" ];
-  };
-
   systemd.services.tagbot = {
     description = "@TheTagBot";
     after = [ "network.target" "elasticsearch.service" ];
@@ -51,6 +47,7 @@ in
     description = "TagBot user";
     home = "/home/tagbot";
     isNormalUser = true;
-    extraGroups = [ "tagbot" ];
+    group = "tagbot";
   };
+  users.groups.tagbot = { };
 }
