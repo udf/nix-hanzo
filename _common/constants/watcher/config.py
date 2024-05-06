@@ -27,7 +27,8 @@ def systemd_should_ignore(e):
         'yt-music-dl.service',
         'flood-cleanup.service',
         'zpool-trim.service',
-        'nextcloud-cron.service'
+        'nextcloud-cron.service',
+        'szuru-ocrbot.service',
       )
     )
   ) or (
