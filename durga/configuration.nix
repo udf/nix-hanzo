@@ -29,6 +29,10 @@
     '';
   };
 
+  systemd.extraConfig = ''
+    DefaultTimeoutStopSec=10s
+  '';
+
   services.openssh.enable = true;
   custom.fail2endlessh.enable = true;
   custom.ipset-block = {
