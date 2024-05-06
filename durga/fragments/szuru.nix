@@ -3,6 +3,7 @@ let
   CONFIG_PATH = "/var/lib/szuru/config.yaml";
   DATA_PATH = "/var/lib/szuru/data";
   SQL_PATH = "/var/lib/szuru/sql";
+  SRC_DIR = "/var/lib/szuru/src";
   UI_PORT = 8008;
   UID = toString config.users.users.szuru.uid;
   GID = toString config.users.groups.szuru.gid;
@@ -16,12 +17,29 @@ in
   };
   users.groups.szuru = { };
 
+  systemd.services.szuru = {
+    # force rebuild every service run
+    script = lib.mkForce ''
+      echo 1>&2 "docker compose file: $ARION_PREBUILT"
+      arion --prebuilt-file "$ARION_PREBUILT" up --build
+    '';
+    # dump version into a env file so that the build can pick it up
+    serviceConfig = {
+      EnvironmentFile = "-/run/szuru.env";
+      ExecStartPre = pkgs.writeShellScript "szuru-git-ver.sh" ''
+        cd "${SRC_DIR}"
+        VERSION=$(${pkgs.git}/bin/git describe --always --dirty --long --tags)
+        echo BUILD_INFO=$VERSION > /run/szuru.env
+      '';
+    };
+  };
+
   # based on https://github.com/rr-/szurubooru/blob/master/docker-compose.yml
   virtualisation.arion.projects.szuru = {
     serviceName = "szuru";
     settings.services = {
       server.service = {
-        build.context = "/var/lib/szuru/src/server";
+        build.context = "${SRC_DIR}/server";
         user = USER;
         depends_on = [ "sql" ];
         env_file = [ "/var/lib/szuru/.env" ];
@@ -35,19 +53,24 @@ in
         ];
       };
 
-      client.service = {
-        build.context = "/var/lib/szuru/src/client";
-        depends_on = [ "server" ];
-        environment = {
-          BACKEND_HOST = "server";
-          BASE_URL = "/";
+      client = {
+        out.service.build.args = {
+          BUILD_INFO = "\${BUILD_INFO}";
         };
-        volumes = [
-          "${DATA_PATH}:/data:ro"
-        ];
-        ports = [
-          "127.0.0.1:8008:80"
-        ];
+        service = {
+          build.context = "${SRC_DIR}/client";
+          depends_on = [ "server" ];
+          environment = {
+            BACKEND_HOST = "server";
+            BASE_URL = "/";
+          };
+          volumes = [
+            "${DATA_PATH}:/data:ro"
+          ];
+          ports = [
+            "127.0.0.1:8008:80"
+          ];
+        };
       };
 
       sql.service = {
