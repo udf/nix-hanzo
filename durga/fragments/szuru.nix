@@ -75,6 +75,7 @@ in
 
       sql.service = {
         image = "postgres:16-alpine";
+        command = ["postgres" "-c" "jit=off"];
         restart = "unless-stopped";
         env_file = [ "/var/lib/szuru/.env" ];
         volumes = [
