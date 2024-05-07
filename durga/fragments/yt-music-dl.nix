@@ -159,6 +159,7 @@ let
     "princewhateverer"
     "proloxx"
     "psykorecords"
+    "pure-gem"
     "purityfilter"
     "quantumdigitsrecordings"
     "rampagerecordings"
