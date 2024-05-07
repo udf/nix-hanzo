@@ -17,22 +17,27 @@ in
   };
   users.groups.szuru = { };
 
-  systemd.services.szuru = {
-    # force rebuild every service run
-    script = lib.mkForce ''
-      echo 1>&2 "docker compose file: $ARION_PREBUILT"
-      arion --prebuilt-file "$ARION_PREBUILT" up --build
-    '';
-    # dump version into a env file so that the build can pick it up
-    serviceConfig = {
-      EnvironmentFile = "-/run/szuru.env";
-      ExecStartPre = pkgs.writeShellScript "szuru-git-ver.sh" ''
-        cd "${SRC_DIR}"
-        VERSION=$(${pkgs.git}/bin/git describe --always --dirty --long --tags)
-        echo BUILD_INFO=$VERSION > /run/szuru.env
+  systemd.services.szuru =
+    let
+      scriptText = ''
+        echo 1>&2 "docker compose file: $ARION_PREBUILT"
+        arion --prebuilt-file "$ARION_PREBUILT" up --build
       '';
+    in
+    {
+      # force rebuild every service run
+      script = lib.mkForce scriptText;
+      # dump version into a env file so that the build can pick it up
+      serviceConfig = {
+        EnvironmentFile = "-/run/szuru.env";
+        ExecStartPre = pkgs.writeShellScript "szuru-git-ver.sh" ''
+          cd "${SRC_DIR}"
+          VERSION=$(${pkgs.git}/bin/git describe --always --dirty --long --tags)
+          echo BUILD_INFO=$VERSION > /run/szuru.env
+        '';
+        ExecReload = pkgs.writeShellScript "szuru-reload.sh" scriptText;
+      };
     };
-  };
 
   # based on https://github.com/rr-/szurubooru/blob/master/docker-compose.yml
   virtualisation.arion.projects.szuru = {
@@ -75,7 +80,7 @@ in
 
       sql.service = {
         image = "postgres:16-alpine";
-        command = ["postgres" "-c" "jit=off"];
+        command = [ "postgres" "-c" "jit=off" ];
         restart = "unless-stopped";
         env_file = [ "/var/lib/szuru/.env" ];
         volumes = [

@@ -17,7 +17,6 @@ in
     services.szuru-ocrbot = {
       description = "Szuru OCRbot";
       after = [ "network.target" "szuru.service" ];
-      requires = [ "szuru.service" ];
       wantedBy = [ "multi-user.target" ];
       path = [ pythonPkg ];
       environment = {
