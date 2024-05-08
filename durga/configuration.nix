@@ -21,14 +21,6 @@
   networking.enableIPv6 = false;
   networking.nameservers = [ "1.1.1.1" "1.0.0.1" ];
 
-  # dhcpcd sucks, i dont want a search domain pls stop adding it
-  environment.etc."resolv.conf" = with lib; with pkgs; {
-    source = writeText "resolv.conf" ''
-      ${concatStringsSep "\n" (map (ns: "nameserver ${ns}") config.networking.nameservers)}
-      options edns0
-    '';
-  };
-
   systemd.extraConfig = ''
     DefaultTimeoutStopSec=10s
   '';
