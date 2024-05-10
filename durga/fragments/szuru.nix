@@ -14,14 +14,17 @@ in
     home = "/home/szuru";
     isSystemUser = true;
     group = "szuru";
+    uid = 8008;
   };
-  users.groups.szuru = { };
+  users.groups.szuru = {
+    gid = 8008;
+  };
 
   systemd.services.szuru =
     let
       scriptText = ''
         echo 1>&2 "docker compose file: $ARION_PREBUILT"
-        arion --prebuilt-file "$ARION_PREBUILT" up --build
+        arion --prebuilt-file "$ARION_PREBUILT" up --build --abort-on-container-exit
       '';
     in
     {
@@ -43,19 +46,26 @@ in
   virtualisation.arion.projects.szuru = {
     serviceName = "szuru";
     settings.services = {
-      server.service = {
-        build.context = "${SRC_DIR}/server";
-        user = USER;
-        depends_on = [ "sql" ];
-        env_file = [ "/var/lib/szuru/.env" ];
-        environment = {
-          THREADS = 4;
-          POSTGRES_HOST = "sql";
+      server = {
+        out.service.build.args = {
+          BUILD_INFO = "\${BUILD_INFO}";
+          PUID = UID;
+          PGID = GID;
         };
-        volumes = [
-          "${DATA_PATH}:/data"
-          "${CONFIG_PATH}:/opt/app/config.yaml"
-        ];
+        service = {
+          build.context = "${SRC_DIR}/server";
+          user = USER;
+          depends_on = [ "sql" ];
+          env_file = [ "/var/lib/szuru/.env" ];
+          environment = {
+            THREADS = 4;
+            POSTGRES_HOST = "sql";
+          };
+          volumes = [
+            "${DATA_PATH}:/data"
+            "${CONFIG_PATH}:/opt/app/config.yaml"
+          ];
+        };
       };
 
       client = {
