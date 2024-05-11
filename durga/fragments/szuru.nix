@@ -20,6 +20,14 @@ in
     gid = 8008;
   };
 
+  services.watcher-bot.plugins = lib.mkOptionDefault [
+    "${../../_common/constants/watcher}/szuru_ip"
+  ];
+  systemd.services.watcher-bot.environment = {
+    IPASN_DB = "${../../_common/constants/ipasn.dat.gz}";
+    ASNAMES_JSON = "${../../_common/constants/asnames.json}";
+  };
+
   systemd.services.szuru =
     let
       scriptText = ''
@@ -39,6 +47,9 @@ in
           echo BUILD_INFO=$VERSION > /run/szuru.env
         '';
         ExecReload = pkgs.writeShellScript "szuru-reload.sh" scriptText;
+        Restart = "always";
+        RestartSec = 5;
+        UMask = "0000";
       };
     };
 

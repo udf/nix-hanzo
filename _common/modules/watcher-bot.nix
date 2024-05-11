@@ -3,6 +3,7 @@ with lib;
 let
   python-pkg = pkgs.python310.withPackages (ps: with ps; [
     (callPackage ../packages/watcher-bot.nix { })
+    pyasn
   ]);
   cfg = config.services.watcher-bot;
 in
@@ -11,7 +12,7 @@ in
     plugins = mkOption {
       type = types.listOf types.str;
       default = [ "systemd" "status" ];
-      description = "List of builtin plugins to load";
+      description = "List of plugins to load";
     };
   };
 
