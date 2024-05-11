@@ -42,6 +42,8 @@ in
     };
   };
 
+  systemd.services.docker-aio-imaginary.serviceConfig.TimeoutStopSec = lib.mkForce 10;
+
   services.nginx.virtualHosts."${hostName}" = {
     useACMEHost = "durga.withsam.org";
     forceSSL = true;
