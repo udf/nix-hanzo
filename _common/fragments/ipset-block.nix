@@ -4,6 +4,7 @@ let
   cfg = config.custom.ipset-block;
   ipsetName = "badnets";
   bannedASNs = [
+    "2856" # BT-UK-AS BTnet UK Regional network, GB
     "4134" # CHINANET-BACKBONE No.31,Jin-rong Street, CN
     "4837" # CHINA169-BACKBONE CHINA UNICOM China169 Backbone, CN
     "9009" # M247, RO
@@ -44,6 +45,7 @@ let
     "148981" # CHINANET-HUBEI-SHIYAN-IDC China Telecom, CN
     "150706" # HKZTCL-AS-AP Hong Kong Zhengxing Technology Co., Ltd., HK
     "197183" # OCCENTUS, ES
+    "200052" # FERAL Feral Hosting, GB
     "201814" # MEVSPACE, PL
     "202425" # INT-NETWORK, SC
     "204428" # SS-NET, BG
