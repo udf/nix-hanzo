@@ -29,10 +29,6 @@
   custom.fail2endlessh.enable = true;
   custom.ipset-block = {
     enable = true;
-    exceptPorts = [
-      2234 # soulseek
-      7709 # torrents
-    ];
   };
 
   time.timeZone = "UTC";
