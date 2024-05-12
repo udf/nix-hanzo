@@ -30,14 +30,14 @@ in
 
   systemd.services.szuru =
     let
-      scriptText = ''
+      genScriptText = args: ''
         echo 1>&2 "docker compose file: $ARION_PREBUILT"
-        arion --prebuilt-file "$ARION_PREBUILT" up --build --abort-on-container-exit
+        arion --prebuilt-file "$ARION_PREBUILT" ${args}
       '';
     in
     {
       # force rebuild every service run
-      script = lib.mkForce scriptText;
+      script = lib.mkForce (genScriptText "up --build --abort-on-container-exit");
       # dump version into a env file so that the build can pick it up
       serviceConfig = {
         EnvironmentFile = "-/run/szuru.env";
@@ -46,7 +46,8 @@ in
           VERSION=$(${pkgs.git}/bin/git describe --always --dirty --long --tags)
           echo BUILD_INFO=$VERSION > /run/szuru.env
         '';
-        ExecReload = pkgs.writeShellScript "szuru-reload.sh" scriptText;
+        ExecReload = pkgs.writeShellScript "szuru-reload.sh" (genScriptText "up --build -d");
+        ExecStop = pkgs.writeShellScript "szuru-stop.sh" (genScriptText "down");
         Restart = "always";
         RestartSec = 5;
         UMask = "0000";
