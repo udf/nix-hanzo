@@ -46,7 +46,6 @@ in
           VERSION=$(${pkgs.git}/bin/git describe --always --dirty --long --tags)
           echo BUILD_INFO=$VERSION > /run/szuru.env
         '';
-        ExecReload = pkgs.writeShellScript "szuru-reload.sh" (genScriptText "up --build -d");
         ExecStop = pkgs.writeShellScript "szuru-stop.sh" (genScriptText "down");
         Restart = "always";
         RestartSec = 5;
