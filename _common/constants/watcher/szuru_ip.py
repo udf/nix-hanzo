@@ -27,7 +27,7 @@ def on_journal_msg(e):
   seen_ips.add(ip)
   asn, prefix = asndb.lookup(ip)
   asname = asndb.get_as_name(asn)
-  message = [f'Spotted new IP: {ip}']
+  message = [f'🚨🚨🚨\nSpotted new IP: {ip}']
   if prefix:
     message.append(f'[{prefix}]')
   if asn:
