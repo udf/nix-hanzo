@@ -36,17 +36,19 @@ in
       '';
     in
     {
-      # force rebuild every service run
-      script = lib.mkForce (genScriptText "up --build --abort-on-container-exit");
-      # dump version into a env file so that the build can pick it up
+      script = lib.mkForce (genScriptText "logs --follow -n 0");
       serviceConfig = {
         EnvironmentFile = "-/run/szuru.env";
+        # dump version into a env file so that the build can pick it up
         ExecStartPre = pkgs.writeShellScript "szuru-git-ver.sh" ''
           cd "${SRC_DIR}"
           VERSION=$(${pkgs.git}/bin/git describe --always --dirty --long --tags)
           echo BUILD_INFO=$VERSION > /run/szuru.env
+          export BUILD_INFO=$VERSION
+          ${genScriptText "up --build --wait"}
         '';
         ExecStop = pkgs.writeShellScript "szuru-stop.sh" (genScriptText "down");
+        ExecReload = pkgs.writeShellScript "szuru-reload.sh" (genScriptText "up --build --wait");
         Restart = "always";
         RestartSec = 5;
         UMask = "0000";
@@ -65,6 +67,7 @@ in
         };
         service = {
           build.context = "${SRC_DIR}/server";
+          restart = "unless-stopped";
           user = USER;
           depends_on = [ "sql" ];
           env_file = [ "/var/lib/szuru/.env" ];
@@ -85,6 +88,7 @@ in
         };
         service = {
           build.context = "${SRC_DIR}/client";
+          restart = "unless-stopped";
           depends_on = [ "server" ];
           environment = {
             BACKEND_HOST = "server";
