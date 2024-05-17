@@ -2,7 +2,6 @@
 let
   pythonPkg = pkgs.python311;
   libraryPkgs = [ pkgs.gcc-unwrapped ];
-  venvDir = ".venv";
 in
 {
   systemd = {
@@ -18,7 +17,6 @@ in
       description = "Szuru OCRbot";
       after = [ "network.target" "szuru.service" ];
       wantedBy = [ "multi-user.target" ];
-      path = [ pythonPkg ];
       environment = {
         LD_LIBRARY_PATH = lib.makeLibraryPath libraryPkgs;
       };
@@ -32,13 +30,21 @@ in
       script = ''
         # allow pip to install wheels
         unset SOURCE_DATE_EPOCH
-        if [ ! -d "${venvDir}" ]; then
-          echo "Creating new venv environment in path: '${venvDir}'"
-          ${pythonPkg}/bin/python -m venv "${venvDir}"
-          source "${venvDir}/bin/activate"
+        # ensure that we rebuild the venv when the python package changes
+        VENV_DIR=".venv-${builtins.baseNameOf (builtins.toString pythonPkg)}"
+        for other_venv in .venv-*; do
+          if [ "$other_venv" != "$VENV_DIR" ]; then
+            echo Removing unused venv: "$other_venv"
+            rm -fr "$other_venv"
+          fi
+        done
+        if [ ! -d "$VENV_DIR" ]; then
+          echo "Creating new venv environment in path: '$VENV_DIR'"
+          ${pythonPkg}/bin/python -m venv "$VENV_DIR"
+          source "$VENV_DIR/bin/activate"
           pip install -r requirements.txt
         else
-          source "${venvDir}/bin/activate"
+          source "$VENV_DIR/bin/activate"
         fi
         python ocrbot.py
       '';
