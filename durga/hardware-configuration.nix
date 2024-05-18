@@ -3,6 +3,25 @@
 # to /etc/nixos/configuration.nix instead.
 { config, lib, pkgs, modulesPath, ... }:
 
+let
+  mkMappedBind = { fromUser, toUser, fromGroup, toGroup, toPath }: {
+    device = toPath;
+    fsType = "fuse.bindfs";
+    options = [
+      "map=${fromUser}/${toUser}:@${fromGroup}/@${toGroup}"
+      "force-user=${toUser}"
+      "force-group=${toGroup}"
+    ];
+    noCheck = true;
+  };
+  mkSuwayomiSyncthingBind = toPath: (mkMappedBind {
+    fromUser = "suwayomi";
+    toUser = "syncthing";
+    fromGroup = "suwayomi";
+    toGroup = "suwayomi";
+    toPath = toPath;
+  });
+in
 {
   imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
 
@@ -29,6 +48,10 @@
     device = "/dev/disk/by-uuid/D57C-6430";
     fsType = "vfat";
   };
+
+  system.fsPackages = [ pkgs.bindfs ];
+  fileSystems."/sync/downloads/suwayomi/local" = mkSuwayomiSyncthingBind "/var/lib/docker/volumes/suwayomi/_data/local";
+  fileSystems."/sync/downloads/suwayomi/downloads" = mkSuwayomiSyncthingBind "/var/lib/docker/volumes/suwayomi/_data/downloads";
 
   nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
 }
