@@ -32,12 +32,17 @@ in
     let
       genScriptText = args: ''
         echo 1>&2 "docker compose file: $ARION_PREBUILT"
-        arion --prebuilt-file "$ARION_PREBUILT" ${args}
+        arion --prebuilt-file "$ARION_PREBUILT" ${args} 1>&2
       '';
     in
     {
-      script = lib.mkForce (genScriptText "logs --follow -n 0");
+      script = lib.mkForce ''
+        ${pkgs.docker-compose}/bin/docker-compose --file "$ARION_PREBUILT" --project-name szuru logs --follow --tail 0
+      '';
       serviceConfig = {
+        StandardError = "journal";
+        StandardOutput = "journal";
+        StandardInput = "null";
         EnvironmentFile = "-/run/szuru.env";
         # dump version into a env file so that the build can pick it up
         ExecStartPre = pkgs.writeShellScript "szuru-git-ver.sh" ''
