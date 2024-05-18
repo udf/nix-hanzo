@@ -34,26 +34,48 @@ in
         echo 1>&2 "docker compose file: $ARION_PREBUILT"
         arion --prebuilt-file "$ARION_PREBUILT" ${args} 1>&2
       '';
+      rebuildScriptText = ''
+        cd "${SRC_DIR}"
+        echo BUILD_INFO=$VERSION > /run/szuru.env
+        export BUILD_INFO=$(${pkgs.git}/bin/git describe --always --dirty --long --tags)
+        ${genScriptText "up --build --wait"}
+      '';
     in
     {
       script = lib.mkForce ''
-        ${pkgs.docker-compose}/bin/docker-compose --file "$ARION_PREBUILT" --project-name szuru logs --follow --tail 0
+        restart_logger() {
+          echo "Restarting logger..."
+          kill -INT $LOGGER_PID
+          restarted=true
+        }
+        trap restart_logger SIGHUP
+
+        while true; do
+          restarted=false
+          ${pkgs.docker-compose}/bin/docker-compose --file "$ARION_PREBUILT" --project-name szuru logs --follow --tail 0 &
+          LOGGER_PID=$!
+          echo "LOGGER_PID: $LOGGER_PID"
+          ret=0
+          wait $LOGGER_PID || ret=$?
+          echo "Logger exited with $ret"
+          if [ $restarted ]; then
+            continue
+          fi
+          exit $ret
+        done
       '';
       serviceConfig = {
         StandardError = "journal";
         StandardOutput = "journal";
         StandardInput = "null";
         EnvironmentFile = "-/run/szuru.env";
-        # dump version into a env file so that the build can pick it up
-        ExecStartPre = pkgs.writeShellScript "szuru-git-ver.sh" ''
-          cd "${SRC_DIR}"
-          VERSION=$(${pkgs.git}/bin/git describe --always --dirty --long --tags)
-          echo BUILD_INFO=$VERSION > /run/szuru.env
-          export BUILD_INFO=$VERSION
-          ${genScriptText "up --build --wait"}
-        '';
+        ExecStartPre = pkgs.writeShellScript "szuru-rebuild.sh" rebuildScriptText;
+        ExecReload = pkgs.writeShellScript "szuru-reload.sh" (
+          rebuildScriptText + ''
+            kill -HUP $MAINPID
+          ''
+        );
         ExecStop = pkgs.writeShellScript "szuru-stop.sh" (genScriptText "down");
-        ExecReload = pkgs.writeShellScript "szuru-reload.sh" (genScriptText "up --build --wait");
         Restart = "always";
         RestartSec = 5;
         UMask = "0000";
