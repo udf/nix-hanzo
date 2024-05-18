@@ -30,26 +30,27 @@ in
 
   systemd.services.szuru =
     let
-      genScriptText = args: ''
-        echo 1>&2 "docker compose file: $ARION_PREBUILT"
+      genArionCmd = args: ''
         arion --prebuilt-file "$ARION_PREBUILT" ${args} 1>&2
       '';
       rebuildScriptText = ''
         cd "${SRC_DIR}"
         echo BUILD_INFO=$VERSION > /run/szuru.env
         export BUILD_INFO=$(${pkgs.git}/bin/git describe --always --dirty --long --tags)
-        ${genScriptText "up --build --wait"}
+        ${genArionCmd "up --build --wait"}
       '';
     in
     {
       script = lib.mkForce ''
         restart_logger() {
+          ${genArionCmd "up --wait"}
           echo "Restarting logger..."
           kill -INT $LOGGER_PID
           restarted=true
         }
         trap restart_logger SIGHUP
 
+        ${genArionCmd "up --wait"}
         while true; do
           restarted=false
           ${pkgs.docker-compose}/bin/docker-compose --file "$ARION_PREBUILT" --project-name szuru logs --follow --tail 0 &
@@ -75,7 +76,7 @@ in
             kill -HUP $MAINPID
           ''
         );
-        ExecStop = pkgs.writeShellScript "szuru-stop.sh" (genScriptText "down");
+        ExecStop = pkgs.writeShellScript "szuru-stop.sh" (genArionCmd "down");
         Restart = "always";
         RestartSec = 5;
         UMask = "0000";
