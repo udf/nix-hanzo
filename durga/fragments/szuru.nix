@@ -41,30 +41,7 @@ in
       '';
     in
     {
-      script = lib.mkForce ''
-        restart_logger() {
-          ${genArionCmd "up --wait"}
-          echo "Restarting logger..."
-          kill -INT $LOGGER_PID
-          restarted=true
-        }
-        trap restart_logger SIGHUP
-
-        ${genArionCmd "up --wait"}
-        while true; do
-          restarted=false
-          ${pkgs.docker-compose}/bin/docker-compose --file "$ARION_PREBUILT" --project-name szuru logs --follow --tail 0 &
-          LOGGER_PID=$!
-          echo "LOGGER_PID: $LOGGER_PID"
-          ret=0
-          wait $LOGGER_PID || ret=$?
-          echo "Logger exited with $ret"
-          if [ $restarted ]; then
-            continue
-          fi
-          exit $ret
-        done
-      '';
+      script = lib.mkForce (genArionCmd "up");
       serviceConfig = {
         StandardError = "journal";
         StandardOutput = "journal";
