@@ -20,16 +20,17 @@ def systemd_should_ignore(e):
   unit = e.get('UNIT', '')
   return (
     e['PRIORITY'] >= LOG_NOTICE and (
-      unit in (
+      unit in {
         'backup-root.service',
         'fstrim.service',
         'nix-gc.service',
+        'yt-wl-dl.service',
         'yt-music-dl.service',
         'flood-cleanup.service',
         'zpool-trim.service',
         'nextcloud-cron.service',
         'szuru-ocrbot.service',
-      )
+      }
     )
   ) or (
     e['PRIORITY'] >= LOG_INFO and (
