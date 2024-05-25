@@ -20,4 +20,5 @@ in
   networking.firewall = {
     allowedTCPPorts = [ port ];
   };
+  custom.ipset-block.exceptPorts = [ port ];
 }
