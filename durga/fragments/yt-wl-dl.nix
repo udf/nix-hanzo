@@ -19,7 +19,7 @@ in
       wantedBy = [ "timers.target" ];
       partOf = [ "yt-wl-dl.service" ];
       timerConfig = {
-        OnCalendar = "00/1:10";
+        OnCalendar = "*:10/30";
         Persistent = true;
       };
     };
