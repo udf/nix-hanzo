@@ -10,7 +10,7 @@ let
       --download-archive $DEST_DIR/${dir}_dl.txt \
       --sponsorblock-mark default --sponsorblock-api https://sponsorblock.hankmccord.dev \
       --live-from-start \
-      -a $DEST_DIR/wl.txt
+      -a $DEST_DIR/wl.txt || true
   '';
 in
 {
