@@ -157,7 +157,7 @@ in
             default = true;
             addSSL = true;
             useACMEHost = "durga.withsam.org";
-            root = "/var/www";
+            root = "/dev/null";
 
             extraConfig = ''
               types { } default_type "text/plain; charset=utf-8";
@@ -177,11 +177,11 @@ in
           "durga.withsam.org" = addErrorPageOpts {
             useACMEHost = "durga.withsam.org";
             forceSSL = true;
-            root = "/var/www";
+            root = "/dev/null";
 
             locations = {
               "/".extraConfig = ''
-                rewrite ^/$ https://blog.withsam.org;
+                rewrite ^ https://blog.withsam.org;
               '';
             };
           };
@@ -203,7 +203,7 @@ in
                 ${denyWriteMethods}
                 autoindex on;
                 auth_basic "Keep trying";
-                auth_basic_user_file /var/www/auth/files.htpasswd;
+                auth_basic_user_file /var/lib/nginx/auth/files.htpasswd;
               '';
             };
           };
@@ -218,7 +218,7 @@ in
                 ${denyWriteMethods}
                 autoindex on;
                 auth_basic "An otter in my water?";
-                auth_basic_user_file /var/www/auth/music.htpasswd;
+                auth_basic_user_file /var/lib/nginx/auth/music.htpasswd;
               '';
             };
           };
@@ -239,7 +239,7 @@ in
                   proxy_set_header X-Forwarded-Proto $scheme;
                   ${optionalString opts.useAuth ''
                   auth_basic "${opts.authMessage}";
-                  auth_basic_user_file /var/www/${path}/.htpasswd;
+                  auth_basic_user_file /var/lib/nginx/auth/${path}.htpasswd;
                   ''}
                   ${opts.extraConfig}
                 '';
