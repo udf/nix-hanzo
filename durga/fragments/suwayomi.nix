@@ -6,7 +6,7 @@ let
 in
 {
   virtualisation.oci-containers.containers.suwayomi = {
-    image = "ghcr.io/suwayomi/tachidesk:v1.0.0-r1524";
+    image = "ghcr.io/suwayomi/tachidesk:v1.0.0-r1531";
     ports = [
       "${toString PORT}:${toString PORT}"
     ];
@@ -36,6 +36,8 @@ in
     "suwayomi" = {
       port = PORT;
       authMessage = "*notices ur bulge* OwO, what's this?";
+      secureLinks = true;
+      secureLinkParam = "kawaii";
     };
   };
 }

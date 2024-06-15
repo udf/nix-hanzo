@@ -45,9 +45,10 @@ let
     "599" = "Network Connect Timeout Error";
   };
 
+  errorPageDirectives = "error_page ${concatStringsSep " " (attrNames statusCodes)} /error.html;";
   errorPageOpts = {
     extraConfig = ''
-      error_page ${concatStringsSep " " (attrNames statusCodes)} /error.html;
+      ${errorPageDirectives}
     '';
 
     locations = {
@@ -100,6 +101,16 @@ let
         default = true;
         type = types.bool;
       };
+      secureLinks = mkOption {
+        description = "Whether or not to enable shareable secure linking via nginx's secure_link module, only works if authentication is enabled";
+        default = false;
+        type = types.bool;
+      };
+      secureLinkParam = mkOption {
+        description = "The query parameter to use for the secure link token";
+        default = "sl_token";
+        type = types.str;
+      };
     };
   };
 in
@@ -129,8 +140,16 @@ in
 
     users.groups.acme.members = [ "nginx" ];
 
+    systemd.services.nginx.serviceConfig.EnvironmentFile = "/var/lib/nginx/nginx.env";
+
     services.nginx = {
       enable = true;
+
+      additionalModules = [ pkgs.nginxModules.njs ];
+
+      appendConfig = ''
+        env SL_SECRET_KEY;
+      '';
 
       appendHttpConfig =
         let
@@ -148,6 +167,13 @@ in
           log_format   main '$remote_addr - $remote_user [$time_local] $status '
             '"$request" $body_bytes_sent "$http_referer" '
             '"$http_user_agent" "$http_x_forwarded_for"';
+
+          js_import sl_helper from ${../constants/secure_link_helper.js};
+
+          js_set $sl_arg_token sl_helper.arg_token;
+          js_set $sl_hashable_url sl_helper.hashable_url;
+          js_set $sl_expected_hash sl_helper.expected_hash;
+          js_set $sl_shareable_url sl_helper.shareable_url;
         '';
 
       virtualHosts = mkMerge ([
@@ -229,21 +255,51 @@ in
             "${path}.durga.withsam.org" = addErrorPageOpts {
               useACMEHost = "durga.withsam.org";
               forceSSL = true;
-              extraConfig = opts.extraServerConfig;
+              extraConfig = ''
+                ${optionalString (opts.secureLinks && opts.useAuth) ''
+                set $sl_param "${opts.secureLinkParam}";
+                ''}
+                ${opts.extraServerConfig}
+              '';
               locations."= /favicon.ico".extraConfig = "try_files /dev/null @default;";
               locations."/".extraConfig = "try_files /dev/null @default;";
-              locations."@default" = {
-                proxyPass = "http://${opts.host}:${toString opts.port}";
-                extraConfig = ''
-                  proxy_set_header X-Forwarded-Host $host;
-                  proxy_set_header X-Forwarded-Proto $scheme;
-                  ${optionalString opts.useAuth ''
-                  auth_basic "${opts.authMessage}";
-                  auth_basic_user_file /var/lib/nginx/auth/${path}.htpasswd;
-                  ''}
-                  ${opts.extraConfig}
-                '';
-              };
+              locations."@default".extraConfig = ''
+                ${optionalString (opts.secureLinks && opts.useAuth) ''
+                error_page 463 = @auth_success;
+                ${errorPageDirectives}
+                set $sl_param "${opts.secureLinkParam}";
+                secure_link $sl_arg_token;
+                secure_link_md5 $sl_hashable_url;
+
+                set $skip_auth "$secure_link;$request_method";
+                if ($skip_auth = "1;GET") {
+                  return 463;
+                }
+                ''}
+
+                ${optionalString opts.useAuth ''
+                auth_basic "${opts.authMessage}";
+                auth_basic_user_file /var/lib/nginx/auth/${path}.htpasswd;
+                ''}
+
+                try_files /dev/null @auth_success;
+              '';
+              locations."@auth_success".extraConfig = ''
+                ${optionalString (opts.secureLinks && opts.useAuth) ''
+                set $provided_token $sl_arg_token;
+                if ($provided_token = "") {
+                  set $provided_token $sl_expected_hash;
+                }
+                if ($provided_token != $sl_expected_hash) {
+                  rewrite ^ $sl_shareable_url? redirect;
+                }
+                ''}
+
+                proxy_pass http://${opts.host}:${toString opts.port};
+                proxy_set_header X-Forwarded-Host $host;
+                proxy_set_header X-Forwarded-Proto $scheme;
+                ${opts.extraConfig}
+              '';
             };
           })
           proxyCfg.paths
