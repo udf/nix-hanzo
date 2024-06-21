@@ -1,10 +1,14 @@
-{ ... }:
+{ lib, ... }:
 let
   port = 6969;
 in
 {
   imports = [
     ../modules/hath.nix
+  ];
+
+  services.watcher-bot.plugins = lib.mkOptionDefault [
+    "${../../_common/constants/watcher}/hath_dl_done"
   ];
 
   users.groups.syncthing.members = [ "hath" ];
