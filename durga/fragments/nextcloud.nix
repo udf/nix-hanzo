@@ -42,7 +42,31 @@ in
     };
   };
 
-  systemd.services.docker-aio-imaginary.serviceConfig.TimeoutStopSec = lib.mkForce 10;
+  systemd = {
+    services.docker-aio-imaginary.serviceConfig.TimeoutStopSec = lib.mkForce 10;
+
+    timers.nextcloud-preview-gen = {
+      wantedBy = [ "timers.target" ];
+      after = [ "nextcloud-setup.service" ];
+      partOf = [ "nextcloud-preview-gen.service" ];
+      timerConfig = {
+        OnBootSec = "5m";
+        OnUnitActiveSec = "15m";
+      };
+    };
+
+    services.nextcloud-preview-gen = {
+      after = [ "nextcloud-setup.service" ];
+      serviceConfig = {
+        User = "nextcloud";
+        Type = "oneshot";
+        WorkingDirectory = "/var/lib/nextcloud/config";
+      };
+      script = ''
+        /run/current-system/sw/bin/nextcloud-occ preview:generate-all -vvv
+      '';
+    };
+  };
 
   services.nginx.virtualHosts."${hostName}" = {
     useACMEHost = "durga.withsam.org";
