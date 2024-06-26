@@ -12,7 +12,7 @@
     enable = true;
     memoryPercent = 33;
   };
-  boot.kernel.sysctl = {
+  boot.kernel.sysctl = lib.mkForce {
     "vm.swappiness" = 15;
     "vm.overcommit_memory" = 1;
   };
