@@ -5,10 +5,10 @@
         "homepage": "",
         "owner": "hercules-ci",
         "repo": "arion",
-        "rev": "e9945eb6cdaf5c946bacd5a330e7b5ac7b3b2fdd",
-        "sha256": "04m1ldkyrjxmbx6fbklh1d2mzc5id03z157a5l5kr1rjz52pzzcr",
+        "rev": "555e7ba634cf2564737dfc18ad607134e39f52a6",
+        "sha256": "0fm433x7fby5iadsdl94ivsg90qp2akv0fib45zn4ps7622clx2f",
         "type": "tarball",
-        "url": "https://github.com/hercules-ci/arion/archive/e9945eb6cdaf5c946bacd5a330e7b5ac7b3b2fdd.tar.gz",
+        "url": "https://github.com/hercules-ci/arion/archive/555e7ba634cf2564737dfc18ad607134e39f52a6.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
