@@ -81,19 +81,8 @@
         eval "$(fzf --zsh)"
       fi
 
-      # CTRL-Y - Paste the selected directory path(s) into the command line
-      fzf-dir-widget() {
-        OLD_CMD="''${FZF_CTRL_T_COMMAND}"
-        FZF_CTRL_T_COMMAND="find -L . -mindepth 1 \\( -path '*/\\.*' -o -fstype 'sysfs' -o -fstype 'devfs' -o -fstype 'devtmpfs' -o -fstype 'proc' \\) -prune \
-          -o -type d -print 2> /dev/null | cut -b3-"
-        LBUFFER="''${LBUFFER}$(__fsel)"
-        FZF_CTRL_T_COMMAND="''${OLD_CMD}"
-        local ret=$?
-        zle reset-prompt
-        return $ret
-      }
-      zle     -N   fzf-dir-widget
-      bindkey '^Y' fzf-dir-widget
+      source ${./fzf-dir-widget.zsh}
+      source ${./fzf-reload-history-widget.zsh}
     '';
   };
 }
