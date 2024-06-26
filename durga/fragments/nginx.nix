@@ -142,10 +142,19 @@ in
 
     systemd.services.nginx.serviceConfig.EnvironmentFile = "/var/lib/nginx/nginx.env";
 
+    assertions = [
+      {
+        assertion = (pkgs.nginxModules.njs.src.rev == "0.8.1");
+        message = "njs module is no longer outdated, please remove the override.";
+      }
+    ];
+
     services.nginx = {
       enable = true;
 
-      additionalModules = [ pkgs.nginxModules.njs ];
+      additionalModules = [
+        (pkgs.callPackage ../packages/nginx-njs.nix {})
+      ];
 
       appendConfig = ''
         env SL_SECRET_KEY;
