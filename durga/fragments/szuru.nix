@@ -41,8 +41,11 @@ in
       '';
     in
     {
+      after = [ "docker.service" "docker.socket" "network-online.target" ];
+      wants = [ "network-online.target" ];
       script = lib.mkForce (genArionCmd "up");
       serviceConfig = {
+        TimeoutStartSec = 300;
         StandardError = "journal";
         StandardOutput = "journal";
         StandardInput = "null";
