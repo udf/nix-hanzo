@@ -10,15 +10,15 @@ in
     database.createLocally = true;
     configureRedis = true;
     maxUploadSize = "16G";
-    package = pkgs.nextcloud28;
+    package = pkgs.nextcloud29;
     hostName = hostName;
     config = {
-      overwriteProtocol = "https";
       dbtype = "pgsql";
       adminuser = "admin";
       adminpassFile = "/var/lib/secrets/nextcloud-admin-pass";
     };
-    extraOptions = {
+    settings = {
+      overwriteprotocol = "https";
       enabledPreviewProviders = [
         "OC\\Preview\\Krita"
         "OC\\Preview\\MarkDown"
