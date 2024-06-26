@@ -3,7 +3,7 @@ with builtins;
 with lib;
 let
   listFiles = dir: map (f: dir + "/${f}") (
-    attrNames (filterAttrs (k: v: v == "regular") (readDir dir))
+    attrNames (filterAttrs (k: v: v == "regular" && hasSuffix ".nix" k) (readDir dir))
   );
 in
 {
