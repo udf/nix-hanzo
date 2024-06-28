@@ -6,7 +6,7 @@ let
 in
 {
   virtualisation.oci-containers.containers.suwayomi = {
-    image = "ghcr.io/suwayomi/tachidesk:v1.1.1-r1535";
+    image = "ghcr.io/suwayomi/tachidesk:v1.1.1-r1540";
     ports = [
       "${toString PORT}:${toString PORT}"
     ];
