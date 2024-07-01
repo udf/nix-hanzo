@@ -58,6 +58,7 @@ let
     "211680" = "AS-BITSIGHT, PT";
     "211736" = "FDN3, UA";
     "212482" = "XHOST-INTERNET-SOLUTIONS, GB";
+    "215292" = "GRAVHOSTING, GB";
     "216354" = "MISAKAF-NET, GB";
     "328543" = "sun-asn, SC";
     "396982" = "GOOGLE-CLOUD-PLATFORM, US";
