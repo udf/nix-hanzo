@@ -13,6 +13,12 @@ in
         Persistent = true;
       };
     };
+    paths.yt-wl-dl = {
+      wantedBy = [ "default.target" ];
+      pathConfig = {
+        PathModified = downloadList;
+      };
+    };
     services.yt-wl-dl = {
       after = [ "network.target" ];
       path = [
