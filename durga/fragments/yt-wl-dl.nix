@@ -1,17 +1,7 @@
 { config, lib, pkgs, ... }:
 let
-  tempDir = "/home/yt-wl-dl/tmp";
-  getDownloadCmd = { maxRes, dir }: ''
-    DEST_DIR=/sync/downloads/yt
-    cd $DEST_DIR/${dir}
-    yt-dlp --no-progress --add-metadata \
-      --extractor-args "youtube:player_client=default,ios" \
-      -P "temp:${tempDir}" -f 'bv*[height<=${maxRes}]+ba/b[height<=${maxRes}]' \
-      --download-archive $DEST_DIR/${dir}_dl.txt \
-      --sponsorblock-mark default --sponsorblock-api https://sponsorblock.hankmccord.dev \
-      --live-from-start \
-      -a $DEST_DIR/wl.txt || true
-  '';
+  downloadDir = "/sync/downloads/yt";
+  downloadList = "${downloadDir}/wl.txt";
 in
 {
   systemd = {
@@ -39,10 +29,36 @@ in
       script = ''
         ${pkgs.python311.pkgs.pip}/bin/pip install --break-system-packages --user -U yt-dlp
 
-        rm -fr ${tempDir}
-        mkdir -p ${tempDir}
-        ${getDownloadCmd { dir = "wl"; maxRes = "1440"; }}
-        ${getDownloadCmd { dir = "wl_720"; maxRes = "720"; }}
+        DL_DIR="${downloadDir}"
+        DL_LIST="${downloadList}"
+        TEMP_DIR=/home/yt-wl-dl/tmp
+        mkdir -p "$TEMP_DIR"
+
+        do_download() {
+          local MAXRES="$2"
+          local DL_ARCHIVE="$DL_DIR/''${1}_dl.txt"
+
+          mkdir -p "$DL_DIR/$1"
+          cd "$DL_DIR/$1"
+          while read line; do
+            if [[ "$(df -k --output=avail . | tail -n1)" -lt ${toString (7 * 1024 * 1024)} ]]; then
+              >&2 echo "<3>Not enough free disk space!"
+              exit 1
+            fi
+
+            yt-dlp --no-progress --add-metadata \
+              --extractor-args "youtube:player_client=default,ios" \
+              -P "temp:$TEMP_DIR" -f "bv*[height<=$MAXRES]+ba/b[height<=$MAXRES]" \
+              --download-archive "$DL_ARCHIVE" \
+              --sponsorblock-mark default --sponsorblock-api https://sponsorblock.hankmccord.dev \
+              --live-from-start \
+              -a "$DL_LIST" || true
+          done < <(yt-dlp --download-archive "$DL_ARCHIVE" --flat-playlist -a "$DL_LIST" --print id)
+        }
+
+        do_download wl 1440
+        do_download wl_720 720
+        rm -fr "$TEMP_DIR"
       '';
     };
   };
