@@ -66,6 +66,7 @@ let
   };
   bandcampUsers = [
     "0101"
+    "4banga"
     "633397"
     "aak3"
     "agonyost"
@@ -79,6 +80,7 @@ let
     "astrophysicsbrazil"
     "atariteenageriot"
     "au5music"
+    "be4vtyfall"
     "besidesyou"
     "bkode"
     "blackballoonss"
