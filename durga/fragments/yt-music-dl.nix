@@ -159,6 +159,7 @@ let
     "noagreements"
     "noisechannel"
     "notnedaj"
+    "nxcho"
     "opalfruits"
     "orqzeu"
     "owslarecords"
