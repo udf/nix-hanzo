@@ -9,6 +9,7 @@ let
       sha256 = "0lq73nhcg11485ppazbnpz767qjifbydgqxn5xhj3xxlbfml39ba";
     })
     { config.allowUnfree = true; };
+  sdImageFirmware = (pkgs.callPackage ./packages/sd-image-firmware.nix {});
 in
 {
   imports = [
@@ -25,6 +26,10 @@ in
 
   # Assuming this is installed on top of the disk image.
   fileSystems = {
+    "/boot/firmware" = {
+      device = "/dev/disk/by-label/FIRMWARE";
+      fsType = "vfat";
+    };
     "/" = {
       device = "/dev/disk/by-label/NIXOS_SD";
       fsType = "ext4";
@@ -35,6 +40,16 @@ in
   boot.loader.generic-extlinux-compatible.enable = true;
   # Mainline doesn't work yet
   boot.kernelPackages = pkgs.linuxPackages_rpi4;
+
+  system.activationScripts = {
+    updateFirmware = ''
+      if [ "$(cat /boot/firmware/src.path 2>/dev/null || true)" != "${sdImageFirmware}" ]; then
+        echo Updating firmware from ${sdImageFirmware}
+        ${pkgs.rsync}/bin/rsync -rv "${sdImageFirmware}/firmware/" /boot/firmware/ && \
+        echo -n "${sdImageFirmware}" > /boot/firmware/src.path
+      fi
+    '';
+  };
 
   # ttyAMA0 is the serial console broken out to the GPIO
   boot.kernelParams = [
@@ -145,8 +160,8 @@ in
     ];
     users.sam = {
       passwordFile = "/etc/nut/sam.passwd";
-      instcmds = ["ALL"];
-      actions = ["SET"];
+      instcmds = [ "ALL" ];
+      actions = [ "SET" ];
     };
     upsmon = {
       monitor."mecer-vesta-3k@localhost" = {
@@ -160,8 +175,8 @@ in
         POLLFREQALERT = 1;
       } // (
         lib.concatMapAttrs
-        (key: value: { "NOTIFYMSG ${key}" = "\"%s\""; "NOTIFYFLAG ${key}" = "EXEC"; })
-        (lib.genAttrs ["ONLINE" "ONBATT" "LOWBATT" "FSD" "COMMOK" "COMMBAD" "SHUTDOWN" "REPLBATT" "NOCOMM" "NOPARENT"] (key: null))
+          (key: value: { "NOTIFYMSG ${key}" = "\"%s\""; "NOTIFYFLAG ${key}" = "EXEC"; })
+          (lib.genAttrs [ "ONLINE" "ONBATT" "LOWBATT" "FSD" "COMMOK" "COMMBAD" "SHUTDOWN" "REPLBATT" "NOCOMM" "NOPARENT" ] (key: null))
       );
     };
   };
