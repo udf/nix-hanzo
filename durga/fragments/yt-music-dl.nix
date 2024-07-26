@@ -96,6 +96,7 @@ let
     "cvmpliant"
     "cynthoni"
     "dadaihaiji"
+    "etherealhaven"
     "darkman007"
     "deathbrain"
     "dissolve3"
@@ -104,6 +105,7 @@ let
     "dredcollective"
     "dubmood"
     "eightiesheadachetape"
+    "emptybluemusic"
     "end-user"
     "erythh"
     "familyjules7x"
@@ -131,6 +133,7 @@ let
     "joy-less"
     "kaizoslumber"
     "kennyoung"
+    "kentenshi"
     "knowermusic"
     "lainwired"
     "lapfox"
@@ -214,6 +217,7 @@ let
     "yumeko"
     "yungkkun"
     "yurisimaginarylabel"
+    "zenkaso"
   ];
   tmpDir = "/home/yt-music-dl/tmp";
   common-args = "--no-progress --no-post-overwrites --add-metadata";
