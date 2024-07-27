@@ -140,6 +140,7 @@ let
     "llwll"
     "lostfrog"
     "lukhash"
+    "lvstslvt"
     "lxchee"
     "lydels"
     "m0-ney"
