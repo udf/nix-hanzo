@@ -89,6 +89,7 @@ let
     "breakbchild"
     "bye2"
     "chipzelmusic"
+    "chisanahana"
     "clonepa"
     "clowncore"
     "cooldownreduction"
