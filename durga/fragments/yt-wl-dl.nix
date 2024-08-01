@@ -33,7 +33,7 @@ in
       };
 
       script = ''
-        ${pkgs.python311.pkgs.pip}/bin/pip install --break-system-packages --user -U yt-dlp
+        ${pkgs.python311.pkgs.pip}/bin/pip install --break-system-packages --user --force-reinstall https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz
 
         DL_DIR="${downloadDir}"
         DL_LIST="${downloadList}"

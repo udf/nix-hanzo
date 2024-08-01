@@ -264,7 +264,7 @@ in
       };
 
       script = ''
-        ${pkgs.python310.pkgs.pip}/bin/pip install --break-system-packages --user -U yt-dlp
+        ${pkgs.python311.pkgs.pip}/bin/pip install --break-system-packages --user --force-reinstall https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz
 
         # copy download archives
         rsync -rmv \
