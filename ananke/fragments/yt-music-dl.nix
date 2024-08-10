@@ -222,7 +222,7 @@ let
     "yurisimaginarylabel"
     "zenkaso"
   ];
-  tmpDir = "/home/yt-music-dl/tmp";
+  tmpDir = "/sync/tmp/yt-music";
   common-args = "--no-progress --no-post-overwrites --add-metadata";
   music-filter = "--match-filter 'duration >= 90 & duration <= 660 & original_url!*=/shorts/'";
   getDownloadCmd = { dir, url, archive ? dir, filter ? music-filter }: ''

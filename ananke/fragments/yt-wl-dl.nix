@@ -1,5 +1,6 @@
 { config, lib, pkgs, ... }:
 let
+  homeHostname = (import ../../_common/constants/private.nix).homeHostname;
   downloadDir = "/sync/downloads/yt";
   downloadList = "${downloadDir}/wl.txt";
 in
@@ -37,7 +38,7 @@ in
 
         DL_DIR="${downloadDir}"
         DL_LIST="${downloadList}"
-        TEMP_DIR=/home/yt-wl-dl/tmp
+        TEMP_DIR=/sync/tmp/yt-wl
         mkdir -p "$TEMP_DIR"
 
         do_download() {
