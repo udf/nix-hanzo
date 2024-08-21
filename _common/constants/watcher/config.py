@@ -25,13 +25,15 @@ def systemd_should_ignore(e):
         'fstrim.service',
         'nix-gc.service',
         'yt-wl-dl.service',
-        'yt-music-dl.service',
         'flood-cleanup.service',
         'zpool-trim.service',
         'nextcloud-cron.service',
         'szuru-ocrbot.service',
         'nextcloud-preview-gen.service'
       }
+      or (
+        re.match(r'music-dl-.+\.service', unit)
+      )
     )
   ) or (
     e['PRIORITY'] >= LOG_INFO and (

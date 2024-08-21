@@ -223,81 +223,178 @@ let
     "yurisimaginarylabel"
     "zenkaso"
   ];
-  tmpDir = "/sync/tmp/yt-music";
-  common-args = "--no-progress --no-post-overwrites --add-metadata";
-  music-filter = "--match-filter 'duration >= 90 & duration <= 660 & original_url!*=/shorts/'";
-  getDownloadCmd = { dir, url, archive ? dir, filter ? music-filter }: ''
-    yt-dlp ${common-args} -o '${dir}/%(title)s-%(id)s.%(ext)s' --download-archive '${archive}.txt' \
+  common-args = "-P 'temp:/sync/tmp/yt-music' --no-progress --no-post-overwrites --add-metadata";
+  getDownloadCmd = { dir, url, archive ? dir, filter ? "" }: ''
+    yt-dlp ${common-args} -o "${dir}/%(title)s-%(id)s.%(ext)s" --download-archive "${archive}.txt" \
     ${filter} \
     -ciwx -f bestaudio \
     --sleep-interval 10 \
-    --add-metadata --replace-in-metadata 'album' '.' "" --parse-metadata 'title:%(track)s' --parse-metadata 'uploader:%(artist)s' '${url}' || true; sleep 60
-  '';
-  getBandcampCmd = user: ''
-    yt-dlp ${common-args} -ix -f 'flac/mp3' --download-archive '${user}.txt' \
-    -o '${user}/%(album,track)s/%(playlist_index)s. %(title)s.%(ext)s' \
-    https://${user}.bandcamp.com/music || true; sleep 30
+    --add-metadata --replace-in-metadata 'album' '.' "" --parse-metadata 'title:%(track)s' --parse-metadata 'uploader:%(artist)s' "${url}"
   '';
   musicDir = "/sync/downloads/lossy-music";
+  sanitiseServiceName = name: (builtins.replaceStrings [ " " ] [ "_" ] name);
+  commonServiceConfig = {
+    Type = "oneshot";
+    User = "yt-music-dl";
+    WorkingDirectory = "/home/yt-music-dl";
+    UMask = "0000";
+    TimeoutStartSec = "infinity";
+  };
+  dropinServiceOptions = {
+    partOf = [ "music-dl.target" ];
+    wantedBy = [ "music-dl.target" ];
+    upholds = [ "music-dl-busy.target" ];
+    path = [ "/home/yt-music-dl/.local" pkgs.ffmpeg ];
+    overrideStrategy = "asDropin";
+  };
+  # yt-dlp exits with a non-zero code if errors like missing pages occur, but
+  # also if there are private videos/pages without videos - and there is no
+  # easy way to differentiate between these errors, so this must be manually toggled
+  # to find out which pages should be removed from the download lists above.
+  propagateErrors = false;
+  getPostamble = sleepSecs: ''
+    ${optionalString propagateErrors "EXIT_CODE=$?"}
+    sleep ${sleepSecs}
+    ${optionalString propagateErrors "exit $EXIT_CODE"}
+  '';
 in
 {
   systemd = {
-    timers.yt-music-dl = {
+    timers.music-dl = {
       wantedBy = [ "timers.target" ];
-      partOf = [ "yt-music-dl.service" ];
       timerConfig = {
         OnCalendar = "daily";
         Persistent = true;
+        Unit = "music-dl.target";
       };
     };
-    services.yt-music-dl = {
-      after = [ "network.target" ];
-      before = [ "music-gain-tag.service" ];
-      path = [
-        "/home/yt-music-dl/.local"
-        pkgs.ffmpeg
-        pkgs.rsync
-      ];
-      serviceConfig = {
-        Type = "oneshot";
-        User = "yt-music-dl";
-        WorkingDirectory = "/home/yt-music-dl";
-        UMask = "0000";
+
+    targets = {
+      music-dl = {
+        after = [ "network.target" ];
+        description = "Start music download services";
+        unitConfig = {
+          StopWhenUnneeded = "True";
+        };
+      };
+      # TODO: maybe remove this because the target seems to be reached when all units
+      # deactivate, which can also be used to determine the total service run time
+      music-dl-busy = {
+        description = "Active music download services";
+        unitConfig = {
+          StopWhenUnneeded = "True";
+        };
+      };
+    };
+
+    services = {
+      music-dl-pre = {
+        partOf = [ "music-dl.target" ];
+        wantedBy = [ "music-dl.target" ];
+        path = [ "/home/yt-music-dl/.local" ];
+        serviceConfig = commonServiceConfig;
+
+        script = ''
+          ${pkgs.python311.pkgs.pip}/bin/pip install --break-system-packages --user --force-reinstall https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz
+          rm -f /home/yt-music-dl/*.lock
+        '';
       };
 
-      script = ''
-        ${pkgs.python311.pkgs.pip}/bin/pip install --break-system-packages --user --force-reinstall https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz
+      "music-dl-yt-playlist@" = {
+        after = [ "music-dl-pre.service" ];
+        path = [ "/home/yt-music-dl/.local" ];
+        serviceConfig = commonServiceConfig // (
+          let
+            script = pkgs.writeShellScript "music-dl-yt-playlist.sh" ''
+              cd ${musicDir}/favourites
+              ${getDownloadCmd { dir = "$DIR"; url = "$URL"; }}
+              ${getPostamble "60"}
+            '';
+          in
+          {
+            ExecStartPre = "${pkgs.procmail}/bin/lockfile -3 /home/yt-music-dl/dl-yt.lock";
+            ExecStopPost = "${pkgs.coreutils}/bin/rm -f /home/yt-music-dl/dl-yt.lock";
+            ExecStart = "${script} %i";
+          }
+        );
+      };
 
-        # copy download archives
-        rsync -rmv \
-        --include=favourites/ \
-        --include=lossy-downloads/ \
-        --include=lossy-downloads/yt/ \
-        --include=lossy-downloads/bandcamp/ \
-        --include="*.txt" \
-        --exclude="*" \
-        ${musicDir}/ ${tmpDir}/
+      "music-dl-yt-channel@" = {
+        after = [ "music-dl-pre.service" ];
+        path = [ "/home/yt-music-dl/.local" ];
+        serviceConfig = commonServiceConfig // (
+          let
+            script = pkgs.writeShellScript "music-dl-yt-channel.sh" ''
+              cd ${musicDir}/lossy-downloads/yt
+              ${getDownloadCmd { 
+                dir = "%(upload_date)s/$DIR";
+                archive = "$DIR";
+                url = "$URL";
+                filter = "--match-filter 'duration >= 90 & duration <= 660 & original_url!*=/shorts/'";
+              }}
+              ${getPostamble "60"}
+            '';
+          in
+          {
+            ExecStartPre = "${pkgs.procmail}/bin/lockfile -3 /home/yt-music-dl/dl-yt.lock";
+            ExecStopPost = "${pkgs.coreutils}/bin/rm -f /home/yt-music-dl/dl-yt.lock";
+            ExecStart = "${script} %i";
+          }
+        );
+      };
 
-        cd ${tmpDir}/favourites
-        ${builtins.concatStringsSep "\n"
-          (mapAttrsToList (k: v: getDownloadCmd { dir = k; url = v; filter = ""; }) playlists)}
-
-        cd ${tmpDir}/lossy-downloads/yt
-        ${builtins.concatStringsSep "\n"
-          (mapAttrsToList (k: v: getDownloadCmd { dir = "%(upload_date)s/${k}"; archive = k; url = v; }) channels)}
-
-        cd ${tmpDir}/lossy-downloads/bandcamp
-        ${builtins.concatStringsSep "\n" (map getBandcampCmd bandcampUsers)}
-
-        # move downloads to music dir
-        rsync -rv --remove-source-files ${tmpDir}/ ${musicDir}/
-        find ${tmpDir} -type d -empty -delete
-      '';
-    };
+      "music-dl-bandcamp@" = {
+        after = [ "music-dl-pre.service" ];
+        path = [ "/home/yt-music-dl/.local" ];
+        serviceConfig = commonServiceConfig // (
+          let
+            script = pkgs.writeShellScript "music-dl-bandcamp.sh" ''
+              cd ${musicDir}/lossy-downloads/bandcamp
+              yt-dlp ${common-args} -ix -f 'flac/mp3' --download-archive "$1.txt" \
+                -o "$1/%(album,track)s/%(playlist_index)s. %(title)s.%(ext)s" \
+                "https://$1.bandcamp.com/music"
+              ${getPostamble "30"}
+            '';
+          in
+          {
+            ExecStartPre = "${pkgs.procmail}/bin/lockfile -3 /home/yt-music-dl/dl-bc.lock";
+            ExecStopPost = "${pkgs.coreutils}/bin/rm -f /home/yt-music-dl/dl-bc.lock";
+            ExecStart = "${script} %i";
+          }
+        );
+      };
+    } // (
+      mapAttrs'
+        (name: url: nameValuePair "music-dl-yt-playlist@${sanitiseServiceName name}" (
+          dropinServiceOptions // {
+            environment = {
+              DIR = name;
+              URL = url;
+            };
+          }
+        ))
+        playlists
+    ) // (
+      mapAttrs'
+        (name: url: nameValuePair "music-dl-yt-channel@${sanitiseServiceName name}" (
+          dropinServiceOptions // {
+            environment = {
+              DIR = name;
+              URL = url;
+            };
+          }
+        ))
+        channels
+    ) // (
+      listToAttrs (map
+        (name: nameValuePair "music-dl-bandcamp@${name}" dropinServiceOptions)
+        bandcampUsers
+      )
+    );
   };
 
   users.extraUsers.yt-music-dl = {
-    description = "YT playlist downloader";
+    description = "Music downloader using yt-dlp";
     home = "/home/yt-music-dl";
     createHome = true;
     isSystemUser = true;
