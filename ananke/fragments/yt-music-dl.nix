@@ -47,7 +47,7 @@ let
     "S3RL" = "https://www.youtube.com/channel/UCb6JTMjrHZCYFD9Y04CBk9g/videos";
     "Solar Heavy" = "https://www.youtube.com/c/SolarHeavy/videos";
     "StephenWalking" = "https://www.youtube.com/channel/UCiprAA9XNf1DjXJgNkck3yQ/videos";
-    "Strobe Music" = "https://www.youtube.com/c/StrobeMusic/videos";
+    "Strobe Music" = "https://www.youtube.com/@TheStrobeMusic/videos";
     "SuicideSheeep" = "https://www.youtube.com/@SuicideSheeep/videos";
     "Syfer Music" = "https://www.youtube.com/c/SyferMusic/videos";
     "Synthion" = "https://www.youtube.com/@synthion/videos";
@@ -87,7 +87,6 @@ let
     "blackballoonss"
     "blackoutrec"
     "blksmiith"
-    "breakbchild"
     "bye2"
     "chipzelmusic"
     "chisanahana"
@@ -124,7 +123,6 @@ let
     "hkmori"
     "hxlyxo"
     "ibelieveinangels"
-    "idrcauaurltm"
     "igorrr"
     "imkotori"
     "iwakura1144"
@@ -142,12 +140,12 @@ let
     "llwll"
     "lostfrog"
     "lukhash"
-    "lvstslvt"
     "lxchee"
     "lydels"
     "m0-ney"
     "machinegirl"
     "madbreaks"
+    "maladreezy"
     "maritumix"
     "masterbootrecord"
     "mayyro"
@@ -160,7 +158,6 @@ let
     "nakedleisure"
     "nanode"
     "nanoray"
-    "nastyrhythm"
     "nfract"
     "nitgrit"
     "noagreements"
@@ -169,7 +166,6 @@ let
     "nxcho"
     "opalfruits"
     "orqzeu"
-    "owslarecords"
     "paradoxically"
     "pisca"
     "plasmapool"
@@ -195,12 +191,11 @@ let
     "spurme"
     "strxwberrymilk"
     "stupiddecisions"
-    "suicidality"
-    "synqqq"
     "synthion"
     "takahiro-fks"
     "tami-tomi"
     "theworstlabel"
+    "tkdpll"
     "tokyopill"
     "tonroshi"
     "toomuchofme"
@@ -222,6 +217,7 @@ let
     "yungkkun"
     "yurisimaginarylabel"
     "zenkaso"
+    "zhnoi"
   ];
   common-args = "-P 'temp:/sync/tmp/yt-music' --no-progress --no-post-overwrites --add-metadata";
   getDownloadCmd = { dir, url, archive ? dir, filter ? "" }: ''
