@@ -32,7 +32,8 @@ def systemd_should_ignore(e):
         'nextcloud-preview-gen.service'
       }
       or (
-        re.match(r'music-dl-.+\.service', unit)
+        re.match(r'music-dl(-.+)?\.(service|target)', unit)
+        or re.match(r'system-music\\x2ddl.+slice', unit)
       )
     )
   ) or (
