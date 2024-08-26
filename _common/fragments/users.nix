@@ -10,7 +10,7 @@
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHcNGC8Qg4+lVODt4cdbDtjbrVe44GGBae5sVoCZ1irJ sam@alice"
       ];
       uid = 1000;
-      packages = [ pkgs.python311 pkgs.python311Packages.pip ];
+      packages = [ pkgs.python3 pkgs.python3Packages.pip ];
     };
   };
 }

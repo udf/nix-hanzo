@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 with lib;
 let
-  python-pkg = pkgs.python310.withPackages (ps: with ps; [
+  python-pkg = pkgs.python312.withPackages (ps: with ps; [
     (callPackage ../packages/watcher-bot.nix { })
     pyasn
   ]);
