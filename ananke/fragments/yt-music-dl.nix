@@ -32,6 +32,7 @@ let
     "luggi spikes" = "https://www.youtube.com/channel/UC5_I30UR32Pr-274nkXHQ_g/videos";
     "Madeon" = "https://www.youtube.com/channel/UCqMDNf3Pn5L7pcNkuSEeO3w/videos";
     "MDK" = "https://www.youtube.com/c/MDKOfficialYT/videos";
+    "MikuMusicNetwork" = "https://www.youtube.com/@MikuMusicNetwork/videos";
     "Monstercat" = "https://www.youtube.com/channel/UCJ6td3C9QlPO9O_J5dF4ZzA/videos";
     "MrMoMMusic" = "https://www.youtube.com/c/MrMoMMusic/videos";
     "MrSuicideSheep" = "https://www.youtube.com/channel/UC5nc_ZtjKW1htCVZVRxlQAQ/videos";
@@ -39,6 +40,7 @@ let
     "NoCopyrightSounds" = "https://www.youtube.com/channel/UC_aEa8K-EOJ3D6gOs7HcyNg/videos";
     "NXS" = "https://www.youtube.com/channel/UCl4UOc8h1ZnO-inFPgAu7gw/videos";
     "Owata P" = "https://www.youtube.com/playlist?list=PLTHHOGhQjO3Lau2C605abjcHLV4L5n67x";
+    "OWSLA" = "https://www.youtube.com/@owsla/videos";
     "OxiDaksi" = "https://www.youtube.com/c/OxiDaksi/videos";
     "Proximity" = "https://www.youtube.com/channel/UC3ifTl5zKiCAhHIBQYcaTeg/videos";
     "ReclusiveLemming" = "https://www.youtube.com/@ReclusiveLemming/videos";
@@ -191,6 +193,7 @@ let
     "spurme"
     "strxwberrymilk"
     "stupiddecisions"
+    "suigetsu"
     "synthion"
     "takahiro-fks"
     "tami-tomi"
@@ -206,6 +209,7 @@ let
     "untitledexe"
     "usedcvnt"
     "vertigoaway"
+    "vill4in"
     "virtualmemory777"
     "vixenvy"
     "voipetsu"
