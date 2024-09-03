@@ -6,7 +6,7 @@ let
 in
 {
   virtualisation.oci-containers.containers.suwayomi = {
-    image = "ghcr.io/suwayomi/tachidesk:v1.1.1-r1548";
+    image = "ghcr.io/suwayomi/tachidesk:v1.1.1-r1578";
     ports = [
       "${toString PORT}:${toString PORT}"
     ];
@@ -19,7 +19,7 @@ in
       BIND_PORT = toString PORT;
     };
     extraOptions = [
-      "--hostname=${config.networking.hostName}"
+      "--dns=1.1.1.1"
       "--memory=2048m"
       "--user=${UID}:${GID}"
     ];
