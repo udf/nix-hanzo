@@ -52,6 +52,7 @@ in
   system.fsPackages = [ pkgs.bindfs ];
   fileSystems."/sync/downloads/suwayomi/local" = mkSuwayomiSyncthingBind "/var/lib/docker/volumes/suwayomi/_data/local";
   fileSystems."/sync/downloads/suwayomi/downloads" = mkSuwayomiSyncthingBind "/var/lib/docker/volumes/suwayomi/_data/downloads";
+  fileSystems."/sync/downloads/suwayomi/backups" = mkSuwayomiSyncthingBind "/var/lib/docker/volumes/suwayomi/_data/backups";
 
   nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
 }
