@@ -41,10 +41,14 @@
 
   system.autoUpgrade = {
     enable = true;
-    allowReboot = true;
+    allowReboot = false;
     operation = "boot";
     flags = [ "--upgrade-all" ];
     dates = "Fri *-*-* 20:00:00";
+  };
+
+  systemd.services.nixos-upgrade.serviceConfig = {
+    ExecStartPost = "${config.systemd.package}/bin/shutdown -r +1";
   };
 
   security.pam.loginLimits = [
