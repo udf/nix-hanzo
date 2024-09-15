@@ -31,6 +31,7 @@ in
         User = "yt-wl-dl";
         WorkingDirectory = "/home/yt-wl-dl";
         UMask = "0000";
+        Nice = 19;
       };
 
       script = ''
