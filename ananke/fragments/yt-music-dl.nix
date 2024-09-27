@@ -78,7 +78,6 @@ let
     "andypls"
     "angelvoidkin"
     "antennae"
-    "asc77"
     "astrophysicsbrazil"
     "atalea"
     "atariteenageriot"
