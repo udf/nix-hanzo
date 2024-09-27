@@ -46,5 +46,8 @@ def systemd_should_ignore(e):
       or unit == 'ddclient.service'
       or re.match(r'nginx(-config-reload)?\.service', unit)
       or re.match(r'run-docker-runtime.+.mount$', unit)
+      or unit == 'nscd.service'
+      or unit == 'nss-lookup.target'
+      or unit == 'nss-user-lookup.target'
     )
   )
