@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 
 let
   private = (import ../_common/constants/private.nix).ananke;
@@ -147,6 +147,18 @@ in
 
       script = ''
         ${pkgs.openssh}/bin/ssh admin@192.168.0.8 reboot
+      '';
+    };
+    services.clear-upsd-pids = {
+      wantedBy = [ "upsd.service" "upsmon.service" ];
+      before = [ "upsd.service" "upsmon.service" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = "yes";
+      };
+
+      script = ''
+        rm -f -v /var/lib/nut/*.pid
       '';
     };
   };
