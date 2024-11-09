@@ -12,7 +12,7 @@
     enable = true;
     memoryPercent = 33;
   };
-  boot.kernelPackages = pkgs.linuxPackages_hardened;
+  # boot.kernelPackages = pkgs.linuxPackages_hardened;
   boot.kernel.sysctl = lib.mkForce {
     "vm.swappiness" = 15;
     "vm.overcommit_memory" = 1;
