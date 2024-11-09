@@ -192,7 +192,7 @@ in
             default = true;
             addSSL = true;
             useACMEHost = "durga.withsam.org";
-            root = "/dev/null";
+            root = "/var/www";
 
             extraConfig = ''
               types { } default_type "text/plain; charset=utf-8";
