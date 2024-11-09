@@ -70,8 +70,13 @@ let
   denyWriteMethods = "limit_except GET PROPFIND OPTIONS { deny all; }";
 
   proxyCfg = config.services.nginxProxy;
-  proxyPathOpts = { path, ... }: {
+  proxyPathOpts = { name, ... }: {
     options = {
+      serverHost = mkOption {
+        description = "The host for the generated server block";
+        default = "${name}.durga.withsam.org";
+        type = types.str;
+      };
       port = mkOption {
         description = "The local port to proxy";
         type = types.port;
@@ -131,7 +136,7 @@ in
       certs = {
         "durga.withsam.org" = {
           email = "tabhooked@gmail.com";
-          extraDomainNames = [ "*.durga.withsam.org" "piracy.withsam.org" "music.withsam.org" ];
+          extraDomainNames = [ "*.durga.withsam.org" "piracy.withsam.org" "music.withsam.org" "l.withsam.org" ];
           dnsProvider = "ovh";
           credentialsFile = "/var/lib/secrets/ovh.certs.secret";
         };
@@ -261,7 +266,7 @@ in
       ] ++ (
         mapAttrsToList
           (path: opts: {
-            "${path}.durga.withsam.org" = addErrorPageOpts {
+            "${opts.serverHost}" = addErrorPageOpts {
               useACMEHost = "durga.withsam.org";
               forceSSL = true;
               extraConfig = ''
