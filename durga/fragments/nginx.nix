@@ -129,6 +129,8 @@ in
   };
 
   config = {
+    custom.ipset-block.exceptPorts = [ 443 ];
+
     networking.firewall.allowedTCPPorts = [ 80 443 ];
 
     security.acme = {

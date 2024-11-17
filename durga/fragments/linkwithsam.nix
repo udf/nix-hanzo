@@ -2,6 +2,7 @@
 let
   python-pkg = pkgs.python312.withPackages (ps: with ps; [
     aiohttp
+    aiohttp-cors
   ]);
 in
 {
