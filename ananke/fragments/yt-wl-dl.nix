@@ -60,7 +60,7 @@ in
               --download-archive "$DL_ARCHIVE" \
               --sponsorblock-mark default --sponsorblock-api https://sponsorblock.hankmccord.dev \
               --live-from-start \
-              -a "$DL_LIST" || true
+              $line || true
           done < <(yt-dlp --download-archive "$DL_ARCHIVE" --flat-playlist -a "$DL_LIST" --print id)
         }
 
