@@ -118,6 +118,9 @@ let
       };
     };
   };
+
+  # TODO: fix njs build
+  secureLinkEnable = false;
 in
 {
   options.services.nginxProxy = {
@@ -149,19 +152,11 @@ in
 
     systemd.services.nginx.serviceConfig.EnvironmentFile = "/var/lib/nginx/nginx.env";
 
-    assertions = [
-      {
-        assertion = (pkgs.nginxModules.njs.src.rev == "0.8.1");
-        message = "njs module is no longer outdated, please remove the override.";
-      }
-    ];
-
     services.nginx = {
       enable = true;
 
-      additionalModules = [
-        (pkgs.callPackage ../packages/nginx-njs.nix {})
-      ];
+      # TODO: fix njs build
+      # additionalModules = [ pkgs.nginxModules.njs ];
 
       appendConfig = ''
         env SL_SECRET_KEY;
@@ -184,12 +179,12 @@ in
             '"$request" $body_bytes_sent "$http_referer" '
             '"$http_user_agent" "$http_x_forwarded_for"';
 
-          js_import sl_helper from ${../constants/secure_link_helper.js};
+          #js_import sl_helper from ${../constants/secure_link_helper.js};
 
-          js_set $sl_arg_token sl_helper.arg_token;
-          js_set $sl_hashable_url sl_helper.hashable_url;
-          js_set $sl_expected_hash sl_helper.expected_hash;
-          js_set $sl_shareable_url sl_helper.shareable_url;
+          #js_set $sl_arg_token sl_helper.arg_token;
+          #js_set $sl_hashable_url sl_helper.hashable_url;
+          #js_set $sl_expected_hash sl_helper.expected_hash;
+          #js_set $sl_shareable_url sl_helper.shareable_url;
         '';
 
       virtualHosts = mkMerge ([
@@ -280,7 +275,7 @@ in
               locations."= /favicon.ico".extraConfig = "try_files /dev/null @default;";
               locations."/".extraConfig = "try_files /dev/null @default;";
               locations."@default".extraConfig = ''
-                ${optionalString (opts.secureLinks && opts.useAuth) ''
+                ${optionalString (opts.secureLinks && opts.useAuth && secureLinkEnable) ''
                 error_page 463 = @auth_success;
                 ${errorPageDirectives}
                 set $sl_param "${opts.secureLinkParam}";
@@ -301,7 +296,7 @@ in
                 try_files /dev/null @auth_success;
               '';
               locations."@auth_success".extraConfig = ''
-                ${optionalString (opts.secureLinks && opts.useAuth) ''
+                ${optionalString (opts.secureLinks && opts.useAuth && secureLinkEnable) ''
                 set $provided_token $sl_arg_token;
                 if ($provided_token = "") {
                   set $provided_token $sl_expected_hash;
