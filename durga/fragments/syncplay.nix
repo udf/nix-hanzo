@@ -2,8 +2,7 @@
 {
   services.syncplay = {
     enable = true;
-    group = "acme";
-    certDir = "/var/lib/acme/durga.withsam.org/";
+    useACMEHost = "durga.withsam.org";
   };
   systemd.services.syncplay.environment = {
     SYNCPLAY_PASSWORD = "hentai";
