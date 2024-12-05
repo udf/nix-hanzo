@@ -10,7 +10,7 @@ in
     database.createLocally = true;
     configureRedis = true;
     maxUploadSize = "16G";
-    package = pkgs.nextcloud29;
+    package = pkgs.nextcloud30;
     hostName = hostName;
     config = {
       dbtype = "pgsql";
