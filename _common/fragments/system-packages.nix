@@ -16,5 +16,7 @@
     lsof
     aria
     zip
+    atool
+    unzip
   ];
 }

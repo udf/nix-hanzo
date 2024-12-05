@@ -68,8 +68,6 @@
 
   environment.systemPackages = with pkgs; [
     ffmpeg
-    atool
-    unzip
     btrfs-progs
     compsize
     docker-client
