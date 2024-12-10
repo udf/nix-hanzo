@@ -355,7 +355,7 @@ in
               yt-dlp ${common-args} -ix -f 'flac/mp3' --download-archive "$1.txt" \
                 -o "$1/%(album,track)s/%(playlist_index)s. %(title)s.%(ext)s" \
                 "https://$1.bandcamp.com/music"
-              ${getPostamble "30"}
+              ${getPostamble "60"}
             '';
           in
           {
