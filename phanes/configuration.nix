@@ -56,6 +56,7 @@
 
   environment.systemPackages = with pkgs; [
     wol
+    intel-gpu-tools
   ];
 }
 
