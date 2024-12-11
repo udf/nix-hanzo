@@ -17,6 +17,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.timeout = 1;
 
+  boot.kernelParams = [ "preempt=full" ];
   boot.kernel.sysctl = lib.mkForce {
     "vm.swappiness" = 15;
     "vm.overcommit_memory" = 1;
