@@ -43,7 +43,10 @@
 
   systemd.network.links."10-net0" = {
     matchConfig.PermanentMACAddress = "3c:18:a0:04:26:7e";
-    linkConfig.Name = "net0";
+    linkConfig = {
+      Name = "net0";
+      WakeOnLan = "magic";
+    };
   };
 
   time.timeZone = "Africa/Harare";
