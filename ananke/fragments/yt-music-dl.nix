@@ -152,6 +152,7 @@ let
     "mayowithadot"
     "mayyro"
     "midbooze"
+    "midxna"
     "mimideath"
     "mimosa"
     "mindvacy"
