@@ -6,10 +6,13 @@
     (import ../_autoload.nix ./.)
   ];
 
+  powerManagement.cpuFreqGovernor = "ondemand";
+
   services.logind = {
     lidSwitch = "ignore";
     lidSwitchExternalPower = "ignore";
     lidSwitchDocked = "ignore";
+    powerKey = "ignore";
   };
 
   # Use the systemd-boot EFI boot loader.
