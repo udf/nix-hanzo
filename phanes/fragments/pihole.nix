@@ -1,10 +1,10 @@
 { config, lib, pkgs, ... }:
 let
-  serverIP = "192.168.0.3";
+  serverIP = "192.168.0.5";
 in
 {
   virtualisation.oci-containers.containers.pihole = {
-    image = "pihole/pihole:2024.06.0";
+    image = "pihole/pihole:2024.07.0";
     ports = [
       "53:53/tcp"
       "53:53/udp"
@@ -30,7 +30,7 @@ in
   users.users.sam.extraGroups = [ "podman" ];
 
   networking.firewall = {
-    allowedTCPPorts = [ 53 ];
+    allowedTCPPorts = [ 53 80 443 ];
     allowedUDPPorts = [ 53 ];
   };
 }
