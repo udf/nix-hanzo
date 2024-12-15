@@ -2,13 +2,6 @@
 
 let
   private = (import ../_common/constants/private.nix).ananke;
-  pinnedUnstable = import
-    (builtins.fetchTarball {
-      name = "nixos-unstable-2023-12-24";
-      url = "https://github.com/nixos/nixpkgs/archive/5f64a12a728902226210bf01d25ec6cbb9d9265b.tar.gz";
-      sha256 = "0lq73nhcg11485ppazbnpz767qjifbydgqxn5xhj3xxlbfml39ba";
-    })
-    { config.allowUnfree = true; };
   sdImageFirmware = (pkgs.callPackage ./packages/sd-image-firmware.nix {});
 in
 {
@@ -97,7 +90,7 @@ in
       address = "fe80::76ac:b9ff:fe54:4f1";
       interface = "eth0";
     };
-    firewall.allowedTCPPorts = [ 8443 3493 ];
+    firewall.allowedTCPPorts = [ 3493 ];
     dhcpcd.enable = false;
   };
 
@@ -116,39 +109,7 @@ in
     wol
   ];
 
-  services.unifi = {
-    enable = true;
-    openFirewall = true;
-    unifiPackage = pkgs.unifi8;
-    mongodbPackage = pinnedUnstable.pkgs.mongodb-4_4;
-  };
-  programs.ssh = {
-    pubkeyAcceptedKeyTypes = [ "+ssh-rsa" ];
-    hostKeyAlgorithms = [ "+ssh-rsa" ];
-  };
-  custom.msmtp-gmail.enable = true;
-
   systemd = {
-    timers.unifi-rebooter = {
-      wantedBy = [ "timers.target" ];
-      partOf = [ "unifi-rebooter.service" ];
-      timerConfig = {
-        OnCalendar = "Mon *-*-* 03:00:00";
-        Persistent = true;
-      };
-    };
-    services.unifi-rebooter = {
-      after = [ "network.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        User = "sam";
-        WorkingDirectory = "/home/sam";
-      };
-
-      script = ''
-        ${pkgs.openssh}/bin/ssh admin@192.168.0.8 reboot
-      '';
-    };
     services.clear-upsd-pids = {
       wantedBy = [ "upsd.service" "upsmon.service" ];
       before = [ "upsd.service" "upsmon.service" ];
