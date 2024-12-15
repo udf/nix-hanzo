@@ -28,11 +28,6 @@ in
       fsType = "ext4";
       options = [ "noatime" ];
     };
-    "/sync" = {
-      device = "/dev/disk/by-uuid/529c640c-1ab2-4914-b8b0-4eb9045f05a5";
-      fsType = "btrfs";
-      options = [ "ssd" "discard=async" "space_cache=v2" "noatime" "x-systemd.automount" "x-systemd.mount-timeout=5s" ];
-    };
   };
   boot.loader.grub.enable = false;
   boot.loader.generic-extlinux-compatible.enable = true;
