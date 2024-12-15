@@ -1,6 +1,5 @@
 { config, lib, pkgs, ... }:
 let
-  homeHostname = (import ../../_common/constants/private.nix).homeHostname;
   downloadDir = "/sync/downloads/yt";
   downloadList = "${downloadDir}/wl.txt";
 in
