@@ -3,6 +3,11 @@ let
   externalMount = "/external";
   downloadDir = "${externalMount}/downloads/yt";
   downloadList = "${downloadDir}/wl.txt";
+  pythonWithGoogleNonsense = pkgs.python3.withPackages (ps: with ps; [
+    google-api-python-client
+    google-auth-oauthlib
+    google-auth-httplib2
+  ]);
 in
 {
   imports = [
@@ -14,14 +19,8 @@ in
       wantedBy = [ "timers.target" ];
       partOf = [ "yt-wl-dl.service" ];
       timerConfig = {
-        OnCalendar = "*:10/30";
+        OnCalendar = "*:0/10";
         Persistent = true;
-      };
-    };
-    paths.yt-wl-dl = {
-      wantedBy = [ "default.target" ];
-      pathConfig = {
-        PathModified = downloadList;
       };
     };
     services.yt-wl-dl = {
@@ -37,6 +36,16 @@ in
         WorkingDirectory = "/home/yt-wl-dl";
         UMask = "0000";
         Nice = 19;
+        ExecStartPre = lib.escapeShellArgs [
+          "${pythonWithGoogleNonsense}/bin/python"
+          "${../scripts/yt-wl-fetch.py}"
+          "--out-path"
+          "${downloadList}"
+          "--client-secret-path"
+          "/home/yt-wl-dl/wl-fetch/client_secret.json"
+          "--client-credentials-path"
+          "/home/yt-wl-dl/wl-fetch/creds.json"
+        ];
         ExecStartPost = lib.escapeShellArgs [
           "${pkgs.python3}/bin/python"
           "${../scripts/yt-wl-clean.py}"
@@ -73,7 +82,7 @@ in
               --download-archive "$DL_ARCHIVE" \
               --sponsorblock-mark default --sponsorblock-api https://sponsorblock.hankmccord.dev \
               --live-from-start \
-              $line || true
+              -- $line || true
           done < <(yt-dlp --download-archive "$DL_ARCHIVE" --flat-playlist -a "$DL_LIST" --print id)
         }
 
