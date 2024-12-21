@@ -30,6 +30,11 @@ in
 
   networking.firewall.allowedTCPPorts = [ 8443 ];
 
+  environment.etc."unifi-mongodb.conf".text = ''
+    setParameter:
+      diagnosticDataCollectionEnabled: false
+  '';
+
   # systemd = {
   #   timers.unifi-rebooter = {
   #     wantedBy = [ "timers.target" ];
