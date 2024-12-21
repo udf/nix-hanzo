@@ -34,6 +34,7 @@ def systemd_should_ignore(e):
       or (
         re.match(r'music-dl(-.+)?\.(service|target)', unit)
         or re.match(r'system-music\\x2ddl.+slice', unit)
+        or re.match(r'.+\.(auto)?mount$', unit)
       )
     )
   ) or (

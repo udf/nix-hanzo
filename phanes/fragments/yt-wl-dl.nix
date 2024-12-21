@@ -1,9 +1,46 @@
 { config, lib, pkgs, ... }:
 let
-  downloadDir = "/sync/downloads/yt";
+  externalMount = "/external";
+  downloadDir = "${externalMount}/downloads/yt";
   downloadList = "${downloadDir}/wl.txt";
+  cleanupScript = pkgs.writeScript "yt-wl-clean.py" ''
+    #!${pkgs.python3}/bin/python
+    import re
+    import os
+    import shutil
+    from pathlib import Path
+
+    download_dir = Path('${downloadDir}')
+    os.chdir(download_dir)
+    trash_dir = Path('${externalMount}/downloads/.stversions/yt')
+    vid_dirs = [
+      download_dir / 'wl',
+      download_dir / 'wl_720'
+    ]
+
+    expected_ids = set()
+    with open('wl.txt') as f:
+      for line in f:
+        expected_ids.add(line.strip())
+
+    for dir_name in vid_dirs:
+      for path in Path(dir_name).glob('*.*'):
+        vidID = re.search(r' \[([\dA-Za-z_-]{11})\]\.', path.name)
+        if not vidID:
+          continue
+        vidID = vidID[1]
+        if vidID not in expected_ids:
+          print(f'Trashing {str(path)!r}')
+          new_path = trash_dir / path.relative_to(download_dir)
+          new_path.parent.mkdir(parents=True, exist_ok=True)
+          shutil.move(path, new_path)
+  '';
 in
 {
+  imports = [
+    ./external-ssd.nix
+  ];
+
   systemd = {
     timers.yt-wl-dl = {
       wantedBy = [ "timers.target" ];
@@ -21,6 +58,7 @@ in
     };
     services.yt-wl-dl = {
       after = [ "network.target" ];
+      requires = [ "external.mount" ];
       path = [
         "/home/yt-wl-dl/.local"
         pkgs.ffmpeg
@@ -31,6 +69,7 @@ in
         WorkingDirectory = "/home/yt-wl-dl";
         UMask = "0000";
         Nice = 19;
+        ExecStartPost = cleanupScript;
       };
 
       script = ''
@@ -38,7 +77,7 @@ in
 
         DL_DIR="${downloadDir}"
         DL_LIST="${downloadList}"
-        TEMP_DIR=/sync/tmp/yt-wl
+        TEMP_DIR=${externalMount}/tmp/yt-wl
         mkdir -p "$TEMP_DIR"
 
         do_download() {
