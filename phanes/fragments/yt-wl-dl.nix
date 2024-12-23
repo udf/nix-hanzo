@@ -25,11 +25,13 @@ in
     };
     services.yt-wl-dl = {
       after = [ "network.target" ];
-      requires = [ "external.mount" ];
       path = [
         "/home/yt-wl-dl/.local"
         pkgs.ffmpeg
       ];
+      unitConfig = {
+        RequiresMountsFor = "/external";
+      };
       serviceConfig = {
         Type = "oneshot";
         User = "yt-wl-dl";
