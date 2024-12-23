@@ -17,10 +17,10 @@ in
   systemd = {
     timers.yt-wl-dl = {
       wantedBy = [ "timers.target" ];
-      partOf = [ "yt-wl-dl.service" ];
       timerConfig = {
         OnCalendar = "*:0/10";
         Persistent = true;
+        Unit = "yt-wl-dl.service";
       };
     };
     services.yt-wl-dl = {
