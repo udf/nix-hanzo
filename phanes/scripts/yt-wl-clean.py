@@ -2,7 +2,9 @@ import argparse
 import os
 import re
 import shutil
+import time
 from pathlib import Path
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--download-dir', required=True)
@@ -22,6 +24,7 @@ with open('wl.txt') as f:
   for line in f:
     expected_ids.add(line.strip())
 
+now = time.time()
 for dir_name in vid_dirs:
   for path in Path(dir_name).glob('*.*'):
     vidID = re.search(r' \[([\dA-Za-z_-]{11})\]\.', path.name)
@@ -33,3 +36,4 @@ for dir_name in vid_dirs:
       new_path = trash_dir / path.relative_to(download_dir)
       new_path.parent.mkdir(parents=True, exist_ok=True)
       shutil.move(path, new_path)
+      os.utime(new_path, (now, now))
