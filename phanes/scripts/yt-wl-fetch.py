@@ -1,10 +1,12 @@
 import os
-import json
 import argparse
+import pickle
 
+from requests_oauthlib import OAuth2Session
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
+import google.auth
 import googleapiclient.discovery
 import googleapiclient.errors
 
@@ -12,26 +14,17 @@ SCOPES = ['https://www.googleapis.com/auth/youtube.readonly']
 
 
 def get_saved_credentials(filename):
-  fileData = {}
   try:
-    with open(filename, 'r') as file:
-      fileData: dict = json.load(file)
+    with open(filename, 'rb') as file:
+      return pickle.load(file)
   except FileNotFoundError:
     return None
-  return Credentials(**fileData)
 
 
 def store_creds(credentials, filename):
-  fileData = {
-    'refresh_token': credentials.refresh_token,
-    'token': credentials.token,
-    'client_id': credentials.client_id,
-    'client_secret': credentials.client_secret,
-    'token_uri': credentials.token_uri
-  }
-  with open(filename, 'w') as file:
-      json.dump(fileData, file)
-  print(f'Credentials serialized to {filename}.')
+  with open(filename, 'wb') as file:
+    pickle.dump(credentials, file)
+  print(f'Credentials serialized to {filename}')
 
 
 def get_credentials_via_oauth(client_secret_path, client_credentials_path, saveData=True):
@@ -46,6 +39,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--out-path', required=True)
 parser.add_argument('--client-secret-path', required=True)
 parser.add_argument('--client-credentials-path', required=True)
+parser.add_argument('--reauth', action='store_true')
 args = parser.parse_args()
 
 # Disable OAuthlib's HTTPS verification when running locally.
@@ -54,8 +48,13 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 
 credentials = get_saved_credentials(args.client_credentials_path)
 if credentials and credentials.expired:
-  credentials.refresh(Request())
-if not credentials or not credentials.valid:
+  try:
+    credentials.refresh(Request())
+    store_creds(credentials, args.client_credentials_path)
+  except google.auth.exceptions.RefreshError:
+    print('Credentials expired, need to reauth')
+    credentials = None
+if args.reauth or not credentials or not credentials.valid:
   credentials = get_credentials_via_oauth(
     client_secret_path=args.client_secret_path,
     client_credentials_path=args.client_credentials_path
@@ -81,6 +80,8 @@ while 1:
   next_page_token = response.get('nextPageToken')
   if not next_page_token:
     break
+
+store_creds(credentials, args.client_credentials_path)
 
 new_list = '\n'.join(video_ids)
 old_list = ''

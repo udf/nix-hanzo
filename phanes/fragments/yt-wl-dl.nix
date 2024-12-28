@@ -29,13 +29,14 @@ in
         "/home/yt-wl-dl/.local"
         pkgs.ffmpeg
       ];
+      upholds = [ "external.mount" ];
       unitConfig = {
         RequiresMountsFor = "/external";
       };
       serviceConfig = {
         Type = "oneshot";
         User = "yt-wl-dl";
-        WorkingDirectory = "/home/yt-wl-dl";
+        WorkingDirectory = downloadDir;
         UMask = "0000";
         Nice = 19;
         ExecStartPre = lib.escapeShellArgs [
@@ -46,7 +47,7 @@ in
           "--client-secret-path"
           "/home/yt-wl-dl/wl-fetch/client_secret.json"
           "--client-credentials-path"
-          "/home/yt-wl-dl/wl-fetch/creds.json"
+          "/home/yt-wl-dl/wl-fetch/creds.bin"
         ];
         ExecStartPost = lib.escapeShellArgs [
           "${pkgs.python3}/bin/python"
@@ -59,7 +60,7 @@ in
       };
 
       script = ''
-        ${pkgs.python311.pkgs.pip}/bin/pip install --break-system-packages --user --force-reinstall https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz
+        ${pkgs.python3.pkgs.pip}/bin/pip install --break-system-packages --user --force-reinstall https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz
 
         DL_DIR="${downloadDir}"
         DL_LIST="${downloadList}"

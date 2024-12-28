@@ -9,7 +9,6 @@
       "x-systemd.mount-timeout=5s"
       "x-systemd.rw-only"
       "nofail"
-      "x-systemd.idle-timeout=20s"
       "uid=syncthing"
       "gid=syncthing"
       "umask=0077"
