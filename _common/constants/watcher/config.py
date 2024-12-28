@@ -35,6 +35,7 @@ def systemd_should_ignore(e):
         re.match(r'music-dl(-.+)?\.(service|target)', unit)
         or re.match(r'system-music\\x2ddl.+slice', unit)
         or re.match(r'.+\.(auto)?mount$', unit)
+        or re.match(r'acme-.+\.service', unit)
       )
     )
   ) or (
@@ -43,7 +44,6 @@ def systemd_should_ignore(e):
       or unit == 'systemd-tmpfiles-clean.service'
       or re.match(r'run-credentials-systemd.+tmpfiles.+clean', unit)
       or unit == 'logrotate.service'
-      or re.match(r'acme-.+\.service', unit)
       or unit == 'ddclient.service'
       or re.match(r'nginx(-config-reload)?\.service', unit)
       or re.match(r'run-docker-runtime.+.mount$', unit)
