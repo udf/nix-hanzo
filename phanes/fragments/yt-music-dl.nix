@@ -11,7 +11,7 @@ let
     "AirwaveMusicTV" = "https://www.youtube.com/c/AirwaveMusicTV/videos";
     "Astrophysics" = "https://www.youtube.com/c/Astrophysicsynth/videos";
     "Au5" = "https://www.youtube.com/channel/UCznSBwEKa4xU8HmbEXCv6Yw/videos";
-    "Black Out Records" = "https://www.youtube.com/channel/UCr_af7byyrsIKPVY5E7ZiqA/videos";
+    "Black Out Records" = "https://www.youtube.com/channel/UCTR8VxIcQOix5Fj55KRu2Qg/videos";
     "BlackmillMusic" = "https://www.youtube.com/channel/UCH1-EnWEmTSECo-gDIweFDA/videos";
     "Blackout Music" = "https://www.youtube.com/channel/UCXLGu6onmiH8ZA_i-dIO5Lg/videos";
     "Camellia" = "https://www.youtube.com/channel/UCV4ggxLd_Vz-I-ePGSKfFog/videos";
@@ -37,6 +37,7 @@ let
     "MrMoMMusic" = "https://www.youtube.com/c/MrMoMMusic/videos";
     "MrSuicideSheep" = "https://www.youtube.com/channel/UC5nc_ZtjKW1htCVZVRxlQAQ/videos";
     "nanobii" = "https://www.youtube.com/channel/UCz3hLJ8YpJSippp8LHjpwjg/videos";
+    "NeurofunkGrid" = "https://www.youtube.com/@NeurofunkGrid/videos";
     "NoCopyrightSounds" = "https://www.youtube.com/channel/UC_aEa8K-EOJ3D6gOs7HcyNg/videos";
     "NXS" = "https://www.youtube.com/channel/UCl4UOc8h1ZnO-inFPgAu7gw/videos";
     "Owata P" = "https://www.youtube.com/playlist?list=PLTHHOGhQjO3Lau2C605abjcHLV4L5n67x";
