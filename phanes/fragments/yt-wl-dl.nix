@@ -5,6 +5,8 @@ let
   downloadList = "${downloadDir}/wl.txt";
   cookiesCredential = "yt-cookies";
   cookiesSocket = "/var/run/yt-store-cookies.socket";
+  pythonPkg = pkgs.python3;
+  venvSetupCode = import ../../_common/helpers/gen-venv-setup.nix { inherit pythonPkg; };
 in
 {
   imports = [
@@ -25,7 +27,7 @@ in
       };
     };
     services."yt-store-cookies@" = {
-      description = "Stores incoming data in '${cookiesCredential}' systemd crediential (%i)";
+      description = "Store incoming data in '${cookiesCredential}' systemd crediential (%i)";
       serviceConfig = {
         ExecStart = "systemd-creds encrypt - /etc/credstore.encrypted/${cookiesCredential}";
         Type = "oneshot";
@@ -44,7 +46,6 @@ in
     services.yt-wl-dl = {
       after = [ "network.target" ];
       path = [
-        "/home/yt-wl-dl/.local"
         pkgs.ffmpeg
       ];
       upholds = [ "external.mount" ];
@@ -67,26 +68,30 @@ in
         ];
         LoadCredentialEncrypted = cookiesCredential;
         PrivateTmp = "yes";
+        StateDirectory = "yt-wl-dl";
       };
 
       script = ''
-        ${pkgs.python3.pkgs.pip}/bin/pip install --break-system-packages --user --force-reinstall https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz
+        cd $STATE_DIRECTORY
+        ${venvSetupCode}
+        pip install -U --pre "yt-dlp[default]"
+
+        DL_DIR="${downloadDir}"
+        DL_LIST="${downloadList}"
+        TEMP_DIR=${externalMount}/tmp/yt-wl
 
         # copy cookies to (private) temp because we need them to be writable
         COOKIES_FILE=/tmp/cookies.txt
         cat < $CREDENTIALS_DIRECTORY/${cookiesCredential} > $COOKIES_FILE
         new_wl="$(yt-dlp --cookies $COOKIES_FILE --flat-playlist --print id 'https://www.youtube.com/playlist?list=WL')"
         ${pkgs.netcat}/bin/nc -UN ${cookiesSocket} < $COOKIES_FILE
-        if [ "$(<wl.txt md5sum)" = "$(md5sum <<< "$new_wl")" ]; then
+        if [ "$(<"$DL_LIST" md5sum)" = "$(md5sum <<< "$new_wl")" ]; then
           echo "no new video IDs"
           exit
         fi
-        echo -n "$new_wl" > wl.txt
-        echo grabbed $(wc -l < wl.txt) video IDs
+        echo -n "$new_wl" > "$DL_LIST"
+        echo grabbed $(wc -l < "$DL_LIST") video IDs
 
-        DL_DIR="${downloadDir}"
-        DL_LIST="${downloadList}"
-        TEMP_DIR=${externalMount}/tmp/yt-wl
         mkdir -p "$TEMP_DIR"
 
         do_download() {
