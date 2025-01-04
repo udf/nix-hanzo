@@ -5,7 +5,7 @@ let
   fetchStateDirectoryName = "yt-wl-fetch";
   downloadList = "/var/lib/${fetchStateDirectoryName}/wl.txt";
   cookiesCredential = "yt-cookies";
-  cookiesSocket = "/var/run/yt-store-cookies.socket";
+  cookiesSocket = "/var/run/yt-wl/yt-store-cookies.socket";
   pythonPkg = pkgs.python3;
   venvSetupCode = import ../../_common/helpers/gen-venv-setup.nix { inherit pythonPkg; };
 in
@@ -15,7 +15,7 @@ in
   ];
 
   systemd = {
-    # Use a socket for storing the cookies in system credentials so that it is write-only from the user
+    # Use a socket for storing the cookies in system credentials so that it is write-only for a normal user
     # (the only way to read the cookies is for systemd to pass it to the unit)
     sockets.yt-store-cookies = {
       wantedBy = [ "multi-user.target" ];
@@ -23,7 +23,8 @@ in
       socketConfig = {
         SocketUser = "sam";
         SocketGroup = "root";
-        SocketMode = "0600";
+        # warning: world writable! (but the parent directory is 0700)
+        SocketMode = "0606";
         Accept = "yes";
       };
     };
@@ -57,6 +58,7 @@ in
         DynamicUser = "yes";
         UMask = "0000";
         Nice = 19;
+        BindPaths = "${cookiesSocket}:/tmp/yt-store-cookies.socket";
         LoadCredentialEncrypted = cookiesCredential;
         PrivateTmp = "yes";
         StateDirectory = fetchStateDirectoryName;
@@ -74,6 +76,7 @@ in
         COOKIES_FILE=/tmp/cookies.txt
         cat < $CREDENTIALS_DIRECTORY/${cookiesCredential} > $COOKIES_FILE
         new_wl="$(yt-dlp --cookies $COOKIES_FILE --flat-playlist --print id 'https://www.youtube.com/playlist?list=WL')"
+        ${pkgs.netcat}/bin/nc -UN /tmp/yt-store-cookies.socket < $COOKIES_FILE
         if [ "$(<"$DL_LIST" md5sum)" = "$(echo -n "$new_wl" | md5sum)" ]; then
           echo "no new video IDs"
           exit
