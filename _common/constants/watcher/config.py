@@ -25,6 +25,7 @@ def systemd_should_ignore(e):
         'fstrim.service',
         'nix-gc.service',
         'yt-wl-dl.service',
+        'yt-wl-fetch.service',
         'flood-cleanup.service',
         'zpool-trim.service',
         'nextcloud-cron.service',

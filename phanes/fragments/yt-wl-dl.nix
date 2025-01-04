@@ -2,7 +2,8 @@
 let
   externalMount = "/external";
   downloadDir = "${externalMount}/downloads/yt";
-  downloadList = "${downloadDir}/wl.txt";
+  fetchStateDirectoryName = "yt-wl-fetch";
+  downloadList = "/var/lib/${fetchStateDirectoryName}/wl.txt";
   cookiesCredential = "yt-cookies";
   cookiesSocket = "/var/run/yt-store-cookies.socket";
   pythonPkg = pkgs.python3;
@@ -20,7 +21,7 @@ in
       wantedBy = [ "multi-user.target" ];
       listenStreams = [ cookiesSocket ];
       socketConfig = {
-        SocketUser = "yt-wl-dl";
+        SocketUser = "sam";
         SocketGroup = "root";
         SocketMode = "0600";
         Accept = "yes";
@@ -35,12 +36,58 @@ in
         StandardOutput = "socket";
       };
     };
-    timers.yt-wl-dl = {
+
+    # fetcher runs as a dynamic user (to avoid leaking cookies), every 10 minutes
+    timers.yt-wl-fetch = {
       wantedBy = [ "timers.target" ];
       timerConfig = {
         OnCalendar = "*:0/10";
         Persistent = true;
-        Unit = "yt-wl-dl.service";
+        Unit = "yt-wl-fetch.service";
+      };
+    };
+    services.yt-wl-fetch = {
+      after = [ "network.target" ];
+      upholds = [ "external.mount" ];
+      unitConfig = {
+        RequiresMountsFor = "/external";
+      };
+      serviceConfig = {
+        Type = "oneshot";
+        DynamicUser = "yes";
+        UMask = "0000";
+        Nice = 19;
+        LoadCredentialEncrypted = cookiesCredential;
+        PrivateTmp = "yes";
+        StateDirectory = fetchStateDirectoryName;
+        StateDirectoryMode = "744";
+      };
+
+      script = ''
+        cd "$STATE_DIRECTORY"
+        ${venvSetupCode}
+        pip --cache-dir="$STATE_DIRECTORY/.cache" install --force-reinstall https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz
+
+        DL_LIST="${downloadList}"
+
+        # copy cookies to (private) temp because we need them to be writable
+        COOKIES_FILE=/tmp/cookies.txt
+        cat < $CREDENTIALS_DIRECTORY/${cookiesCredential} > $COOKIES_FILE
+        new_wl="$(yt-dlp --cookies $COOKIES_FILE --flat-playlist --print id 'https://www.youtube.com/playlist?list=WL')"
+        if [ "$(<"$DL_LIST" md5sum)" = "$(echo -n "$new_wl" | md5sum)" ]; then
+          echo "no new video IDs"
+          exit
+        fi
+        echo -n "$new_wl" > "$DL_LIST"
+        echo grabbed $(grep ^ "$DL_LIST" | wc -l) video IDs
+      '';
+    };
+
+    # downloader runs as yt-wl-dl, if the list (from the fetcher's private state) was changed
+    paths.yt-wl-dl = {
+      wantedBy = [ "default.target" ];
+      pathConfig = {
+        PathModified = downloadList;
       };
     };
     services.yt-wl-dl = {
@@ -58,6 +105,7 @@ in
         WorkingDirectory = downloadDir;
         UMask = "0000";
         Nice = 19;
+        BindReadOnlyPaths = "${downloadList}:/tmp/wl.txt";
         ExecStartPost = lib.escapeShellArgs [
           "${pkgs.python3}/bin/python"
           "${../scripts/yt-wl-clean.py}"
@@ -66,31 +114,19 @@ in
           "--trash-dir"
           "${externalMount}/downloads/.stversions/yt"
         ];
-        LoadCredentialEncrypted = cookiesCredential;
         PrivateTmp = "yes";
         StateDirectory = "yt-wl-dl";
+        StateDirectoryMode = "744";
       };
 
       script = ''
-        cd $STATE_DIRECTORY
-        ${venvSetupCode}
-        pip install -U --pre "yt-dlp[default]"
-
         DL_DIR="${downloadDir}"
-        DL_LIST="${downloadList}"
+        DL_LIST="/tmp/wl.txt"
         TEMP_DIR=${externalMount}/tmp/yt-wl
 
-        # copy cookies to (private) temp because we need them to be writable
-        COOKIES_FILE=/tmp/cookies.txt
-        cat < $CREDENTIALS_DIRECTORY/${cookiesCredential} > $COOKIES_FILE
-        new_wl="$(yt-dlp --cookies $COOKIES_FILE --flat-playlist --print id 'https://www.youtube.com/playlist?list=WL')"
-        ${pkgs.netcat}/bin/nc -UN ${cookiesSocket} < $COOKIES_FILE
-        if [ "$(<"$DL_LIST" md5sum)" = "$(md5sum <<< "$new_wl")" ]; then
-          echo "no new video IDs"
-          exit
-        fi
-        echo -n "$new_wl" > "$DL_LIST"
-        echo grabbed $(wc -l < "$DL_LIST") video IDs
+        cd $STATE_DIRECTORY
+        ${venvSetupCode}
+        pip install --force-reinstall https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz
 
         mkdir -p "$TEMP_DIR"
 
@@ -118,6 +154,7 @@ in
 
         do_download wl 1440
         do_download wl_720 720
+        cat < "$DL_LIST" > "$DL_DIR/wl.txt"
         rm -fr "$TEMP_DIR"
       '';
     };
