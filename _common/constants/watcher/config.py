@@ -30,7 +30,8 @@ def systemd_should_ignore(e):
         'zpool-trim.service',
         'nextcloud-cron.service',
         'szuru-ocrbot.service',
-        'nextcloud-preview-gen.service'
+        'nextcloud-preview-gen.service',
+        'NetworkManager-dispatcher.service',
       }
       or (
         re.match(r'music-dl(-.+)?\.(service|target)', unit)
