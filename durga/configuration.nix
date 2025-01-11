@@ -80,7 +80,7 @@
     # so switch everything to docker
     docker = {
       enable = true;
-      storageDriver = "btrfs";
+      storageDriver = "overlay2";
     };
     arion.backend = "docker";
     oci-containers.backend = "docker";
