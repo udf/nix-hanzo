@@ -6,6 +6,7 @@ let
 in
 {
   imports = [
+    <nixos-hardware/raspberry-pi/4>
     (import ../_autoload.nix ./.)
   ];
 
@@ -63,7 +64,14 @@ in
   powerManagement.cpuFreqGovernor = "ondemand";
 
   # Required for the Wireless firmware
-  hardware.enableRedistributableFirmware = true;
+  hardware = {
+    enableRedistributableFirmware = true;
+    raspberry-pi."4".apply-overlays-dtmerge.enable = true;
+    deviceTree = {
+      enable = true;
+      filter = "*rpi-4-*.dtb";
+    };
+  };
   nixpkgs.config.allowUnfree = true;
   system.stateVersion = "23.11";
 
@@ -102,6 +110,8 @@ in
   environment.systemPackages = with pkgs; [
     sshfs
     wol
+    libraspberrypi
+    raspberrypi-eeprom
   ];
 
 }
