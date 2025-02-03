@@ -57,6 +57,7 @@ in
     #!${pkgs.bash}/bin/bash
     echo $NOTIFYTYPE on $1 | ${pkgs.systemd}/bin/systemd-cat -p warning -t upsmon-notify
     if [ "$NOTIFYTYPE" == "ONBATT" ]; then
+      sleep 5
       ${pkgs.nut}/bin/upscmd -u sam -p '${private.upsd.pw}' $1 beeper.toggle
     fi
   '';
