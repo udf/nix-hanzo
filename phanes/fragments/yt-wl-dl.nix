@@ -48,7 +48,7 @@ in
       };
     };
     services.yt-wl-fetch = {
-      after = [ "network.target" ];
+      after = [ "network.target" "yt-wl-dl.service" ];
       upholds = [ "external.mount" ];
       unitConfig = {
         RequiresMountsFor = "/external";
