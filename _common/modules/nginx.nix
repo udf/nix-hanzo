@@ -110,7 +110,7 @@ in
             '"$request" $body_bytes_sent "$http_referer" '
             '"$http_user_agent" "$http_x_forwarded_for"';
 
-          #js_import sl_helper from ${../constants/secure_link_helper.js};
+          #js_import sl_helper from ${../helpers/secure_link_helper.js};
 
           #js_set $sl_arg_token sl_helper.arg_token;
           #js_set $sl_hashable_url sl_helper.hashable_url;
