@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   serverIP = "192.168.0.5";
+  httpsPort = 16443;
 in
 {
   virtualisation.oci-containers.containers.pihole = {
@@ -8,8 +9,7 @@ in
     ports = [
       "53:53/tcp"
       "53:53/udp"
-      "80:80"
-      "443:443"
+      "${toString httpsPort}:${toString httpsPort}"
     ];
     volumes = [
       "/var/lib/pihole/:/etc/pihole/"
@@ -18,6 +18,7 @@ in
     environment = {
       ServerIP = serverIP;
       TZ = "Africa/Johannesburg";
+      WEB_PORT = toString httpsPort;
     };
     extraOptions = [
       "--cap-add=NET_ADMIN"
@@ -30,7 +31,7 @@ in
   users.users.sam.extraGroups = [ "podman" ];
 
   networking.firewall = {
-    allowedTCPPorts = [ 53 80 443 ];
+    allowedTCPPorts = [ 53 httpsPort ];
     allowedUDPPorts = [ 53 ];
   };
 }
