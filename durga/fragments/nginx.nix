@@ -39,7 +39,7 @@ in
           ${util.denyWriteMethods}
           autoindex on;
           auth_basic "Keep trying";
-          auth_basic_user_file /var/lib/nginx/auth/files.htpasswd;
+          auth_basic_user_file /var/lib/secrets/nginx/auth/files.htpasswd;
         '';
       };
     };
@@ -54,7 +54,7 @@ in
           ${util.denyWriteMethods}
           autoindex on;
           auth_basic "An otter in my water?";
-          auth_basic_user_file /var/lib/nginx/auth/music.htpasswd;
+          auth_basic_user_file /var/lib/secrets/nginx/auth/music.htpasswd;
         '';
       };
     };

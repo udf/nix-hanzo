@@ -81,7 +81,7 @@ in
 
     users.groups.acme.members = [ "nginx" ];
 
-    systemd.services.nginx.serviceConfig.EnvironmentFile = "/var/lib/nginx/nginx.env";
+    systemd.services.nginx.serviceConfig.EnvironmentFile = "/var/lib/secrets/nginx/nginx.env";
 
     services.nginx = {
       enable = true;
@@ -184,7 +184,7 @@ in
 
                 ${optionalString opts.useAuth ''
                 auth_basic "${opts.authMessage}";
-                auth_basic_user_file /var/lib/nginx/auth/${path}.htpasswd;
+                auth_basic_user_file /var/lib/secrets/nginx/auth/${path}.htpasswd;
                 ''}
 
                 try_files /dev/null @auth_success;
