@@ -1,80 +1,13 @@
 { config, lib, pkgs, ... }:
 with lib;
 let
-  statusCodes = {
-    "400" = "Bad Request";
-    "401" = "Unauthorized";
-    "402" = "Payment Required";
-    "403" = "Forbidden";
-    "404" = "Not Found";
-    "405" = "Method Not Allowed";
-    "406" = "Not Acceptable";
-    "407" = "Proxy Authentication Required";
-    "408" = "Request Timeout";
-    "409" = "Conflict";
-    "410" = "Gone";
-    "411" = "Length Required";
-    "412" = "Precondition Failed";
-    "413" = "Payload Too Large";
-    "414" = "Request URI Too Long";
-    "415" = "Unsupported Media Type";
-    "416" = "Requested Range Not Satisfiable";
-    "417" = "Expectation Failed";
-    "418" = "I'm a teapot";
-    "421" = "Misdirected Request";
-    "422" = "Unprocessable Entity";
-    "423" = "Locked";
-    "424" = "Failed Dependency";
-    "425" = "Too Early";
-    "426" = "Upgrade Required";
-    "428" = "Precondition Required";
-    "429" = "Too Many Requests";
-    "431" = "Request Header Fields Too Large";
-    "451" = "Unavailable For Legal Reasons";
-    "500" = "Internal Server Error";
-    "501" = "Not Implemented";
-    "502" = "Bad Gateway";
-    "503" = "Service Unavailable";
-    "504" = "Gateway Timeout";
-    "505" = "HTTP Version Not Supported";
-    "506" = "Variant Also Negotiates";
-    "507" = "Insufficient Storage";
-    "508" = "Loop Detected";
-    "510" = "Not Extended";
-    "511" = "Network Authentication Required";
-    "599" = "Network Connect Timeout Error";
-  };
-
-  errorPageDirectives = "error_page ${concatStringsSep " " (attrNames statusCodes)} /error.html;";
-  errorPageOpts = {
-    extraConfig = ''
-      ${errorPageDirectives}
-    '';
-
-    locations = {
-      "= /error.html".extraConfig = ''
-        root /var/www;
-        ssi on;
-        internal;
-      '';
-
-      "~ \.(html|ico|webp|png)$".extraConfig = ''
-        root /var/www;
-        try_files $uri @default;
-      '';
-
-      "@default".extraConfig = "";
-    };
-  };
-  addErrorPageOpts = opts: mkMerge [ errorPageOpts opts ];
-  denyWriteMethods = "limit_except GET PROPFIND OPTIONS { deny all; }";
-
+  util = (import ../helpers/nginx-util.nix) { inherit lib; };
   proxyCfg = config.services.nginxProxy;
   proxyPathOpts = { name, ... }: {
     options = {
       serverHost = mkOption {
         description = "The host for the generated server block";
-        default = "${name}.durga.withsam.org";
+        default = "${name}.${proxyCfg.serverHost}";
         type = types.str;
       };
       port = mkOption {
@@ -124,29 +57,27 @@ let
 in
 {
   options.services.nginxProxy = {
+    enable = mkEnableOption "Enable custom nginx config intended for reverse proxy";
     paths = mkOption {
       description = "Set of paths that will be proxied (without leading/trailing slashes)";
       type = types.attrsOf (types.submodule proxyPathOpts);
       default = { };
     };
+    serverHost = mkOption {
+      description = "The top level hostname for the generated server block, this is also used for the useACMEHost option.";
+      type = types.str;
+    };
+    defaultRedirect = mkOption {
+      description = "Where to redirect requests to the top level serverHost domain";
+      default = "https://blog.withsam.org";
+      type = types.str;
+    };
   };
 
-  config = {
+  config = mkIf proxyCfg.enable {
     custom.ipset-block.exceptPorts = [ 443 ];
 
     networking.firewall.allowedTCPPorts = [ 80 443 ];
-
-    security.acme = {
-      acceptTerms = true;
-      certs = {
-        "durga.withsam.org" = {
-          email = "tabhooked@gmail.com";
-          extraDomainNames = [ "*.durga.withsam.org" "piracy.withsam.org" "music.withsam.org" "l.withsam.org" ];
-          dnsProvider = "ovh";
-          credentialsFile = "/var/lib/secrets/ovh.certs.secret";
-        };
-      };
-    };
 
     users.groups.acme.members = [ "nginx" ];
 
@@ -164,7 +95,7 @@ in
 
       appendHttpConfig =
         let
-          lines = concatStringsSep "\n" (mapAttrsToList (k: v: "${k} ${lib.strings.escapeNixString v};") statusCodes);
+          lines = concatStringsSep "\n" (mapAttrsToList (k: v: "${k} ${lib.strings.escapeNixString v};") util.statusCodes);
         in
         ''
           charset utf-8;
@@ -193,7 +124,7 @@ in
           "_" = {
             default = true;
             addSSL = true;
-            useACMEHost = "durga.withsam.org";
+            useACMEHost = proxyCfg.serverHost;
             root = "/var/www";
 
             extraConfig = ''
@@ -203,59 +134,22 @@ in
             '';
           };
 
-          "www.durga.withsam.org" = {
-            useACMEHost = "durga.withsam.org";
+          "www.${proxyCfg.serverHost}" = {
+            useACMEHost = proxyCfg.serverHost;
             forceSSL = true;
             extraConfig = ''
-              rewrite ^/$ https://durga.withsam.org permanent;
+              rewrite ^/$ https://${proxyCfg.serverHost} permanent;
             '';
           };
 
-          "durga.withsam.org" = addErrorPageOpts {
-            useACMEHost = "durga.withsam.org";
+          "${proxyCfg.serverHost}" = util.addErrorPageOpts {
+            useACMEHost = proxyCfg.serverHost;
             forceSSL = true;
             root = "/dev/null";
 
             locations = {
               "/".extraConfig = ''
-                rewrite ^ https://blog.withsam.org;
-              '';
-            };
-          };
-
-          "piracy.withsam.org" = addErrorPageOpts {
-            useACMEHost = "durga.withsam.org";
-            forceSSL = true;
-            root = "/var/www/files";
-            extraConfig = "dav_ext_methods PROPFIND OPTIONS;";
-            locations = {
-              "/".extraConfig = ''
-                ${denyWriteMethods}
-                # prevent viewing directories without auth
-                if ($request_method = PROPFIND) {
-                  rewrite ^(.*[^/])$ $1/ last; 
-                }
-              '';
-              "~ .*/$".extraConfig = ''
-                ${denyWriteMethods}
-                autoindex on;
-                auth_basic "Keep trying";
-                auth_basic_user_file /var/lib/nginx/auth/files.htpasswd;
-              '';
-            };
-          };
-
-          "music.withsam.org" = addErrorPageOpts {
-            useACMEHost = "durga.withsam.org";
-            forceSSL = true;
-            root = "/var/www/files/music";
-            extraConfig = "dav_ext_methods PROPFIND OPTIONS;";
-            locations = {
-              "/".extraConfig = ''
-                ${denyWriteMethods}
-                autoindex on;
-                auth_basic "An otter in my water?";
-                auth_basic_user_file /var/lib/nginx/auth/music.htpasswd;
+                rewrite ^ ${proxyCfg.defaultRedirect};
               '';
             };
           };
@@ -263,8 +157,8 @@ in
       ] ++ (
         mapAttrsToList
           (path: opts: {
-            "${opts.serverHost}" = addErrorPageOpts {
-              useACMEHost = "durga.withsam.org";
+            "${opts.serverHost}" = util.addErrorPageOpts {
+              useACMEHost = proxyCfg.serverHost;
               forceSSL = true;
               extraConfig = ''
                 ${optionalString (opts.secureLinks && opts.useAuth) ''
@@ -277,7 +171,7 @@ in
               locations."@default".extraConfig = ''
                 ${optionalString (opts.secureLinks && opts.useAuth && secureLinkEnable) ''
                 error_page 463 = @auth_success;
-                ${errorPageDirectives}
+                ${util.errorPageDirectives}
                 set $sl_param "${opts.secureLinkParam}";
                 secure_link $sl_arg_token;
                 secure_link_md5 $sl_hashable_url;
