@@ -15,8 +15,7 @@
       "/sync/frigate:/media/frigate"
       "/sync/frigate/cache:/tmp/cache"
     ];
-    environment = {
-    };
+    environment = { };
     extraOptions = [
       "--cap-add=CAP_PERFMON"
       "--device=/dev/dri/renderD128"
@@ -28,7 +27,19 @@
   users.users.sam.extraGroups = [ "podman" ];
 
   networking.firewall = {
-    allowedTCPPorts = [ 8971 5000 9 ];
+    allowedTCPPorts = [ 8971 9 ];
     allowedUDPPorts = [ 9 ];
+  };
+
+  services.nginxProxy.paths = {
+    "frigate" = {
+      port = 8971;
+      authMessage = "The eye is watching us.";
+      extraConfig = ''
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $http_connection;
+      '';
+    };
   };
 }
