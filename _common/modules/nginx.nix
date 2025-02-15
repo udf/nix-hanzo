@@ -39,21 +39,13 @@ let
         default = true;
         type = types.bool;
       };
-      secureLinks = mkOption {
-        description = "Whether or not to enable shareable secure linking via nginx's secure_link module, only works if authentication is enabled";
+      useAuthCookie = mkOption {
+        description = "Whether or not to store the auth header in a session cookie (to fix issues with subpar browsers not sending the auth header with every request)";
         default = false;
         type = types.bool;
       };
-      secureLinkParam = mkOption {
-        description = "The query parameter to use for the secure link token";
-        default = "sl_token";
-        type = types.str;
-      };
     };
   };
-
-  # TODO: fix njs build
-  secureLinkEnable = false;
 in
 {
   options.services.nginxProxy = {
@@ -81,16 +73,13 @@ in
 
     users.groups.acme.members = [ "nginx" ];
 
-    systemd.services.nginx.serviceConfig.EnvironmentFile = "/var/lib/secrets/nginx/nginx.env";
-
     services.nginx = {
       enable = true;
 
-      # TODO: fix njs build
-      # additionalModules = [ pkgs.nginxModules.njs ];
+      additionalModules = [ pkgs.nginxModules.lua ];
 
-      appendConfig = ''
-        env SL_SECRET_KEY;
+      commonHttpConfig = ''
+        lua_package_path "${pkgs.luaPackages.lua-resty-core}/lib/lua/5.2/?.lua;${pkgs.luaPackages.lua-resty-lrucache}/lib/lua/5.2/?.lua;;";
       '';
 
       appendHttpConfig =
@@ -109,13 +98,6 @@ in
           log_format   main '$remote_addr - $remote_user [$time_local] $status '
             '"$request" $body_bytes_sent "$http_referer" '
             '"$http_user_agent" "$http_x_forwarded_for"';
-
-          #js_import sl_helper from ${../helpers/secure_link_helper.js};
-
-          #js_set $sl_arg_token sl_helper.arg_token;
-          #js_set $sl_hashable_url sl_helper.hashable_url;
-          #js_set $sl_expected_hash sl_helper.expected_hash;
-          #js_set $sl_shareable_url sl_helper.shareable_url;
         '';
 
       virtualHosts = mkMerge ([
@@ -160,44 +142,29 @@ in
             "${opts.serverHost}" = util.addErrorPageOpts {
               useACMEHost = proxyCfg.serverHost;
               forceSSL = true;
-              extraConfig = ''
-                ${optionalString (opts.secureLinks && opts.useAuth) ''
-                set $sl_param "${opts.secureLinkParam}";
-                ''}
-                ${opts.extraServerConfig}
-              '';
-              locations."= /favicon.ico".extraConfig = "try_files /dev/null @default;";
-              locations."/".extraConfig = "try_files /dev/null @default;";
-              locations."@default".extraConfig = ''
-                ${optionalString (opts.secureLinks && opts.useAuth && secureLinkEnable) ''
-                error_page 463 = @auth_success;
-                ${util.errorPageDirectives}
-                set $sl_param "${opts.secureLinkParam}";
-                secure_link $sl_arg_token;
-                secure_link_md5 $sl_hashable_url;
-
-                set $skip_auth "$secure_link;$request_method";
-                if ($skip_auth = "1;GET") {
-                  return 463;
+              extraConfig = opts.extraServerConfig;
+              locations."= /favicon.ico".extraConfig = "try_files _ @default;";
+              locations."/".extraConfig = ''
+                ${optionalString (opts.useAuth && opts.useAuthCookie)''
+                rewrite_by_lua_block {
+                  local auth_cookie = ngx.var.cookie_nginx_auth
+                  local auth_header = ngx.var.http_authorization
+                  if not auth_header and auth_cookie then
+                    ngx.req.set_header("Authorization", auth_cookie)
+                  end
                 }
                 ''}
 
+                try_files _ @default;
+              '';
+              locations."@default".extraConfig = ''
                 ${optionalString opts.useAuth ''
                 auth_basic "${opts.authMessage}";
                 auth_basic_user_file /var/lib/secrets/nginx/auth/${path}.htpasswd;
                 ''}
 
-                try_files /dev/null @auth_success;
-              '';
-              locations."@auth_success".extraConfig = ''
-                ${optionalString (opts.secureLinks && opts.useAuth && secureLinkEnable) ''
-                set $provided_token $sl_arg_token;
-                if ($provided_token = "") {
-                  set $provided_token $sl_expected_hash;
-                }
-                if ($provided_token != $sl_expected_hash) {
-                  rewrite ^ $sl_shareable_url? redirect;
-                }
+                ${optionalString (opts.useAuth && opts.useAuthCookie)''
+                add_header Set-Cookie "nginx_auth=$http_authorization; Path=/; Secure";
                 ''}
 
                 proxy_pass http://${opts.host}:${toString opts.port};

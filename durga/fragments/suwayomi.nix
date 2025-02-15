@@ -36,8 +36,6 @@ in
     "suwayomi" = {
       port = PORT;
       authMessage = "*notices ur bulge* OwO, what's this?";
-      secureLinks = true;
-      secureLinkParam = "kawaii";
     };
   };
 }

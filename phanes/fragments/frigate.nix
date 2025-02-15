@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 {
   virtualisation.oci-containers.containers.frigate = {
-    image = "ghcr.io/blakeblackshear/frigate:0.14.1";
+    image = "ghcr.io/blakeblackshear/frigate:0.15.0";
     ports = [
       # "8971:8971" # Web UI
       "8971:5000" # Web UI (no auth)
@@ -34,6 +34,7 @@
   services.nginxProxy.paths = {
     "frigate" = {
       port = 8971;
+      useAuthCookie = true;
       authMessage = "The eye is watching us.";
       extraConfig = ''
         proxy_http_version 1.1;
