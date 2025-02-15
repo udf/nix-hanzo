@@ -46,6 +46,7 @@ let
       };
     };
   };
+  authCookieName = "nginx_auth";
 in
 {
   options.services.nginxProxy = {
@@ -76,10 +77,13 @@ in
     services.nginx = {
       enable = true;
 
-      additionalModules = [ pkgs.nginxModules.lua ];
+      additionalModules = [ pkgs.nginxModules.moreheaders ];
 
       commonHttpConfig = ''
-        lua_package_path "${pkgs.luaPackages.lua-resty-core}/lib/lua/5.2/?.lua;${pkgs.luaPackages.lua-resty-lrucache}/lib/lua/5.2/?.lua;;";
+        map $http_authorization $auth_header_from_cookie {
+          default "$http_authorization";
+          "" "$cookie_${authCookieName}";
+        }
       '';
 
       appendHttpConfig =
@@ -146,13 +150,7 @@ in
               locations."= /favicon.ico".extraConfig = "try_files _ @default;";
               locations."/".extraConfig = ''
                 ${optionalString (opts.useAuth && opts.useAuthCookie)''
-                rewrite_by_lua_block {
-                  local auth_cookie = ngx.var.cookie_nginx_auth
-                  local auth_header = ngx.var.http_authorization
-                  if not auth_header and auth_cookie then
-                    ngx.req.set_header("Authorization", auth_cookie)
-                  end
-                }
+                more_set_input_headers "Authorization: $auth_header_from_cookie";
                 ''}
 
                 try_files _ @default;
@@ -164,7 +162,7 @@ in
                 ''}
 
                 ${optionalString (opts.useAuth && opts.useAuthCookie)''
-                add_header Set-Cookie "nginx_auth=$http_authorization; Path=/; Secure";
+                add_header Set-Cookie "${authCookieName}=$http_authorization; Path=/; SameSite=Strict; Secure";
                 ''}
 
                 proxy_pass http://${opts.host}:${toString opts.port};
