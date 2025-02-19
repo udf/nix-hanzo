@@ -18,5 +18,7 @@
     zip
     atool
     unzip
+    pipx
+    expect
   ];
 }

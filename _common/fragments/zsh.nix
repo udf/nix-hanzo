@@ -70,6 +70,9 @@
       autoload edit-command-line; zle -N edit-command-line
       bindkey '^[e' edit-command-line
 
+      # Add Python package binaries to path
+      export PATH="$HOME/.local/bin:$PATH"
+
       # syntax highlighting plugin
       source "${pkgs.zsh-fast-syntax-highlighting}/share/zsh/site-functions/fast-syntax-highlighting.plugin.zsh"
 
