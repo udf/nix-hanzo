@@ -12,6 +12,7 @@
       "x-systemd.mount-timeout=5s"
       "x-systemd.rw-only"
       "nofail"
+      "noauto"
     ];
   };
 }
