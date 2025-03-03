@@ -6,6 +6,8 @@
     (import ../_autoload.nix ./.)
   ];
 
+  services.zfs.trim.enable = true;
+
   powerManagement.cpuFreqGovernor = "ondemand";
 
   services.logind = {
