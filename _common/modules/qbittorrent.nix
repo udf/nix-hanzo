@@ -62,6 +62,14 @@ in
         Number of files to allow qBittorrent to open.
       '';
     };
+
+    maxMemory = mkOption {
+      type = types.str;
+      default = "";
+      description = ''
+        Maximum amount of memory to use (set via systemd's unit MemoryHigh/MemoryMax options)
+      '';
+    };
   };
 
   config = mkIf cfg.enable {
@@ -88,6 +96,12 @@ in
         LimitNOFILE = cfg.openFilesLimit;
         IOSchedulingClass = "idle";
         IOSchedulingPriority = 7;
+      } // mkIf (cfg.maxMemory != "") {
+        MemoryAccounting = "true";
+        MemoryHigh = cfg.maxMemory;
+        MemoryMax = cfg.maxMemory;
+        MemorySwapMax = "0";
+        MemoryZSwapMax = "0";
       };
     };
 
