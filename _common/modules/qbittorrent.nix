@@ -96,7 +96,7 @@ in
         LimitNOFILE = cfg.openFilesLimit;
         IOSchedulingClass = "idle";
         IOSchedulingPriority = 7;
-      } // mkIf (cfg.maxMemory != "") {
+      } // optionalAttrs (cfg.maxMemory != "") {
         MemoryAccounting = "true";
         MemoryHigh = cfg.maxMemory;
         MemoryMax = cfg.maxMemory;
