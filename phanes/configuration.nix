@@ -22,7 +22,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.timeout = 1;
 
-  boot.kernelParams = [ "preempt=full" ];
+  boot.kernelParams = [ "preempt=full" "usbcore.autosuspend=-1" ];
   boot.kernel.sysctl = lib.mkForce {
     "vm.swappiness" = 15;
     "vm.overcommit_memory" = 1;
