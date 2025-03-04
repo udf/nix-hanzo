@@ -14,6 +14,11 @@
     port = 3000;
   };
 
+  networking.firewall = {
+    allowedTCPPorts = [ 32431 ];
+    allowedUDPPorts = [ 32431 ];
+  };
+
   users.users.sam.extraGroups = [ "qbittorrent" ];
 
   systemd.services.qbittorrent.unitConfig.RequiresMountsFor = "/backup/qbit";
