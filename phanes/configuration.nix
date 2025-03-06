@@ -27,6 +27,9 @@
     "vm.swappiness" = 15;
     "vm.overcommit_memory" = 1;
   };
+  boot.extraModprobeConfig = ''
+    options zfs zio_taskq_batch_pct=50
+  '';
 
   zramSwap = {
     enable = true;

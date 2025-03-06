@@ -22,7 +22,13 @@
     ];
   };
 
-  systemd.services.podman-frigate.serviceConfig.Nice = -9;
+  systemd.services.podman-frigate.serviceConfig = {
+    Nice = -20;
+    CPUSchedulingPolicy = "fifo";
+    CPUSchedulingPriority = 99;
+    IOSchedulingClass = "realtime";
+    IOSchedulingPriority = 0;
+  };
 
   users.users.sam.extraGroups = [ "podman" ];
 
