@@ -11,12 +11,14 @@ in
   options.services.watcher-bot = {
     plugins = mkOption {
       type = types.listOf types.str;
-      default = [ "systemd" "status" ];
+      default = [ ];
       description = "List of plugins to load";
     };
   };
 
   config = {
+    services.watcher-bot.plugins = [ "systemd" "status" ];
+
     systemd.services.watcher-bot = {
       description = "Watchdog Telegram Bot";
       after = [ "network.target" ];

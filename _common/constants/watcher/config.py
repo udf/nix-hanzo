@@ -6,6 +6,8 @@ owner = 232787997
 token = os.environ['TOKEN']
 
 flood_server_url = 'http://127.0.0.1:3000'
+flood_username = os.environ.get('FLOOD_USERNAME')
+flood_password = os.environ.get('FLOOD_PASSWORD')
 
 def systemd_should_ignore(e):
   source = e.get('_COMM') or e.get('SYSLOG_IDENTIFIER')

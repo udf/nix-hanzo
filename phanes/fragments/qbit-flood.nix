@@ -10,9 +10,11 @@
   services.flood = {
     enable = true;
     openFirewall = true;
-    host = "192.168.0.5";
+    host = "0.0.0.0";
     port = 3000;
   };
+
+  services.watcher-bot.plugins = [ "flood" ];
 
   networking.firewall = {
     allowedTCPPorts = [ 32431 ];

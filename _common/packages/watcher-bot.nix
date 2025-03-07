@@ -7,8 +7,8 @@ buildPythonPackage rec {
   src = fetchFromGitHub {
     owner = "udf";
     repo = "the-watcher";
-    rev = "71de380777b23189bfd8e94d6613d4a3bba684eb";
-    sha256 = "sha256-r8EpgOPsmP+XAvndQf/12XyZ9x7dYhl6/y0O3hFsFSA=";
+    rev = "fd5a79852507c794d05169fb31dc5362674bdc81";
+    sha256 = "sha256-CWD0JCCy6LC9yrOrhJ19YrD321zFJpmRlnUg8MWfLZ8=";
     fetchSubmodules = true;
   };
 
