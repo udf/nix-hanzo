@@ -9,8 +9,23 @@
 
   environment.systemPackages = [ pkgs.tailscale ];
 
-  networking.firewall = {
-    trustedInterfaces = [ "tailscale0" ];
-    allowedUDPPorts = [ config.services.tailscale.port ];
+  networking = {
+    networkmanager.dispatcherScripts = [
+      {
+        source = pkgs.writeText "up-udp-gro-forwarding" ''
+          if [ "$2" != "up" ]; then
+            logger "exit: event $2 != up"
+            exit
+          fi
+
+          ${lib.getExe pkgs.ethtool} -K $DEVICE_IFACE rx-udp-gro-forwarding on rx-gro-list off
+        '';
+        type = "basic";
+      }
+    ];
+    firewall = {
+      trustedInterfaces = [ "tailscale0" ];
+      allowedUDPPorts = [ config.services.tailscale.port ];
+    };
   };
 }
