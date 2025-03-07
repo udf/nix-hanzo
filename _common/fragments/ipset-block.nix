@@ -34,6 +34,7 @@ let
     "57678" = "CATTECHNOLOGIES-AS, HK";
     "58061" = "SCALAXY-AS, LV";
     "58461" = "CT-HANGZHOU-IDC No.288,Fu-chun Road, CN";
+    "60781" = "LEASEWEB-NL-AMS-01 Netherlands, NL";
     "61432" = "VAIZ-AS ITBks892, UA";
     "63949" = "AKAMAI-LINODE-AP Akamai Connected Cloud, SG";
     "132203" = "TENCENT-NET-AP-CN Tencent Building, Kejizhongyi Avenue, CN";
@@ -51,6 +52,7 @@ let
     "204428" = "SS-NET, BG";
     "207812" = "DM_AUTO, BG";
     "208091" = "XHOST-INTERNET-SOLUTIONS, GB";
+    "209132" = "AS209132, SC";
     "209588" = "FLYSERVERS-ASN, PA";
     "209605" = "HOSTBALTIC, LT";
     "211298" = "INTERNET-MEASUREMENT, GB";
