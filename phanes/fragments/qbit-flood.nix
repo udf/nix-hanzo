@@ -17,9 +17,9 @@
   environment.etc."qbit/on_done.sh".source = pkgs.writeScript "on_done.sh" ''
     #!${pkgs.bash}/bin/bash
     # on_done.sh "%N" "%F" "/path/to/dest/" {syncthing api key} {syncthing folder id}
+    echo "<4>Download completed: $1"
     cp -al "$2" "$3"
     ${lib.getExe pkgs.curl} -X POST -H "X-API-Key:$4" "http://localhost:8384/rest/db/scan?folder=$5"
-    echo "<4>Download completed: $1"
   '';
 
   networking.firewall = {
