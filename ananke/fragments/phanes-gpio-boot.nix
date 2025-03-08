@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   pythonPkg = pkgs.python3.withPackages (ps: with ps; [ gpiozero rpi-gpio ]);
-  gpioScript = pkgs.writeScript "get-banned-nets.py" ''
+  gpioScript = pkgs.writeScript "gpio-pwr-btn.py" ''
     #!${pythonPkg}/bin/python
     import time
     from gpiozero import DigitalOutputDevice
