@@ -12,7 +12,9 @@
 let
   pname = "nicotine-plus";
   version = "3.3.8";
+  unstablePkgs = import <nixpkgs-unstable> { };
 in
+assert unstablePkgs.nicotine-plus.version == version;
 python3Packages.buildPythonApplication {
   inherit pname version;
   pyproject = true;
