@@ -61,6 +61,8 @@ in
     ${lib.getExe pkgs.curl} -X POST -H "X-API-Key:$2" "http://localhost:8384/rest/db/scan?folder=$3"
   '';
 
+  environment.etc."nicotine/plugins".source = "${../../_common/helpers/nicotine-plugins}";
+
   fonts.packages = with pkgs; [ noto-fonts noto-fonts-cjk-sans ];
 
   programs.dconf.enable = true;

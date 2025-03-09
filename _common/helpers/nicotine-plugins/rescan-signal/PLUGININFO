@@ -1,0 +1,4 @@
+Version = "2025-03-09"
+Authors = ["Samara"]
+Name = "Rescan on SIGUSR1"
+Description = "Queues a share rescan when SIGUSR1 is sent to the nicotine process. Note that if rescans are queued while one is taking place, shares will be scanned again once the current scan finishes."
