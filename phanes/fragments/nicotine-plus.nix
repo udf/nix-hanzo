@@ -2,8 +2,7 @@
 let
   userId = toString config.users.users.nicotine.uid;
   XDisplay = "100";
-  unstablePkgs = import <nixpkgs-unstable> { };
-  nicotinePkg = unstablePkgs.nicotine-plus;
+  nicotinePkg = (pkgs.callPackage ../../_common/packages/nicotine-plus-gtk3.nix { });
 in
 {
   # TODO: move this to a generic module if more gui users are needed
