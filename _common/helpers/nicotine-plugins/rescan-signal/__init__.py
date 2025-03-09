@@ -10,10 +10,11 @@ class Plugin(BasePlugin):
     self.rescan_queued = False
     self._orig_usr1_handler = signal.getsignal(signal.SIGUSR1)
     signal.signal(signal.SIGUSR1, self.rescan_shares)
-    events.connect("shares-ready", self.shares_ready)
+    events.connect('shares-ready', self.shares_ready)
 
   def disable(self):
     signal.signal(signal.SIGUSR1, self._orig_usr1_handler)
+    events.disconnect('shares-ready', self.shares_ready)
 
   def _log(self, msg, only_print=False):
     if not only_print:
