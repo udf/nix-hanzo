@@ -15,8 +15,9 @@ class Plugin(BasePlugin):
   def disable(self):
     signal.signal(signal.SIGUSR1, self._orig_usr1_handler)
 
-  def _log(self, msg):
-    self.log(msg)
+  def _log(self, msg, only_print=False):
+    if not only_print:
+      self.log(msg)
     print(f'<4>{msg}')
 
   def rescan_shares(self, sig, frame):
@@ -33,4 +34,4 @@ class Plugin(BasePlugin):
       self.rescan_queued = False
       self.core.shares.rescan_shares()
       return
-    self._log('Share rescan complete!')
+    self._log('Share rescan complete!', only_print=True)
