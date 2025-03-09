@@ -2,19 +2,8 @@
 let
   userId = toString config.users.users.nicotine.uid;
   XDisplay = "100";
-  nicotinePkg = pkgs.nicotine-plus.overrideAttrs (oldAttrs: rec {
-    version = "3.2.9";
-    src = pkgs.fetchFromGitHub {
-      owner = "nicotine-plus";
-      repo = "nicotine-plus";
-      rev = "refs/tags/${version}";
-      sha256 = "sha256-PxtHsBbrzcIAcLyQKD9DV8yqf3ljzGS7gT/ZRfJ8qL4=";
-    };
-
-    postInstall = ''
-      ln -s $out/bin/nicotine $out/bin/nicotine-plus
-    '';
-  });
+  unstablePkgs = import <nixpkgs-unstable> { };
+  nicotinePkg = unstablePkgs.nicotine-plus;
 in
 {
   # TODO: move this to a generic module if more gui users are needed
@@ -22,6 +11,15 @@ in
     description = "Xpra for nicotine";
     after = [ "network.target" ];
     wantedBy = [ "multi-user.target" ];
+
+    environment = {
+      XDG_RUNTIME_DIR = "/run/user/${userId}";
+      GTK_A11Y = "none";
+    };
+
+    unitConfig = {
+      RequiresMountsFor = "/backup/music /backup/soulseek-downloads";
+    };
 
     serviceConfig = {
       User = "nicotine";
@@ -42,13 +40,13 @@ in
           --speaker=off \
           --mdns=no \
           --webcam=no \
-          --pulseaudio=no \
+          --audio=no \
           --html=off \
           --printing=no \
-          --env="XDG_DATA_DIRS=${pkgs.gnome.adwaita-icon-theme}/share" \
-          --env="XCURSOR_PATH=/home/nicotine/.icons:${pkgs.gnome.adwaita-icon-theme}/share/icons" \
+          --env="XDG_DATA_DIRS=${pkgs.adwaita-icon-theme}/share" \
+          --env="XCURSOR_PATH=/home/nicotine/.icons:${pkgs.adwaita-icon-theme}/share/icons" \
           --env="GDK_PIXBUF_MODULE_FILE=${pkgs.librsvg.out}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache" \
-          --start-child="${nicotinePkg}/bin/nicotine-plus" \
+          --start-child="${nicotinePkg}/bin/nicotine" \
           --exit-with-children=yes \
           :${XDisplay}
       '';
@@ -56,15 +54,26 @@ in
     };
   };
 
-  fonts.packages = with pkgs; [ noto-fonts noto-fonts-cjk ];
+  environment.etc."nicotine/on_done.sh".source = pkgs.writeScript "on_done.sh" ''
+    #!${pkgs.bash}/bin/bash
+    # on_done.sh "$" {syncthing api key} {syncthing folder id}
+    echo "<4>Folder download completed: $1"
+    ${lib.getExe pkgs.curl} -X POST -H "X-API-Key:$2" "http://localhost:8384/rest/db/scan?folder=$3"
+  '';
+
+  fonts.packages = with pkgs; [ noto-fonts noto-fonts-cjk-sans ];
+
+  programs.dconf.enable = true;
 
   networking.firewall.allowedTCPPorts = [ 2234 ];
 
+  users.groups.nicotine = { };
   users.users.nicotine = {
     isNormalUser = true;
     createHome = true;
+    linger = true;
     openssh.authorizedKeys.keys = config.users.users.sam.openssh.authorizedKeys.keys;
     packages = [ pkgs.xpra ];
-    group = "cl_music";
+    group = "nicotine";
   };
 }
