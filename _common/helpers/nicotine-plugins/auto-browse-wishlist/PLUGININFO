@@ -1,0 +1,4 @@
+Version = "2025-03-10"
+Authors = ["Samara"]
+Name = "Auto browse wishlist"
+Description = "Automatically loads user's shares from wishlist results"
