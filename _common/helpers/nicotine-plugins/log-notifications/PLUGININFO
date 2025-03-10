@@ -1,0 +1,4 @@
+Version = "2025-03-10"
+Authors = ["Samara"]
+Name = "Log notifications"
+Description = "Prints some notifications to the console"

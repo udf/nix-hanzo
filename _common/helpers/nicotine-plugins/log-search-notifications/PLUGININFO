@@ -1,4 +1,0 @@
-Version = "2025-03-10"
-Authors = ["Samara"]
-Name = "Log search notifications"
-Description = "Prints wishlist notifications to the console"

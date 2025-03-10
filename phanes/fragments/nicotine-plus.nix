@@ -53,13 +53,6 @@ in
     };
   };
 
-  environment.etc."nicotine/on_done.sh".source = pkgs.writeScript "on_done.sh" ''
-    #!${pkgs.bash}/bin/bash
-    # on_done.sh "$" {syncthing api key} {syncthing folder id}
-    echo "<4>Folder download completed: $1"
-    ${lib.getExe pkgs.curl} -X POST -H "X-API-Key:$2" "http://localhost:8384/rest/db/scan?folder=$3"
-  '';
-
   environment.etc."nicotine/plugins".source = "${../../_common/helpers/nicotine-plugins}";
 
   fonts.packages = with pkgs; [ noto-fonts noto-fonts-cjk-sans ];
