@@ -11,4 +11,4 @@ class Plugin(BasePlugin):
     events.disconnect('show-search-notification', self.on_show_search_notification)
 
   def on_show_search_notification(self, search_token, message, title=None):
-    print(f'<4>Wishlist result found:\n{search_token}')
+    print(f'<4>Wishlist result found:\n{message}')
