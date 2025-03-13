@@ -20,9 +20,7 @@ in
     gid = 8008;
   };
 
-  services.watcher-bot.plugins = lib.mkOptionDefault [
-    "${../../_common/constants/watcher}/szuru_ip"
-  ];
+  services.watcher-bot.plugins = [ "${../../_common/constants/watcher}/szuru_ip" ];
   systemd.services.watcher-bot.environment = {
     IPASN_DB = "${../../_common/constants/ipasn.dat.gz}";
     ASNAMES_JSON = "${../../_common/constants/asnames.json}";

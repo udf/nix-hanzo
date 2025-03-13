@@ -7,9 +7,7 @@ in
     ../modules/hath.nix
   ];
 
-  services.watcher-bot.plugins = lib.mkOptionDefault [
-    "${../../_common/constants/watcher}/hath_dl_done"
-  ];
+  services.watcher-bot.plugins = [ "${../../_common/constants/watcher}/hath_dl_done" ];
 
   users.groups.syncthing.members = [ "hath" ];
 

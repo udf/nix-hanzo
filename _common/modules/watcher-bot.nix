@@ -9,15 +9,20 @@ let
 in
 {
   options.services.watcher-bot = {
+    defaultPlugins = mkOption {
+      type = types.listOf types.str;
+      default = [ ];
+      description = "List of plugins to load first";
+    };
     plugins = mkOption {
       type = types.listOf types.str;
       default = [ ];
-      description = "List of plugins to load";
+      description = "List of extra plugins to load";
     };
   };
 
   config = {
-    services.watcher-bot.plugins = [ "systemd" "status" ];
+    services.watcher-bot.defaultPlugins = [ "systemd" "status" ];
 
     systemd.services.watcher-bot = {
       description = "Watchdog Telegram Bot";
@@ -35,7 +40,7 @@ in
         Restart = "always";
         RestartSec = 5;
         WorkingDirectory = "/home/watcher/";
-        ExecStart = "${python-pkg}/bin/python -m watcher-bot ${concatStringsSep " " cfg.plugins}";
+        ExecStart = "${python-pkg}/bin/python -m watcher-bot ${concatStringsSep " " (cfg.defaultPlugins ++ cfg.plugins)}";
       };
     };
 
