@@ -1,5 +1,5 @@
 { config, lib, pkgs, ... }:
-let 
+let
   serverHost = "durga.withsam.org";
   util = (import ../../_common/helpers/nginx-util.nix) { inherit lib; };
 in
@@ -14,7 +14,12 @@ in
     certs = {
       "${serverHost}" = {
         email = "tabhooked@gmail.com";
-        extraDomainNames = [ "*.${serverHost}" "piracy.withsam.org" "music.withsam.org" "l.withsam.org" ];
+        extraDomainNames = [
+          "*.${serverHost}"
+          "piracy.withsam.org"
+          "music.withsam.org"
+          "l.withsam.org"
+        ];
         dnsProvider = "ovh";
         credentialsFile = "/var/lib/secrets/ovh.certs.secret";
       };
