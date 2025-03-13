@@ -20,9 +20,7 @@ let
     "37963" = "ALIBABA-CN-NET Hangzhou Alibaba Advertising Co.,Ltd., CN";
     "38186" = "FTG-AS-AP Forewin Telecom Group Limited, ISP at, HK";
     "48090" = "PPTECHNOLOGY, GB";
-    "49202" = "KISARA-AS, RU";
     "49581" = "FERDINANDZINK, DE";
-    "49901" = "KUIPER-AS, GB";
     "50867" = "HOSTKEY-RU-AS, NL";
     "51167" = "CONTABO, DE";
     "51396" = "PFCLOUD, DE";
@@ -51,7 +49,6 @@ let
     "202425" = "INT-NETWORK, SC";
     "204428" = "SS-NET, BG";
     "207812" = "DM_AUTO, BG";
-    "208091" = "XHOST-INTERNET-SOLUTIONS, GB";
     "209132" = "AS209132, SC";
     "209588" = "FLYSERVERS-ASN, PA";
     "209605" = "HOSTBALTIC, LT";
@@ -59,15 +56,15 @@ let
     "211619" = "MAXKO, HR";
     "211680" = "AS-BITSIGHT, PT";
     "211736" = "FDN3, UA";
-    "212482" = "XHOST-INTERNET-SOLUTIONS, GB";
     "215292" = "GRAVHOSTING, GB";
-    "216354" = "MISAKAF-NET, GB";
+    "327996" = "ACCELERIT, ZA";
     "328543" = "sun-asn, SC";
     "396982" = "GOOGLE-CLOUD-PLATFORM, US";
     "398324" = "CENSYS-ARIN-01, US";
     "398705" = "CENSYS-ARIN-02, US";
     "398722" = "CENSYS-ARIN-03, US";
     "400161" = "HAWAIIRESEARCH, US";
+    "401120" = "CHEAPY-HOST, US";
   };
   getBannedNetsScript =
     let
