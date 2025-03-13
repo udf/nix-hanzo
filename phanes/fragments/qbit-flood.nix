@@ -27,6 +27,8 @@
     allowedUDPPorts = [ 32431 ];
   };
 
+  custom.ipset-block.exceptPorts = [ 32431 ];
+
   users.users.sam.extraGroups = [ "qbittorrent" ];
 
   systemd.services.qbittorrent.unitConfig.RequiresMountsFor = "/backup/qbit";

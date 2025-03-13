@@ -37,6 +37,9 @@
   };
 
   services.openssh.enable = true;
+  custom.ipset-block = {
+    enable = true;
+  };
 
   users.users.sam.extraGroups = [ "networkmanager" ];
   networking = {

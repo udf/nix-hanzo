@@ -60,6 +60,7 @@ in
   programs.dconf.enable = true;
 
   networking.firewall.allowedTCPPorts = [ 2234 ];
+  custom.ipset-block.exceptPorts = [ 2234 ];
 
   users.groups.nicotine = { };
   users.users.nicotine = {
