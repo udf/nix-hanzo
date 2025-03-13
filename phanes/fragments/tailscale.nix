@@ -9,6 +9,8 @@
 
   environment.systemPackages = [ pkgs.tailscale ];
 
+  custom.ipset-block.exceptPorts = [ config.services.tailscale.port ];
+
   networking = {
     networkmanager.dispatcherScripts = [
       {

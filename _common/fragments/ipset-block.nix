@@ -4,12 +4,14 @@ let
   cfg = config.custom.ipset-block;
   ipsetName = "badnets";
   bannedASNs = {
+    "2637" = "GEORGIA-TECH, US";
     "2856" = "BT-UK-AS BTnet UK Regional network, GB";
     "4134" = "CHINANET-BACKBONE No.31,Jin-rong Street, CN";
     "4837" = "CHINA169-BACKBONE CHINA UNICOM China169 Backbone, CN";
     "9009" = "M247, RO";
     "9232" = "NTTE-AS Ntte Global Network Brand Name, HK";
     "9808" = "CHINAMOBILE-CN China Mobile Communications Group Co., Ltd., CN";
+    "9829" = "BSNL-NIB National Internet Backbone, IN";
     "14061" = "DIGITALOCEAN-ASN, US";
     "16276" = "OVH, FR";
     "16509" = "AMAZON-02, US";
@@ -59,6 +61,7 @@ let
     "215292" = "GRAVHOSTING, GB";
     "327996" = "ACCELERIT, ZA";
     "328543" = "sun-asn, SC";
+    "329197" = "TForge, ZA";
     "396982" = "GOOGLE-CLOUD-PLATFORM, US";
     "398324" = "CENSYS-ARIN-01, US";
     "398705" = "CENSYS-ARIN-02, US";
