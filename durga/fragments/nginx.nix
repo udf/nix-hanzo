@@ -4,6 +4,8 @@ let
   util = (import ../../_common/helpers/nginx-util.nix) { inherit lib; };
 in
 {
+  custom.ipset-block.exceptPorts = [ 443 ];
+
   services.nginxProxy = {
     enable = true;
     serverHost = serverHost;

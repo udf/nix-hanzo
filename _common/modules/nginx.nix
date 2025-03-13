@@ -68,8 +68,6 @@ in
   };
 
   config = mkIf proxyCfg.enable {
-    custom.ipset-block.exceptPorts = [ 443 ];
-
     networking.firewall.allowedTCPPorts = [ 80 443 ];
 
     users.groups.acme.members = [ "nginx" ];
