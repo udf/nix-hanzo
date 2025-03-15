@@ -22,7 +22,7 @@ in
 
   services.nginx = {
     commonHttpConfig = ''
-      proxy_cache_path ${mountPoint}/cache keys_zone=ramcache:100m max_size=7500m; 
+      proxy_cache_path ${mountPoint}/cache keys_zone=ramcache:100m max_size=7500m inactive=7d; 
       proxy_temp_path ${mountPoint}/temp;
     '';
   };
