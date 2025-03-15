@@ -35,7 +35,7 @@ in
         cd "${SRC_DIR}"
         echo BUILD_INFO=$VERSION > /run/szuru.env
         export BUILD_INFO=$(${pkgs.git}/bin/git describe --always --dirty --long --tags)
-        ${genArionCmd "up --build --wait"}
+        ${genArionCmd "up --build --force-recreate --wait"}
       '';
     in
     {
@@ -134,6 +134,9 @@ in
         proxy_set_header X-Scheme $scheme;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Script-Name /szuru;
+        proxy_connect_timeout 10s;
+        proxy_send_timeout 10s;
+        proxy_read_timeout 10s;
       '';
       extraServerConfig = ''
         client_max_body_size 25M;
