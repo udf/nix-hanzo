@@ -7,7 +7,9 @@ let
     "2637" = "GEORGIA-TECH, US";
     "2856" = "BT-UK-AS BTnet UK Regional network, GB";
     "4134" = "CHINANET-BACKBONE No.31,Jin-rong Street, CN";
+    "4766" = "KIXS-AS-KR Korea Telecom, KR";
     "4837" = "CHINA169-BACKBONE CHINA UNICOM China169 Backbone, CN";
+    "8075" = "MICROSOFT-CORP-MSN-AS-BLOCK, US";
     "9009" = "M247, RO";
     "9232" = "NTTE-AS Ntte Global Network Brand Name, HK";
     "9808" = "CHINAMOBILE-CN China Mobile Communications Group Co., Ltd., CN";
@@ -21,7 +23,9 @@ let
     "25820" = "IT7NET, CA";
     "37963" = "ALIBABA-CN-NET Hangzhou Alibaba Advertising Co.,Ltd., CN";
     "38186" = "FTG-AS-AP Forewin Telecom Group Limited, ISP at, HK";
+    "45102"= "ALIBABA-CN-NET Alibaba US Technology Co., Ltd., CN";
     "48090" = "PPTECHNOLOGY, GB";
+    "48266" = "AS-CATIXS, GB";
     "49581" = "FERDINANDZINK, DE";
     "50867" = "HOSTKEY-RU-AS, NL";
     "51167" = "CONTABO, DE";
@@ -36,6 +40,7 @@ let
     "58461" = "CT-HANGZHOU-IDC No.288,Fu-chun Road, CN";
     "60781" = "LEASEWEB-NL-AMS-01 Netherlands, NL";
     "61432" = "VAIZ-AS ITBks892, UA";
+    "63199" = "CDSC-AS1, US";
     "63949" = "AKAMAI-LINODE-AP Akamai Connected Cloud, SG";
     "132203" = "TENCENT-NET-AP-CN Tencent Building, Kejizhongyi Avenue, CN";
     "135377" = "UCLOUD-HK-AS-AP UCLOUD INFORMATION TECHNOLOGY HK LIMITED, HK";
