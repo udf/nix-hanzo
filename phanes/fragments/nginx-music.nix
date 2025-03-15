@@ -10,7 +10,7 @@ in
       forceSSL = true;
       root = "/var/www/music";
       locations = {
-        "~ .*/$".extraConfig = ''
+        "~ /$".extraConfig = ''
           autoindex on;
           auth_basic "Welcome to the sam zone";
           auth_basic_user_file /var/lib/secrets/nginx/auth/music.htpasswd;
