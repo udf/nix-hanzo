@@ -24,7 +24,7 @@ in
   users.extraUsers.yeetbot = {
     description = "I beat my yacht and i yeet my bot";
     home = "/home/yeetbot";
-    isNormalUser = true;
+    isSystemUser = true;
     group = "yeetbot";
     openssh.authorizedKeys.keys = config.users.users.sam.openssh.authorizedKeys.keys;
   };

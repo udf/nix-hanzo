@@ -76,7 +76,7 @@ in
   users.extraUsers.discord-music-embed = {
     description = "discord-music-embed user";
     home = "/home/discord-music-embed";
-    isNormalUser = true;
+    isSystemUser = true;
     group = "discord-music-embed";
     createHome = true;
   };

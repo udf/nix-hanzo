@@ -167,7 +167,7 @@ in
     description = "YT watch later downloader";
     home = "/home/yt-wl-dl";
     createHome = true;
-    isNormalUser = true;
+    isSystemUser = true;
     group = "syncthing";
     openssh.authorizedKeys.keys = config.users.users.sam.openssh.authorizedKeys.keys;
   };

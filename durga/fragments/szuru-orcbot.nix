@@ -41,7 +41,7 @@ in
   users.extraUsers.szocrbot = {
     description = "Szuru OCRbot user";
     home = "/home/szocrbot";
-    isNormalUser = true;
+    isSystemUser = true;
     group = "szocrbot";
   };
   users.groups.szocrbot = { };
