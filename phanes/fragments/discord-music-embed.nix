@@ -57,7 +57,7 @@ in
             }
             try_files _ @default;
           '';
-          "/cover/".extraConfig = ''
+          "^~ /cover/".extraConfig = ''
             alias ${coverCacheDir};
             try_files $uri @default;
           '';
