@@ -96,7 +96,7 @@ in
             default "Something went wrong";
           }
 
-          log_format main '$remote_addr ($http_x_forwarded_for) [$host] - $remote_user [$time_local] '
+          log_format main '$remote_addr ($http_x_forwarded_for) [$host] - $remote_user '
             '"$request" $status $body_bytes_sent '
             '"$http_referer" "$http_user_agent"';
           access_log syslog:server=unix:/dev/log main;
