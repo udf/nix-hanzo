@@ -12,6 +12,7 @@ let
     "8075" = "MICROSOFT-CORP-MSN-AS-BLOCK, US";
     "9009" = "M247, RO";
     "9232" = "NTTE-AS Ntte Global Network Brand Name, HK";
+    "9465" = "AGOTOZPTELTD-AS-AP AGOTOZ PTE. LTD., SG";
     "9808" = "CHINAMOBILE-CN China Mobile Communications Group Co., Ltd., CN";
     "9829" = "BSNL-NIB National Internet Backbone, IN";
     "14061" = "DIGITALOCEAN-ASN, US";
@@ -24,6 +25,7 @@ let
     "37963" = "ALIBABA-CN-NET Hangzhou Alibaba Advertising Co.,Ltd., CN";
     "38186" = "FTG-AS-AP Forewin Telecom Group Limited, ISP at, HK";
     "45102"= "ALIBABA-CN-NET Alibaba US Technology Co., Ltd., CN";
+    "45204" = "GEMNET-MN GEMNET LLC, MN";
     "48090" = "PPTECHNOLOGY, GB";
     "48266" = "AS-CATIXS, GB";
     "49581" = "FERDINANDZINK, DE";
