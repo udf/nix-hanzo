@@ -58,7 +58,7 @@ rec {
         internal;
       '';
 
-      "~ \.(html|ico|webp|png)$".extraConfig = ''
+      "~ \\.(html|ico|webp|png)$".extraConfig = ''
         root /var/www;
         try_files $uri @default;
       '';
