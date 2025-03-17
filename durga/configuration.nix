@@ -75,6 +75,10 @@
     arion
   ];
 
+  networking.firewall = {
+    trustedInterfaces = [ "docker0" ];
+  };
+
   virtualisation = {
     # container name dns resolution is absolutely busted on podman
     # so switch everything to docker
@@ -84,10 +88,5 @@
     };
     arion.backend = "docker";
     oci-containers.backend = "docker";
-  };
-
-  networking.nat = {
-    enable = true;
-    externalInterface = "enp0s3";
   };
 }
