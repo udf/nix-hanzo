@@ -60,6 +60,11 @@ in
       description = "The top level hostname for the generated server block, this is also used for the useACMEHost option.";
       type = types.str;
     };
+    defaultServerACMEHost = mkOption {
+      description = "The ACME host to use for the default server block (when accessing nginx via a wrong/missing domain)";
+      default = proxyCfg.serverHost;
+      type = types.str;
+    };
     defaultRedirect = mkOption {
       description = "Where to redirect requests to the top level serverHost domain";
       default = "https://blog.withsam.org";
@@ -108,7 +113,7 @@ in
           "_" = {
             default = true;
             addSSL = true;
-            useACMEHost = proxyCfg.serverHost;
+            useACMEHost = proxyCfg.defaultServerACMEHost;
             root = "/var/www";
 
             extraConfig = ''

@@ -1,5 +1,6 @@
 { config, lib, pkgs, ... }:
 let
+  defaultServerHost = "donut.withsam.org";
   serverHost = "durga.withsam.org";
   util = (import ../../_common/helpers/nginx-util.nix) { inherit lib; };
 in
@@ -9,11 +10,17 @@ in
   services.nginxProxy = {
     enable = true;
     serverHost = serverHost;
+    defaultServerACMEHost = defaultServerHost;
   };
 
   security.acme = {
     acceptTerms = true;
     certs = {
+      "${defaultServerHost}" = {
+        email = "tabhooked@gmail.com";
+        dnsProvider = "ovh";
+        credentialsFile = "/var/lib/secrets/ovh.certs.secret";
+      };
       "${serverHost}" = {
         email = "tabhooked@gmail.com";
         extraDomainNames = [
