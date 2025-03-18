@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 with lib;
 let
-  util = (import ../helpers/nginx-util.nix) { inherit lib; };
+  util = (import ../helpers/nginx-util.nix) { inherit lib pkgs; };
   proxyCfg = config.services.nginxProxy;
   proxyPathOpts = { name, ... }: {
     options = {
@@ -87,6 +87,7 @@ in
           default "$http_authorization";
           "" "$cookie_${authCookieName}";
         }
+        ${util.errorPageHttpConfig}
       '';
 
       appendHttpConfig =
@@ -150,7 +151,7 @@ in
               useACMEHost = proxyCfg.serverHost;
               forceSSL = true;
               extraConfig = opts.extraServerConfig;
-              locations."= /favicon.ico".extraConfig = "try_files _ @default;";
+              locations."= /favicon.ico".extraConfig = lib.mkForce "try_files _ @default;";
               locations."/".extraConfig = ''
                 ${optionalString (opts.useAuth && opts.useAuthCookie)''
                 more_set_input_headers "Authorization: $auth_header_from_cookie";

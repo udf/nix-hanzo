@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   serverHost = (import ../../_common/constants/private.nix).homeHostname;
-  util = (import ../../_common/helpers/nginx-util.nix) { inherit lib; };
+  util = (import ../../_common/helpers/nginx-util.nix) { inherit lib pkgs; };
 in
 {
   services.nginx.virtualHosts = {

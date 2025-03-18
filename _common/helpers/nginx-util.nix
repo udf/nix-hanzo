@@ -1,5 +1,8 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 with lib;
+let 
+  staticDir = import ./nginx-static { inherit lib pkgs; };
+in 
 rec {
   statusCodes = {
     "400" = "Bad Request";
@@ -46,6 +49,12 @@ rec {
   };
 
   errorPageDirectives = "error_page ${concatStringsSep " " (attrNames statusCodes)} /error.html;";
+  errorPageHttpConfig = ''
+    map $hostname $err_img_prefix {
+      default "taiga";
+      "phanes" "samcat";
+    }
+  '';
   errorPageOpts = {
     extraConfig = ''
       ${errorPageDirectives}
@@ -53,14 +62,20 @@ rec {
 
     locations = {
       "= /error.html".extraConfig = ''
-        root /var/www;
+        root ${staticDir};
         ssi on;
         internal;
       '';
 
-      "~ \\.(html|ico|webp|png)$".extraConfig = ''
-        root /var/www;
-        try_files $uri @default;
+      "^~ /err_img/".extraConfig = ''
+        alias ${staticDir}/;
+        try_files $uri =404;
+        internal;
+      '';
+
+      "= /favicon.ico".extraConfig = ''
+        root ${staticDir};
+        try_files $uri =404;
       '';
 
       "@default".extraConfig = "";

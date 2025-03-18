@@ -4,7 +4,7 @@ let
   serverHost = "durga.withsam.org";
   proxySubdomain = "gaia";
   subMap = "$sub_subdomain_${proxySubdomain}";
-  util = (import ../../_common/helpers/nginx-util.nix) { inherit lib; };
+  util = (import ../../_common/helpers/nginx-util.nix) { inherit lib pkgs; };
 in
 {
   security.acme.certs."${serverHost}".extraDomainNames = [

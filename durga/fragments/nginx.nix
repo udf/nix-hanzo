@@ -2,7 +2,7 @@
 let
   defaultServerHost = "donut.withsam.org";
   serverHost = "durga.withsam.org";
-  util = (import ../../_common/helpers/nginx-util.nix) { inherit lib; };
+  util = (import ../../_common/helpers/nginx-util.nix) { inherit lib pkgs; };
 in
 {
   custom.ipset-block.exceptPorts = [ 443 ];

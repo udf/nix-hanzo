@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!--# set var="title" value="$status $status_text" -->
+
+<head>
+  <meta charset="UTF-8">
+  <title>
+    <!--# echo var="title" default="Something went wrong" -->
+  </title>
+
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    img {
+      width: 16vw;
+      max-width: 480px;
+      min-width: 240px;
+    }
+
+    hr {
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>
+    <!--# echo var="title" default="Something went wrong" -->
+  </h1>
+  <!--# block name="error" --><!--# endblock -->
+  <!--# set var="img_suffix" value="4xx" -->
+  <!--# if expr="$status = /^5.+/" -->
+    <!--# set var="img_suffix" value="5xx" -->
+  <!--# endif -->
+  <!--# include file="/err_img/$err_img_prefix-$img_suffix.html" stub="error" -->
+  <hr />
+  <p>nginx &bull; <!--# echo var="hostname" default="???" --></p>
+</body>
+</html>
