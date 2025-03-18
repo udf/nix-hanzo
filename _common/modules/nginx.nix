@@ -93,9 +93,22 @@ in
       appendHttpConfig = ''
         charset utf-8;
 
-        log_format main '$remote_addr ($http_x_forwarded_for) [$host] - $remote_user '
-          '"$request" $status $body_bytes_sent '
-          '"$http_referer" "$http_user_agent"';
+        map $request_length $request_length_fmt {
+          "~(.)(.).{2}" "$1.$2K";
+          "~(.)(.).{5}" "$1.$2M";
+          default "''${request_length}B";
+        }
+
+        map $bytes_sent $bytes_sent_fmt {
+          "~(.)(.).{2}" "$1.$2K";
+          "~(.)(.).{5}" "$1.$2M";
+          default "''${bytes_sent}B";
+        }
+
+        log_format main '$remote_addr (fw:$http_x_forwarded_for) [$host] u:$remote_user '
+          '"$request" $status '
+          '[t:''${request_time}s ut:''${upstream_response_time} in:$request_length_fmt out:$bytes_sent_fmt] '
+          're:"$http_referer" ua:"$http_user_agent"';
         access_log syslog:server=unix:/dev/log main;
       '';
 
