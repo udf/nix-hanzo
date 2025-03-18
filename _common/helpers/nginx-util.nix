@@ -1,8 +1,8 @@
 { lib, pkgs, ... }:
 with lib;
-let 
+let
   staticDir = import ./nginx-static { inherit lib pkgs; };
-in 
+in
 rec {
   statusCodes = {
     "400" = "Bad Request";
@@ -53,6 +53,15 @@ rec {
     map $hostname $err_img_prefix {
       default "taiga";
       "phanes" "samcat";
+    }
+
+    map $status $status_text {
+      ${
+        concatStringsSep "\n" (mapAttrsToList
+          (k: v: "${k} ${lib.strings.escapeNixString v};") statusCodes
+        )
+      }
+      default "Something went wrong";
     }
   '';
   errorPageOpts = {

@@ -90,23 +90,14 @@ in
         ${util.errorPageHttpConfig}
       '';
 
-      appendHttpConfig =
-        let
-          lines = concatStringsSep "\n" (mapAttrsToList (k: v: "${k} ${lib.strings.escapeNixString v};") util.statusCodes);
-        in
-        ''
-          charset utf-8;
+      appendHttpConfig = ''
+        charset utf-8;
 
-          map $status $status_text {
-            ${lines}
-            default "Something went wrong";
-          }
-
-          log_format main '$remote_addr ($http_x_forwarded_for) [$host] - $remote_user '
-            '"$request" $status $body_bytes_sent '
-            '"$http_referer" "$http_user_agent"';
-          access_log syslog:server=unix:/dev/log main;
-        '';
+        log_format main '$remote_addr ($http_x_forwarded_for) [$host] - $remote_user '
+          '"$request" $status $body_bytes_sent '
+          '"$http_referer" "$http_user_agent"';
+        access_log syslog:server=unix:/dev/log main;
+      '';
 
       virtualHosts = mkMerge ([
         {
