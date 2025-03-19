@@ -29,4 +29,17 @@ in
       options = zfs_auto_options;
     };
   };
+
+  services.smartd.devices = [
+    {
+      device = "/dev/disk/by-id/ata-WDC_WUH721818ALE6L4_3WJ9ZG4J";
+      options = lib.concatStringsSep " " [
+        "-a"
+        "-c i=${toString (2 * 60 * 60)}"
+        "-s (S/../../1/00|L/../(07|22)/./18)"
+        "-W 0,0,45"
+        "-d removable"
+      ];
+    }
+  ];
 }
