@@ -63,6 +63,11 @@ rec {
       }
       default "Something went wrong";
     }
+
+    map $server_protocol $set_gzip_gzip_if_http1 {
+      "~^HTTP/1" "gzip, gzip";
+      default "";
+    }
   '';
   errorPageOpts = {
     extraConfig = ''
@@ -92,4 +97,12 @@ rec {
   };
   addErrorPageOpts = opts: mkMerge [ errorPageOpts opts ];
   denyWriteMethods = "limit_except GET PROPFIND OPTIONS { deny all; }";
+  gzipBombConfig = ''
+    root /var/www;
+    types { } default_type "text/plain; charset=utf-8";
+    add_header Content-Encoding "gzip, gzip";
+    add_header Transfer-Encoding $set_gzip_gzip_if_http1;
+    try_files /100g_9_9.gzip.gzip =444;
+    access_log off;
+  '';
 }
