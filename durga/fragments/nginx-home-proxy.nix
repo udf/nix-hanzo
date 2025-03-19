@@ -14,7 +14,7 @@ in
   services.nginx = {
     commonHttpConfig = ''
       map $host ${subMap} {
-        "~^([^.]+)\.${proxySubdomain}\.withsam\.org$" "$1.${homeHostname}";
+        "~^(music)\.${proxySubdomain}\.withsam\.org$" "$1.${homeHostname}";
         default "DENY";
       }
       map $uri $uri_is_dir {
@@ -35,9 +35,14 @@ in
           try_files _ @default;
         '';
 
+        "@deny".extraConfig = util.gzipBombConfig;
+
         "@default".extraConfig = ''
+          # using 444 as the error page code closes the connection after getting to the @deny block
+          # this is really really stupid and hurts my brain, so use a 443 instead
+          error_page 443 =200 @deny;
           if (${subMap} = "DENY") {
-            return 400;
+            return 443;
           }
           resolver 1.1.1.1;
 
