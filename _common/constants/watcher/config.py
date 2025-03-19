@@ -36,22 +36,22 @@ def systemd_should_ignore(e):
         'NetworkManager-dispatcher.service',
       }
       or (
-        re.match(r'music-dl(-.+)?\.(service|target)', unit)
-        or re.match(r'system-music\\x2ddl.+slice', unit)
+        re.match(r'music-dl(-.+)?\.(service|target)$', unit)
+        or re.match(r'system-music\\x2ddl.+slice$', unit)
         or re.match(r'.+\.(auto)?mount$', unit)
-        or re.match(r'acme-.+\.service', unit)
-        or re.match(r'yt-store-cookies@.+\.service', unit)
+        or re.match(r'acme-.+\.service$', unit)
+        or re.match(r'yt-store-cookies@.+\.service$', unit)
       )
     )
   ) or (
     e['PRIORITY'] >= LOG_INFO and (
-      re.match(r'zfs-snapshot-\w+\.service', unit)
+      re.match(r'zfs-snapshot-\w+\.service$', unit)
       or unit == 'systemd-tmpfiles-clean.service'
-      or re.match(r'run-credentials-systemd.+tmpfiles.+clean', unit)
+      or re.match(r'run-credentials-systemd.+tmpfiles.+clean$', unit)
       or unit == 'logrotate.service'
       or unit == 'ddclient.service'
-      or re.match(r'nginx(-config-reload)?\.service', unit)
-      or re.match(r'run-docker-runtime.+.mount$', unit)
+      or re.match(r'nginx(-config-reload)?\.service$', unit)
+      or re.match(r'run-docker-runtime.+.mount$$', unit)
       or unit == 'nscd.service'
       or unit == 'nss-lookup.target'
       or unit == 'nss-user-lookup.target'
