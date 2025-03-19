@@ -94,14 +94,14 @@ in
         charset utf-8;
 
         map $request_length $request_length_fmt {
-          "~(.)(.).{2}" "$1.$2K";
-          "~(.)(.).{5}" "$1.$2M";
+          "~(.)(..).{4}$" "$1.$2M";
+          "~(.)(.).{2}$" "$1.$2K";
           default "''${request_length}B";
         }
 
         map $bytes_sent $bytes_sent_fmt {
-          "~(.)(.).{2}" "$1.$2K";
-          "~(.)(.).{5}" "$1.$2M";
+          "~(.)(..).{4}$" "$1.$2M";
+          "~(.)(.).{2}$" "$1.$2K";
           default "''${bytes_sent}B";
         }
 
