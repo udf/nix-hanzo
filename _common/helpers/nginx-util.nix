@@ -1,7 +1,7 @@
 { lib, pkgs, ... }:
 with lib;
 let
-  staticDir = import ./nginx-static { inherit lib pkgs; };
+  staticDir = import ../packages/nginx-static { inherit lib pkgs; };
 in
 rec {
   statusCodes = {
