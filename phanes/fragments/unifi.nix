@@ -26,7 +26,6 @@ in
     pubkeyAcceptedKeyTypes = [ "+ssh-rsa" ];
     hostKeyAlgorithms = [ "+ssh-rsa" ];
   };
-  custom.msmtp-gmail.enable = true;
 
   networking.firewall.allowedTCPPorts = [ 8443 ];
 

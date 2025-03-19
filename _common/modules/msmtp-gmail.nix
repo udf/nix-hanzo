@@ -9,9 +9,17 @@ in
   };
 
   config = mkIf cfg.enable {
+    environment.etc."aliases" = {
+      text = ''
+        root: tabhooked@gmail.com
+      '';
+      mode = "0644";
+    };
+
     programs.msmtp = {
       enable = true;
       setSendmail = true;
+      defaults.aliases = "/etc/aliases";
       accounts = {
         default = {
           host = "smtp.gmail.com";
