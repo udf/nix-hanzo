@@ -58,6 +58,7 @@ let
     "39421" = "SAPINET-AS, FR";
     "41608" = "NEXTGENWEBS-NL, ES";
     "42337" = "RESPINA-AS, IR";
+    "45090" = "TENCENT-NET-AP Shenzhen Tencent Computer Systems Company Limited, CN";
     "45102"= "ALIBABA-CN-NET Alibaba US Technology Co., Ltd., CN";
     "45204" = "GEMNET-MN GEMNET LLC, MN";
     "45235" = "GEONET GEOCITY NETWORK SOLUTIONS PVT LTD, IN";
