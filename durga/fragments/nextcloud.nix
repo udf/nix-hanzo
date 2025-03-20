@@ -25,6 +25,9 @@ in
         "OC\\Preview\\MP3"
         "OC\\Preview\\OpenDocument"
         "OC\\Preview\\TXT"
+        "OC\\Preview\\Movie"
+        "OC\\Preview\\MP4"
+        "OC\\Preview\\MKV"
         "OC\\Preview\\Imaginary"
       ];
       preview_imaginary_url = "http://127.0.0.1:9000";
@@ -43,6 +46,8 @@ in
   };
 
   systemd = {
+    services.nextcloud-cron.path = [ pkgs.ffmpeg ];
+    services.phpfpm-nextcloud.path = [ pkgs.ffmpeg ];
     services.docker-aio-imaginary.serviceConfig.TimeoutStopSec = lib.mkForce 10;
 
     timers.nextcloud-preview-gen = {
@@ -57,6 +62,7 @@ in
 
     services.nextcloud-preview-gen = {
       after = [ "nextcloud-setup.service" ];
+      path = [ pkgs.ffmpeg ];
       serviceConfig = {
         User = "nextcloud";
         Type = "oneshot";
