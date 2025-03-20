@@ -41,11 +41,13 @@ def systemd_should_ignore(e):
         or re.match(r'.+\.(auto)?mount$', unit)
         or re.match(r'acme-.+\.service$', unit)
         or re.match(r'yt-store-cookies@.+\.service$', unit)
+        or re.match(r'syncoid-.+\.service$', unit)
       )
     )
   ) or (
     e['PRIORITY'] >= LOG_INFO and (
       re.match(r'zfs-snapshot-\w+\.service$', unit)
+      or unit == 'sanoid.service'
       or unit == 'systemd-tmpfiles-clean.service'
       or re.match(r'run-credentials-systemd.+tmpfiles.+clean$', unit)
       or unit == 'logrotate.service'
