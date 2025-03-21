@@ -17,6 +17,8 @@ let
   };
 in
 {
+  boot.zfs.requestEncryptionCredentials = [ targetDataset ];
+
   services.sanoid = {
     enable = true;
     interval = "*-*-* 03,11,19:00:00";
