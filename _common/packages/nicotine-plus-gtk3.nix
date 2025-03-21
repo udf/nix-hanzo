@@ -11,7 +11,7 @@
 }:
 let
   pname = "nicotine-plus";
-  version = "3.3.8";
+  version = "3.3.10";
   unstablePkgs = import <nixpkgs-unstable> { };
 in
 assert unstablePkgs.nicotine-plus.version == version;
@@ -22,7 +22,7 @@ python3Packages.buildPythonApplication {
     owner = "nicotine-plus";
     repo = "nicotine-plus";
     tag = version;
-    hash = "sha256-KgFxMcL/sT00fkXLgdfDMAMODi4N1j1Y/oEKbjGaRdY=";
+    hash = "sha256-ic/+Us56UewMjD8vgmxxCisoId96Qtaq8/Ll+CCFR3Y=";
   };
 
   nativeBuildInputs = [
