@@ -22,7 +22,7 @@
       options = lib.concatStringsSep " " [
         "-a"
         "-s (S/../../1/00|L/../(07|22)/./18)"
-        "-W 0,0,60"
+        "-W 0,0,65"
         "-d removable"
       ];
     }
