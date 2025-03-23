@@ -1,0 +1,13 @@
+diff --git a/pynicotine/gtkgui/userbrowse.py b/pynicotine/gtkgui/userbrowse.py
+index 68e0e476a..82c050f8b 100644
+--- a/pynicotine/gtkgui/userbrowse.py
++++ b/pynicotine/gtkgui/userbrowse.py
+@@ -245,7 +245,7 @@ class UserBrowse:
+         self.window = userbrowses.window
+         self.user = user
+         self.indeterminate_progress = False
+-        self.refreshing = False
++        self.refreshing = True
+         self.local_permission_level = None
+         self.queued_path = None
+ 

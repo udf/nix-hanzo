@@ -25,6 +25,8 @@ python3Packages.buildPythonApplication {
     hash = "sha256-ic/+Us56UewMjD8vgmxxCisoId96Qtaq8/Ll+CCFR3Y=";
   };
 
+  patches = [ ./nicotine-plus-3.3.10-userbrowse-fix.patch ];
+
   nativeBuildInputs = [
     gettext
     wrapGAppsHook
