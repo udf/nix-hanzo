@@ -19,7 +19,7 @@
     # on_done.sh "%N" "%F" "/path/to/dest/" {syncthing api key} {syncthing folder id}
     echo "<4>Download completed: $1"
     cp -al "$2" "$3"
-    ${lib.getExe pkgs.curl} -X POST -H "X-API-Key:$4" "http://localhost:8384/rest/db/scan?folder=$5"
+    ${lib.getExe pkgs.curl} -s -X POST -H "X-API-Key:$4" "http://localhost:8384/rest/db/scan?folder=$5"
   '';
 
   networking.firewall = {
