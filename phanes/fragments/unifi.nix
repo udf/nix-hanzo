@@ -2,10 +2,11 @@
 let
   # use pinned pkgs for mongodb to avoid compiling it each time
   pinnedPkgs = import
-    (builtins.fetchTarball {
+    (pkgs.fetchgit {
       name = "nixos-24.11-2024-12-15";
-      url = "https://github.com/nixos/nixpkgs/archive/314e12ba369ccdb9b352a4db26ff419f7c49fa84.tar.gz";
-      sha256 = "0ji4p22kjaxa7br9q249732gcpalgx50zgz0fxwjrifxp5sngwz5";
+      url = "https://github.com/nixos/nixpkgs";
+      rev = "314e12ba369ccdb9b352a4db26ff419f7c49fa84";
+      hash = "sha256-5fNndbndxSx5d+C/D0p/VF32xDiJCJzyOqorOYW4JEo=";
     })
     { config.allowUnfree = true; };
 in
