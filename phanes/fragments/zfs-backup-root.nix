@@ -22,11 +22,6 @@ in
   services.sanoid = {
     enable = true;
     interval = "*-*-* 03,11,19:00:00";
-    extraArgs = [
-      "--verbose"
-      "--monitor-capacity"
-      "--monitor-health"
-    ];
 
     datasets."${targetDataset}/root" = sanoidAllSnapsOff // {
       daily = 30;
