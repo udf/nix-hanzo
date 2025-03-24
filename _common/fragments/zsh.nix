@@ -66,6 +66,9 @@
       # Include hidden files
       _comp_options+=(globdots)
 
+      # shift+tab to go backwards in completions
+      bindkey -M menuselect '^[[Z' reverse-menu-complete
+
       # Edit line in editor with alt-e:
       autoload edit-command-line; zle -N edit-command-line
       bindkey '^[e' edit-command-line
