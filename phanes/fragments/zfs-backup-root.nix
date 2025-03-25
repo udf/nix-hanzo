@@ -10,7 +10,7 @@ let
   sanoidAllSnapsOff = {
     frequently = 0;
     hourly = 0;
-    daily = 30;
+    daily = 0;
     weekly = 0;
     monthly = 0;
     yearly = 0;
@@ -24,12 +24,12 @@ in
     interval = "*-*-* 03,11,19:00:00";
 
     datasets."${targetDataset}/root" = sanoidAllSnapsOff // {
-      daily = 30;
+      hourly = 90;
       autoprune = true;
       autosnap = false;
     };
     datasets."${srcDataset}/root" = sanoidAllSnapsOff // {
-      daily = 1;
+      hourly = 3;
       autoprune = true;
       autosnap = true;
     };
