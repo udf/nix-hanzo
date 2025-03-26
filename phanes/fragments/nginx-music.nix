@@ -9,6 +9,9 @@ in
       useACMEHost = serverHost;
       forceSSL = true;
       root = "/var/www/music";
+      extraConfig = ''
+        absolute_redirect off;
+      '';
       locations = {
         "~ /$".extraConfig = ''
           autoindex on;
