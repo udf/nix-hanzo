@@ -25,6 +25,7 @@ in
       Type = "simple";
       Restart = "always";
       RestartSec = 5;
+      RestartMode = "direct";
       WorkingDirectory = "/home/nicotine";
       ExecStartPre = [
         "${pkgs.xpra}/bin/xpra list"

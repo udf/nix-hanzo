@@ -33,6 +33,7 @@ in
       User = "discord-music-embed";
       Type = "simple";
       Restart = "always";
+      RestartMode = "direct";
       RestartSec = 5;
       WorkingDirectory = "/home/discord-music-embed/discord-music-embed";
       ExecStart = "${pythonPkg}/bin/python server.py";

@@ -1,4 +1,14 @@
 { config, lib, pkgs, ... }:
+let
+  serviceOpts = {
+    serviceConfig = {
+      Restart = lib.mkForce "always";
+      RestartSec = lib.mkForce 5;
+      RestartMode = lib.mkForce "direct";
+    };
+    unitConfig.RequiresMountsFor = "/backup/qbit";
+  };
+in
 {
   services.qbittorrent = {
     enable = true;
@@ -32,6 +42,6 @@
 
   users.users.sam.extraGroups = [ "qbittorrent" ];
 
-  systemd.services.qbittorrent.unitConfig.RequiresMountsFor = "/backup/qbit";
-  systemd.services.flood.unitConfig.RequiresMountsFor = "/backup/qbit";
+  systemd.services.qbittorrent = serviceOpts;
+  systemd.services.flood = serviceOpts;
 }
