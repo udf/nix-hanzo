@@ -36,7 +36,7 @@ in
       RestartSec = 5;
       WorkingDirectory = "/home/discord-music-embed/discord-music-embed";
       ExecStart = "${pythonPkg}/bin/python server.py";
-      PrivateTmp = "disconnected";
+      PrivateTmp = "true";
     };
   };
 
