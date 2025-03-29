@@ -5,6 +5,7 @@
     port = 8081;
     openFirewall = true;
     maxMemory = "4G";
+    maxSwap = "2G";
   };
 
   services.flood = {

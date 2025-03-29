@@ -67,7 +67,15 @@ in
       type = types.str;
       default = "";
       description = ''
-        Maximum amount of memory to use (set via systemd's unit MemoryHigh/MemoryMax options)
+        Maximum amount of memory to use (set via systemd's MemoryHigh/MemoryMax options)
+      '';
+    };
+
+    maxSwap = mkOption {
+      type = types.str;
+      default = "0";
+      description = ''
+        Maximum amount of swap to use (set via systemd's MemorySwapMax option)
       '';
     };
   };
@@ -100,8 +108,7 @@ in
         MemoryAccounting = "true";
         MemoryHigh = cfg.maxMemory;
         MemoryMax = cfg.maxMemory;
-        MemorySwapMax = "0";
-        MemoryZSwapMax = "0";
+        MemorySwapMax = cfg.maxSwap;
       };
     };
 
