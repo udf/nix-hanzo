@@ -10,7 +10,7 @@ in
     database.createLocally = true;
     configureRedis = true;
     maxUploadSize = "16G";
-    package = pkgs.nextcloud30;
+    package = pkgs.nextcloud31;
     hostName = hostName;
     config = {
       dbtype = "pgsql";
@@ -80,6 +80,6 @@ in
   };
 
   security.acme.certs = {
-    "durga.withsam.org".extraDomainNames = [ "nextcloud.withsam.org" ];
+    "durga.withsam.org".extraDomainNames = [ hostName ];
   };
 }
