@@ -7,7 +7,7 @@
     tree
     file
     htop
-    iotop
+    iotop-c
     btop
     tmux
     lm_sensors
