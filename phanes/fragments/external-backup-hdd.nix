@@ -12,6 +12,8 @@ let
 in
 {
   boot.zfs.requestEncryptionCredentials = [ "backup/qbit" ];
+  systemd.services.zfs-import-backup.serviceConfig.TimeoutStartSec = 10;
+
   fileSystems = {
     "/backup/qbit" = {
       device = "backup/qbit";
