@@ -17,6 +17,7 @@ let
     "Camellia" = "https://www.youtube.com/channel/UCV4ggxLd_Vz-I-ePGSKfFog/videos";
     "Cider Party" = "https://www.youtube.com/c/CiderParty/videos";
     "Circus Records" = "https://www.youtube.com/c/circusrecords/videos";
+    "Distraction" = "https://www.youtube.com/@Distractionedm/videos";
     "DjEphixa" = "https://www.youtube.com/channel/UCGfBXs27YPr0U8CFim-RefQ/videos";
     "DJT" = "https://www.youtube.com/channel/UC09L_fOVn3Tg0NKNJl9njCA/videos";
     "Dubstep uNk" = "https://www.youtube.com/c/DubstepuNkOfficial/videos";
