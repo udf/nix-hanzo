@@ -150,6 +150,7 @@ in
               -P "temp:$TEMP_DIR" -f "bv*[height<=$MAXRES]+ba/b[height<=$MAXRES]" \
               --download-archive "$DL_ARCHIVE" \
               --sponsorblock-mark default --sponsorblock-api https://sponsorblock.hankmccord.dev \
+              --write-subs --embed-subs --compat-options no-keep-subs --sub-lang "en.*" \
               --live-from-start \
               -- $line || true
           done < <(yt-dlp --download-archive "$DL_ARCHIVE" --flat-playlist -a "$DL_LIST" --print id)
