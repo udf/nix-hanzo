@@ -109,13 +109,15 @@ in
         UMask = "0000";
         Nice = 19;
         BindReadOnlyPaths = "${downloadList}:/tmp/wl.txt";
-        ExecStartPost = lib.escapeShellArgs [
-          "${pkgs.python3}/bin/python"
+        ExecStartPre = lib.escapeShellArgs [
+          "${pkgs.python313}/bin/python"
           "${../scripts/yt-wl-clean.py}"
           "--download-dir"
           "${downloadDir}"
           "--trash-dir"
           "${externalMount}/downloads/.stversions/yt"
+          "--min-free-gb"
+          "50"
         ];
         PrivateTmp = "yes";
         StateDirectory = "yt-wl-dl";
@@ -142,7 +144,7 @@ in
           while read line; do
             if [[ "$(df -k --output=avail . | tail -n1)" -lt ${toString (7 * 1024 * 1024)} ]]; then
               >&2 echo "<3>Not enough free disk space!"
-              exit 1
+              exit 0
             fi
 
             yt-dlp --no-progress --add-metadata \
