@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 {
   fileSystems."/external" = {
-    device = "/dev/disk/by-uuid/71E59486179CC7B0";
+    device = "/dev/disk/by-uuid/2B0AACD0029C68C2";
     fsType = "ntfs3";
     options = [
       "x-systemd.automount"
@@ -18,7 +18,7 @@
 
   services.smartd.devices = [
     {
-      device = "/dev/disk/by-id/ata-KINGSTON_SA400S37480G_50026B76846AEE6D";
+      device = "/dev/disk/by-id/ata-ST1000LM048-2E7172_WL1NA6XZ";
       options = lib.concatStringsSep " " [
         "-a"
         "-s (S/../../1/00|L/../(07|22)/./18)"

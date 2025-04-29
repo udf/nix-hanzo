@@ -11,7 +11,7 @@ let
 in
 {
   imports = [
-    ./external-ssd.nix
+    ./external-dl-hdd.nix
   ];
 
   systemd = {
