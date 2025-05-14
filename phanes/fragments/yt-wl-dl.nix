@@ -117,7 +117,7 @@ in
           "--trash-dir"
           "${externalMount}/downloads/.stversions/yt"
           "--min-free-gb"
-          "50"
+          "25"
         ];
         PrivateTmp = "yes";
         StateDirectory = "yt-wl-dl";
