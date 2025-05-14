@@ -125,6 +125,7 @@ let
     "gravitasrecordings"
     "gutterpink"
     "harmfullogic666"
+    "heatace"
     "hkmori"
     "hxlyxo"
     "ibelieveinangels"
