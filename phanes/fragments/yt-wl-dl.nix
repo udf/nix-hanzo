@@ -112,10 +112,16 @@ in
         ExecStartPre = lib.escapeShellArgs [
           "${pkgs.python313}/bin/python"
           "${../scripts/yt-wl-clean.py}"
+          "--download-list"
+          "/tmp/wl.txt"
           "--download-dir"
           "${downloadDir}"
           "--trash-dir"
           "${externalMount}/downloads/.stversions/yt"
+          "--trash-filter-re"
+          "^wl/"
+          "--delete-filter-re"
+          "^wl_720/"
           "--min-free-gb"
           "25"
         ];
