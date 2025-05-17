@@ -133,7 +133,7 @@ in
         UMask = "0000";
         Nice = 19;
         BindReadOnlyPaths = "${downloadList}:/tmp/wl.txt";
-        BindPaths = "${dlCookiesSocket}:/tmp/yt-store-cookies.socket";
+        BindPaths = "${dlCookiesSocket}:/tmp/yt-store-dl-cookies.socket";
         LoadCredentialEncrypted = dlCookiesCredential;
         ExecStartPre = lib.escapeShellArgs [
           "${pkgs.python313}/bin/python"
