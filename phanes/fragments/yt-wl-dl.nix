@@ -6,6 +6,8 @@ let
   downloadList = "/var/lib/${fetchStateDirectoryName}/wl.txt";
   cookiesCredential = "yt-cookies";
   cookiesSocket = "/var/run/yt-wl/yt-store-cookies.socket";
+  dlCookiesCredential = "yt-dl-cookies";
+  dlCookiesSocket = "/var/run/yt-wl/yt-store-dl-cookies.socket";
   pythonPkg = pkgs.python3;
   venvSetupCode = import ../../_common/helpers/gen-venv-setup.nix { inherit pythonPkg; };
 in
@@ -32,6 +34,28 @@ in
       description = "Store incoming data in '${cookiesCredential}' systemd crediential (%i)";
       serviceConfig = {
         ExecStart = "systemd-creds encrypt - /etc/credstore.encrypted/${cookiesCredential}";
+        Type = "oneshot";
+        StandardInput = "socket";
+        StandardOutput = "socket";
+      };
+    };
+
+    # same as above but for downloading
+    sockets.yt-store-dl-cookies = {
+      wantedBy = [ "multi-user.target" ];
+      listenStreams = [ dlCookiesSocket ];
+      socketConfig = {
+        SocketUser = "sam";
+        SocketGroup = "root";
+        # warning: world writable! (but the parent directory is 0700)
+        SocketMode = "0606";
+        Accept = "yes";
+      };
+    };
+    services."yt-store-dl-cookies@" = {
+      description = "Store incoming data in '${dlCookiesCredential}' systemd crediential (%i)";
+      serviceConfig = {
+        ExecStart = "systemd-creds encrypt - /etc/credstore.encrypted/${dlCookiesCredential}";
         Type = "oneshot";
         StandardInput = "socket";
         StandardOutput = "socket";
@@ -109,6 +133,8 @@ in
         UMask = "0000";
         Nice = 19;
         BindReadOnlyPaths = "${downloadList}:/tmp/wl.txt";
+        BindPaths = "${dlCookiesSocket}:/tmp/yt-store-cookies.socket";
+        LoadCredentialEncrypted = dlCookiesCredential;
         ExecStartPre = lib.escapeShellArgs [
           "${pkgs.python313}/bin/python"
           "${../scripts/yt-wl-clean.py}"
@@ -135,6 +161,10 @@ in
         DL_LIST="/tmp/wl.txt"
         TEMP_DIR=${externalMount}/tmp/yt-wl
 
+        # copy cookies to (private) temp because we need them to be writable
+        COOKIES_FILE=/tmp/cookies.txt
+        cat < $CREDENTIALS_DIRECTORY/${dlCookiesCredential} > $COOKIES_FILE
+
         cd $STATE_DIRECTORY
         ${venvSetupCode}
         pip install --force-reinstall https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz
@@ -154,20 +184,24 @@ in
             fi
 
             yt-dlp --no-progress --add-metadata \
-              --extractor-args "youtube:player_client=default,ios" \
+              --cookies "$COOKIES_FILE" \
+              --sleep-requests 1 --min-sleep-interval 30 --max-sleep-interval 60 \
               -P "temp:$TEMP_DIR" -f "bv*[height<=$MAXRES]+ba/b[height<=$MAXRES]" \
               --download-archive "$DL_ARCHIVE" \
               --sponsorblock-mark default --sponsorblock-api https://sponsorblock.hankmccord.dev \
               --write-subs --embed-subs --compat-options no-keep-subs --sub-lang "en.*" \
               --live-from-start \
               -- $line || true
-          done < <(yt-dlp --download-archive "$DL_ARCHIVE" --flat-playlist -a "$DL_LIST" --print id)
+          done < <(${pkgs.gawk}/bin/awk 'NR==FNR {seen[$2]=1; next} !seen[$1]' "$DL_ARCHIVE" "$DL_LIST")
         }
 
         do_download wl 1440
         do_download wl_720 720
         cat < "$DL_LIST" > "$DL_DIR/wl.txt"
         rm -fr "$TEMP_DIR"
+
+        # store potentially updated cookies
+        ${pkgs.netcat}/bin/nc -UN /tmp/yt-store-dl-cookies.socket < $COOKIES_FILE
       '';
     };
   };

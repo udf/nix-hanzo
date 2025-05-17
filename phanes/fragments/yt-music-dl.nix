@@ -236,11 +236,14 @@ let
     "zhnoi"
   ];
   common-args = "-P 'temp:/sync/tmp/yt-music' --no-progress --no-post-overwrites --add-metadata";
-  getDownloadCmd = { dir, url, archive ? dir, filter ? "" }: ''
-    yt-dlp ${common-args} -o "${dir}/%(title)s-%(id)s.%(ext)s" --download-archive "${archive}.txt" \
+  ytdlCookiesCredential = "yt-dl-cookies";
+  tmpCookiesFile = "/tmp/cookies.txt";
+  useYtCookiesCmd = "cat < $CREDENTIALS_DIRECTORY/${ytdlCookiesCredential} > ${tmpCookiesFile}";
+  getYtDownloadCmd = { dir, url, archive ? dir, filter ? "" }: ''
+    yt-dlp --cookies ${tmpCookiesFile} ${common-args} -o "${dir}/%(title)s-%(id)s.%(ext)s" --download-archive "${archive}.txt" \
     ${filter} \
     -ciwx -f bestaudio \
-    --sleep-interval 10 \
+    --sleep-requests 0.5 --min-sleep-interval 10 --max-sleep-interval 15 \
     --add-metadata --replace-in-metadata 'album' '.' "" --parse-metadata 'title:%(track)s' --parse-metadata 'uploader:%(artist)s' "${url}"
   '';
   musicDir = "/sync/downloads/lossy-music";
@@ -251,6 +254,10 @@ let
     WorkingDirectory = "/home/yt-music-dl";
     UMask = "0000";
     TimeoutStartSec = "infinity";
+  };
+  commonYTServiceConfig = {
+    LoadCredentialEncrypted = ytdlCookiesCredential;
+    PrivateTmp = "yes";
   };
   dropinServiceOptions = {
     partOf = [ "music-dl.target" ];
@@ -315,11 +322,12 @@ in
       "music-dl-yt-playlist@" = {
         after = [ "music-dl-pre.service" ];
         path = [ "/home/yt-music-dl/.local" ];
-        serviceConfig = commonServiceConfig // (
+        serviceConfig = commonServiceConfig // commonYTServiceConfig // (
           let
             script = pkgs.writeShellScript "music-dl-yt-playlist.sh" ''
               cd ${musicDir}/favourites
-              ${getDownloadCmd { dir = "$DIR"; url = "$URL"; }}
+              ${useYtCookiesCmd}
+              ${getYtDownloadCmd { dir = "$DIR"; url = "$URL"; }}
               ${getPostamble "60"}
             '';
           in
@@ -334,11 +342,12 @@ in
       "music-dl-yt-channel@" = {
         after = [ "music-dl-pre.service" ];
         path = [ "/home/yt-music-dl/.local" ];
-        serviceConfig = commonServiceConfig // (
+        serviceConfig = commonServiceConfig // commonYTServiceConfig // (
           let
             script = pkgs.writeShellScript "music-dl-yt-channel.sh" ''
               cd ${musicDir}/lossy-downloads/yt
-              ${getDownloadCmd { 
+              ${useYtCookiesCmd}
+              ${getYtDownloadCmd { 
                 dir = "%(upload_date)s/$DIR";
                 archive = "$DIR";
                 url = "$URL";
