@@ -238,7 +238,7 @@ let
   common-args = "-P 'temp:/sync/tmp/yt-music' --no-progress --no-post-overwrites --add-metadata";
   ytdlCookiesCredential = "yt-dl-cookies";
   tmpCookiesFile = "/tmp/cookies.txt";
-  useYtCookiesCmd = "cat < $CREDENTIALS_DIRECTORY/${ytdlCookiesCredential} > ${tmpCookiesFile}";
+  useYtCookiesCmd = "[ ! -f \"${tmpCookiesFile}\" ] && echo 'Cookies not found!' && exit 1";
   getYtDownloadCmd = { dir, url, archive ? dir, filter ? "" }: ''
     yt-dlp --cookies ${tmpCookiesFile} ${common-args} -o "${dir}/%(title)s-%(id)s.%(ext)s" --download-archive "${archive}.txt" \
     ${filter} \
@@ -254,10 +254,6 @@ let
     WorkingDirectory = "/home/yt-music-dl";
     UMask = "0000";
     TimeoutStartSec = "infinity";
-  };
-  commonYTServiceConfig = {
-    LoadCredentialEncrypted = ytdlCookiesCredential;
-    PrivateTmp = "yes";
   };
   dropinServiceOptions = {
     partOf = [ "music-dl.target" ];
@@ -319,10 +315,30 @@ in
         '';
       };
 
+      music-dl-load-yt-cookies = {
+        partOf = [ "music-dl.target" ];
+        wantedBy = [ "music-dl.target" ];
+        unitConfig = {
+          StopWhenUnneeded = "yes";
+        };
+        serviceConfig = commonServiceConfig // {
+          PrivateTmp = "yes";
+          LoadCredentialEncrypted = ytdlCookiesCredential;
+          RemainAfterExit = "yes";
+        };
+        script = ''
+          cat < $CREDENTIALS_DIRECTORY/${ytdlCookiesCredential} > ${tmpCookiesFile}
+        '';
+      };
+
       "music-dl-yt-playlist@" = {
-        after = [ "music-dl-pre.service" ];
+        after = [ "music-dl-pre.service" "music-dl-load-yt-cookies.service" ];
+        upholds = [ "music-dl-load-yt-cookies.service" ];
         path = [ "/home/yt-music-dl/.local" ];
-        serviceConfig = commonServiceConfig // commonYTServiceConfig // (
+        unitConfig = {
+          JoinsNamespaceOf = "music-dl-load-yt-cookies.service";
+        };
+        serviceConfig = commonServiceConfig // (
           let
             script = pkgs.writeShellScript "music-dl-yt-playlist.sh" ''
               cd ${musicDir}/favourites
@@ -335,14 +351,19 @@ in
             ExecStartPre = "${pkgs.procmail}/bin/lockfile -3 /home/yt-music-dl/dl-yt.lock";
             ExecStopPost = "${pkgs.coreutils}/bin/rm -f /home/yt-music-dl/dl-yt.lock";
             ExecStart = "${script} %i";
+            PrivateTmp = "yes";
           }
         );
       };
 
       "music-dl-yt-channel@" = {
-        after = [ "music-dl-pre.service" ];
+        after = [ "music-dl-pre.service" "music-dl-load-yt-cookies.service" ];
+        upholds = [ "music-dl-load-yt-cookies.service" ];
         path = [ "/home/yt-music-dl/.local" ];
-        serviceConfig = commonServiceConfig // commonYTServiceConfig // (
+        unitConfig = {
+          JoinsNamespaceOf = "music-dl-load-yt-cookies.service";
+        };
+        serviceConfig = commonServiceConfig // (
           let
             script = pkgs.writeShellScript "music-dl-yt-channel.sh" ''
               cd ${musicDir}/lossy-downloads/yt
@@ -360,6 +381,7 @@ in
             ExecStartPre = "${pkgs.procmail}/bin/lockfile -3 /home/yt-music-dl/dl-yt.lock";
             ExecStopPost = "${pkgs.coreutils}/bin/rm -f /home/yt-music-dl/dl-yt.lock";
             ExecStart = "${script} %i";
+            PrivateTmp = "yes";
           }
         );
       };
