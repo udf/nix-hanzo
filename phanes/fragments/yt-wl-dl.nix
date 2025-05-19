@@ -8,7 +8,8 @@ let
   cookiesSocket = "/var/run/yt-wl/yt-store-cookies.socket";
   dlCookiesCredential = "yt-dl-cookies";
   dlCookiesSocket = "/var/run/yt-wl/yt-store-dl-cookies.socket";
-  pythonPkg = pkgs.python3;
+  helperScripts = "${../scripts/yt-wl}";
+  pythonPkg = pkgs.python313;
   venvSetupCode = import ../../_common/helpers/gen-venv-setup.nix { inherit pythonPkg; };
 in
 {
@@ -117,12 +118,40 @@ in
         PathModified = downloadList;
       };
     };
+    timers.yt-wl-trasher = {
+      timerConfig = {
+        OnUnitActiveSec = "3m";
+        Unit = "yt-wl-trasher.service";
+      };
+      unitConfig = {
+        StopWhenUnneeded = "True";
+      };
+    };
+    services.yt-wl-trasher = {
+      upholds = [ "external.mount" ];
+      unitConfig = {
+        RequiresMountsFor = "/external";
+      };
+      serviceConfig = {
+        Type = "oneshot";
+        User = "yt-wl-dl";
+        WorkingDirectory = downloadDir;
+        UMask = "0000";
+        Nice = 19;
+        ExecStart = lib.escapeShellArgs [
+          "${lib.getExe pythonPkg}"
+          "${helperScripts}/space-trash.py"
+          "--trash-dir"
+          "${externalMount}/downloads/.stversions/yt"
+          "--min-free-gb"
+          "10"
+        ];
+      };
+    };
     services.yt-wl-dl = {
       after = [ "network.target" ];
-      path = [
-        pkgs.ffmpeg
-      ];
-      upholds = [ "external.mount" ];
+      path = [ pkgs.ffmpeg ];
+      upholds = [ "external.mount" "yt-wl-trasher.timer" ];
       unitConfig = {
         RequiresMountsFor = "/external";
       };
@@ -136,8 +165,8 @@ in
         BindPaths = "${dlCookiesSocket}:/tmp/yt-store-dl-cookies.socket";
         LoadCredentialEncrypted = dlCookiesCredential;
         ExecStartPre = lib.escapeShellArgs [
-          "${pkgs.python313}/bin/python"
-          "${../scripts/yt-wl-clean.py}"
+          "${lib.getExe pythonPkg}"
+          "${helperScripts}/clean.py"
           "--download-list"
           "/tmp/wl.txt"
           "--download-dir"
@@ -148,8 +177,6 @@ in
           "^wl/"
           "--delete-filter-re"
           "^wl_720/"
-          "--min-free-gb"
-          "25"
         ];
         PrivateTmp = "yes";
         StateDirectory = "yt-wl-dl";
