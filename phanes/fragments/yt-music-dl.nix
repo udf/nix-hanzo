@@ -241,6 +241,7 @@ let
   useYtCookiesCmd = "[ ! -f \"${tmpCookiesFile}\" ] && echo 'Cookies not found!' && exit 1";
   getYtDownloadCmd = { dir, url, archive ? dir, filter ? "" }: ''
     yt-dlp --cookies ${tmpCookiesFile} ${common-args} -o "${dir}/%(title)s-%(id)s.%(ext)s" --download-archive "${archive}.txt" \
+    --extractor-args "youtube:player-client=default,tv,web_safari,web_embedded" \
     ${filter} \
     -ciwx -f bestaudio \
     --sleep-requests 0.5 --min-sleep-interval 10 --max-sleep-interval 15 \

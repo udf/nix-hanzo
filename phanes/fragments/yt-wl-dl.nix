@@ -212,6 +212,7 @@ in
 
             yt-dlp --no-progress --add-metadata \
               --cookies "$COOKIES_FILE" \
+              --extractor-args "youtube:player-client=default,tv,web_safari,web_embedded" \
               --sleep-requests 1 --min-sleep-interval 30 --max-sleep-interval 60 \
               -P "temp:$TEMP_DIR" -f "bv*[height<=$MAXRES]+ba/b[height<=$MAXRES]" \
               --download-archive "$DL_ARCHIVE" \
