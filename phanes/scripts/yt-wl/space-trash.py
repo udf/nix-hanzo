@@ -1,8 +1,9 @@
 import argparse
 import shutil
 from pathlib import Path
+from datetime import datetime, timezone
 
-from common import find_video_files
+from common import find_video_files, sizeof_fmt
 
 
 parser = argparse.ArgumentParser()
@@ -15,7 +16,7 @@ trash_dir = Path(args.trash_dir)
 gb_bytes = 1024 * 1024 * 1024
 min_free_bytes = args.min_free_gb * gb_bytes
 total, used, free = shutil.disk_usage(trash_dir)
-print(f'{free / gb_bytes:.2f} GB free')
+print(f'{sizeof_fmt(free)} free')
 if free > min_free_bytes:
   exit()
 
@@ -30,15 +31,22 @@ trash_by_date = sorted(
   reverse=True
 )
 
-print(f'Need to free {(min_free_bytes - free) / gb_bytes:.2f} GB!')
+print(f'Need to free {sizeof_fmt(min_free_bytes - free)}!')
 while free < min_free_bytes and trash_by_date:
   path = trash_by_date.pop()
-  f_size = path.stat().st_size
-  print(f'Deleting {str(path)!r}')
+  f_stat = path.stat()
+  m_time_str = (
+    datetime
+    .fromtimestamp(f_stat.st_mtime, timezone.utc)
+    .astimezone()
+    .replace(microsecond=0)
+    .isoformat()
+  )
+  print(f'Deleting {str(path)!r} ({sizeof_fmt(f_stat.st_size)}, {m_time_str})')
   path.unlink()
-  free += f_size
+  free += f_stat.st_size
 
 total, used, free = shutil.disk_usage(trash_dir)
-print(f'{free / gb_bytes:.2f} GB free after cleaning')
+print(f'{sizeof_fmt(free)} free after cleaning')
 if free < min_free_bytes:
   print(f'<1>Not enough free space after cleaning!')

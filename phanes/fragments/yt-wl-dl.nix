@@ -120,6 +120,7 @@ in
     };
     timers.yt-wl-trasher = {
       timerConfig = {
+        OnStartupSec = "3m";
         OnUnitActiveSec = "3m";
         Unit = "yt-wl-trasher.service";
       };
@@ -205,7 +206,7 @@ in
           mkdir -p "$DL_DIR/$1"
           cd "$DL_DIR/$1"
           while read line; do
-            if [[ "$(df -k --output=avail . | tail -n1)" -lt ${toString (7 * 1024 * 1024)} ]]; then
+            if [[ "$(df -k --output=avail . | tail -n1)" -lt ${toString (1 * 1024 * 1024)} ]]; then
               >&2 echo "<3>Not enough free disk space!"
               exit 0
             fi
