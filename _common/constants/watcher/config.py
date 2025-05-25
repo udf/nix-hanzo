@@ -1,7 +1,10 @@
 import re
 import os
+import sys
+import logging
 from systemd.journal import LOG_INFO, LOG_NOTICE, LOG_ERR
 
+logger = logging.getLogger('config')
 owner = 232787997
 token = os.environ['TOKEN']
 
@@ -9,10 +12,17 @@ flood_server_url = 'http://127.0.0.1:3000'
 flood_username = os.environ.get('FLOOD_USERNAME')
 flood_password = os.environ.get('FLOOD_PASSWORD')
 
-def systemd_should_ignore(e):
+def systemd_should_ignore(e, tag):
   source = e.get('_COMM') or e.get('SYSLOG_IDENTIFIER')
+  # https://github.com/nextcloud/server/issues/52791 (fixed in Nextcloud 32, currently unreleased)
+  if (
+    tag == 'nextcloud-preview-gen.service' and
+    'Cached preview not found for file' in e['MESSAGE']
+  ):
+    return True
   if source.startswith('.php-fpm') or source == 'dockerd':
     return e['PRIORITY'] >= LOG_ERR
+
   if source == 'kernel':
     return e['PRIORITY'] >= LOG_INFO
   if source != 'systemd':
