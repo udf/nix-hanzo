@@ -2,7 +2,7 @@
 {
   services.pihole-container = {
     enable = true;
-    serverIP = "192.168.0.5";
+    serverIP = "192.168.0.3";
     httpsPort = 16443;
     openFirewall = true;
   };
