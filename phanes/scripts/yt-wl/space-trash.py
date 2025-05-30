@@ -9,6 +9,7 @@ from common import find_video_files, sizeof_fmt
 parser = argparse.ArgumentParser()
 parser.add_argument('--trash-dir', required=True)
 parser.add_argument('--min-free-gb', required=True, type=int)
+parser.add_argument('--warn-free-gb', required=True, type=int)
 
 args = parser.parse_args()
 trash_dir = Path(args.trash_dir)
@@ -48,5 +49,5 @@ while free < min_free_bytes and trash_by_date:
 
 total, used, free = shutil.disk_usage(trash_dir)
 print(f'{sizeof_fmt(free)} free after cleaning')
-if free < min_free_bytes:
+if free < args.warn_free_gb * gb_bytes:
   print(f'<1>Not enough free space after cleaning!')

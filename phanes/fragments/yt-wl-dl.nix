@@ -146,6 +146,8 @@ in
           "${externalMount}/downloads/.stversions/yt"
           "--min-free-gb"
           "10"
+          "--warn-free-gb"
+          "9"
         ];
       };
     };
