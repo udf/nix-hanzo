@@ -7,5 +7,16 @@
     openFirewall = true;
   };
 
+  virtualisation.oci-containers.containers.nebula-sync = {
+    image = "ghcr.io/lovelaze/nebula-sync:v0.11.0";
+    environmentFiles = [ "/var/lib/secrets/pihole/nebula-sync.env" ];
+    environment = {
+      FULL_SYNC = "true";
+      RUN_GRAVITY = "true";
+      CRON = "14 * * * *";
+      CLIENT_SKIP_TLS_VERIFICATION = "true";
+    };
+  };
+
   users.users.sam.extraGroups = [ "podman" ];
 }
