@@ -30,7 +30,7 @@
   boot.extraModprobeConfig = ''
     options zfs zio_taskq_batch_pct=50
     options zfs zfs_arc_shrinker_limit=0
-    options zfs zfs_arc_max=${toString 4 * 1024 * 1024 * 1024}
+    options zfs zfs_arc_max=${toString (4 * 1024 * 1024 * 1024)}
   '';
 
   zramSwap = {
