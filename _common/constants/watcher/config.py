@@ -16,7 +16,10 @@ def systemd_should_ignore(e, tag):
   source = e.get('_COMM') or e.get('SYSLOG_IDENTIFIER')
   # https://github.com/nextcloud/server/issues/52791 (fixed in Nextcloud 32, currently unreleased)
   if (
-    tag == 'nextcloud-preview-gen.service' and
+    tag in {
+      'nextcloud-preview-gen.service',
+      'nextcloud-cron.service'
+    } and
     'Cached preview not found for file' in e['MESSAGE']
   ):
     return True
