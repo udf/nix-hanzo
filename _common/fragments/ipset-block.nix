@@ -171,7 +171,7 @@ let
       merged = cidr_merge([IPNetwork(ip) for ip in nets])
       num_ips = sum((net.hostmask.value or 0) + 1 for net in merged)
       print(f'Merged into {len(merged)} nets ({num_ips} IPs) ({num_ips / 2**32 * 100:.2f}%)', file=sys.stderr)
-      print('\n'.join(str(net) for net in merged))
+      print('\n'.join(f"add ${ipsetName} {net}" for net in merged))
     '';
 in
 {
@@ -186,6 +186,21 @@ in
   };
 
   config = mkIf cfg.enable {
+    systemd.services."ipset-${ipsetName}-load" = {
+      description = "Load banned networks into ipset ${ipsetName}";
+      requiredBy = [ "firewall.service" ];
+      partOf = [ "firewall.service" ];
+      after = [ "firewall.service" ];
+      path = [ pkgs.ipset ];
+      serviceConfig = {
+        Type = "oneshot";
+      };
+
+      script = ''
+        ${getBannedNetsScript} | ipset restore
+      '';
+    };
+
     networking.firewall =
       let
         ignorePorts = concatMapStringsSep "," (p: toString p) cfg.exceptPorts;
@@ -199,7 +214,7 @@ in
           ipset destroy ${ipsetName} || true
           ipset create ${ipsetName} hash:net
           iptables -I INPUT ${iptablesArgs}
-          ${getBannedNetsScript} | while read net; do ipset add ${ipsetName} $net; done
+          systemctl start --no-block ipset-${ipsetName}-load.service
         '';
 
         extraStopCommands = ''
