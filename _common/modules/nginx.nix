@@ -19,6 +19,11 @@ let
         default = "127.0.0.1";
         type = types.str;
       };
+      proto = mkOption {
+        description = "The protocol to connect to the host with";
+        default = "http";
+        type = types.str;
+      };
       extraConfig = mkOption {
         description = "Extra config to add to the @default location block";
         default = "";
@@ -168,7 +173,7 @@ in
                 add_header Set-Cookie "${authCookieName}=$http_authorization; Path=/; SameSite=Strict; Secure";
                 ''}
 
-                proxy_pass http://${opts.host}:${toString opts.port};
+                proxy_pass ${opts.proto}://${opts.host}:${toString opts.port};
                 proxy_set_header X-Forwarded-Host $host;
                 proxy_set_header X-Forwarded-Proto $scheme;
                 ${opts.extraConfig}
