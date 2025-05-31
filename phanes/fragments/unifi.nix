@@ -10,6 +10,7 @@ let
     hash = "sha256-5fNndbndxSx5d+C/D0p/VF32xDiJCJzyOqorOYW4JEo=";
   };
   pinnedPkgs = import pinnedPkgsRepo { config.allowUnfree = true; };
+  httpPort = 8443;
 in
 {
   # prevent repo from being garbage collected
@@ -32,12 +33,31 @@ in
     hostKeyAlgorithms = [ "+ssh-rsa" ];
   };
 
-  networking.firewall.allowedTCPPorts = [ 8443 ];
+  networking.firewall.allowedTCPPorts = [ httpPort ];
 
   environment.etc."unifi-mongodb.conf".text = ''
     setParameter:
       diagnosticDataCollectionEnabled: false
   '';
+
+  services.nginxProxy.paths."unifi" = {
+    serverHost = "trans-rights.withsam.org";
+    proto = "https";
+    port = httpPort;
+    useAuth = false;
+    extraConfig = ''
+      allow 192.168.0.0/16;
+      deny all;
+
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection $http_connection;
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Host $http_host;
+    '';
+  };
 
   # systemd = {
   #   timers.unifi-rebooter = {

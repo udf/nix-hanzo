@@ -20,7 +20,7 @@ in
       };
       "${serverHost}" = {
         email = "tabhooked@gmail.com";
-        extraDomainNames = [ "*.${serverHost}" ];
+        extraDomainNames = [ "*.${serverHost}" "trans-rights.withsam.org" ];
         dnsProvider = "ovh";
         credentialsFile = "/var/lib/secrets/ovh.certs.secret";
       };
