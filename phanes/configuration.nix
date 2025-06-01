@@ -50,7 +50,8 @@
     networkmanager = {
       enable = true;
     };
-    nameservers = [ "1.1.1.1" "1.0.0.1" ];
+    # ensures the bridge exists at boot (network manager does the rest)
+    bridges.br0.interfaces = [ ];
   };
 
   time.timeZone = "Africa/Harare";
