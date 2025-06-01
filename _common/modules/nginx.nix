@@ -115,6 +115,9 @@ in
           '[t:''${request_time}s ut:''${upstream_response_time} in:$request_length_fmt out:$bytes_sent_fmt] '
           're:"$http_referer" ua:"$http_user_agent"';
         access_log syslog:server=unix:/dev/log main;
+
+        proxy_headers_hash_bucket_size 128;
+        proxy_headers_hash_max_size 1024;
       '';
 
       virtualHosts = mkMerge ([
