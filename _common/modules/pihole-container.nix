@@ -38,7 +38,7 @@ in
     ];
 
     virtualisation.oci-containers.containers.pihole = {
-      image = "pihole/pihole:2025.04.0";
+      image = "pihole/pihole:2025.05.1";
       ports = [
         "53:53/tcp"
         "53:53/udp"
