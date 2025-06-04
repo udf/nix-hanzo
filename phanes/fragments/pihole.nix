@@ -16,6 +16,7 @@
       CRON = "14 * * * *";
       CLIENT_SKIP_TLS_VERIFICATION = "true";
     };
+    extraOptions = [ "--no-healthcheck" ];
   };
 
   users.users.sam.extraGroups = [ "podman" ];
