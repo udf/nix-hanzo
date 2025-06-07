@@ -33,11 +33,13 @@ in
       autoprune = true;
       autosnap = true;
     };
+
+    extraArgs = [ "--verbose" ];
   };
 
   systemd.services."syncoid-${srcDataset}-nix" = syncoidServiceOpts;
   systemd.services."syncoid-${srcDataset}-root" = syncoidServiceOpts // {
-    after = [ "syncoid-${srcDataset}-nix.service" ];
+    after = syncoidServiceOpts.after ++ [ "syncoid-${srcDataset}-nix.service" ];
   };
 
   services.syncoid = {
