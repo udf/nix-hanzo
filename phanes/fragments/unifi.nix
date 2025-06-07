@@ -6,6 +6,8 @@ let
   containerIP = "192.168.0.4";
 in
 {
+  systemd.services."container@unifi".after = [ "NetworkManager-wait-online.service" ];
+
   containers.unifi = {
     autoStart = true;
     privateNetwork = true;

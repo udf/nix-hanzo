@@ -50,8 +50,6 @@
     networkmanager = {
       enable = true;
     };
-    # ensures the bridge exists at boot (network manager does the rest)
-    bridges.br0.interfaces = [ ];
   };
 
   time.timeZone = "Africa/Harare";
