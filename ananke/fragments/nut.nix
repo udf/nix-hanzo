@@ -24,6 +24,10 @@ in
     ups.mecer-vesta-3k = {
       driver = "nutdrv_qx";
       port = "auto";
+      directives = [
+        "default.battery.voltage.low = 46.0"
+        "default.battery.voltage.high = 56.0"
+      ];
       # vendorid = "0665";
       # productid = "5161";
       # product = "USB to Serial";
