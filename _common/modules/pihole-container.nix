@@ -2,33 +2,6 @@
 with lib;
 let
   cfg = config.services.pihole-container;
-  tag = "2025.05.1";
-  # nix run nixpkgs#nix-prefetch-docker -- --image-name pihole/pihole --image-tag {tag}
-  baseImage = pkgs.dockerTools.pullImage {
-    imageName = "pihole/pihole";
-    imageDigest = "sha256:db38df3e050606bd014c801c2cbb0b13f263d3122d3d817a8cbcee807688af24";
-    hash = "sha256-OGSAXpmwfUnIZgo3v6GDJtCo5QvewJ1ILCCBURcGQQc=";
-    finalImageName = "pihole/pihole";
-    finalImageTag = tag;
-  };
-
-  patchedStartShOverlay = pkgs.stdenv.mkDerivation {
-    name = "patched-pihole-start-sh-overlay";
-    src = pkgs.fetchurl {
-      url = "https://raw.githubusercontent.com/pi-hole/docker-pi-hole/refs/tags/${tag}/src/start.sh";
-      sha256 = "sha256-/nRwZGjw5t9lgykv1ilcVQ7OIR/6d59SCCOXd0IhSMs=";
-    };
-    patches = [ ./pihole-start.sh_tail_retry.patch ];
-    phases = [ "unpackPhase" "patchPhase" "installPhase" ];
-    unpackPhase = ''
-      cp $src start.sh
-      chmod +x start.sh
-    '';
-    installPhase = ''
-      mkdir -p $out/usr/bin/
-      cp start.sh $out/usr/bin/
-    '';
-  };
 in
 {
   options.services.pihole-container = {
@@ -65,15 +38,7 @@ in
     ];
 
     virtualisation.oci-containers.containers.pihole = {
-      image = "patched-pihole:${tag}";
-      pull = "never";
-      imageFile = pkgs.dockerTools.buildImage {
-        name = "patched-pihole";
-        tag = tag;
-        fromImage = baseImage;
-        copyToRoot = [ patchedStartShOverlay ];
-        config.Cmd = [ "start.sh" ];
-      };
+      image = "pihole/pihole:2025.05.1";
       ports = [
         "53:53/tcp"
         "53:53/udp"
