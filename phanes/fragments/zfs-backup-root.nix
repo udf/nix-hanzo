@@ -6,6 +6,7 @@ let
     startAt = lib.mkForce [ ];
     after = [ "sanoid.service" ];
     wantedBy = [ "sanoid.service" ];
+    serviceConfig.Type = "oneshot";
   };
   sanoidAllSnapsOff = {
     frequently = 0;
@@ -37,6 +38,7 @@ in
     extraArgs = [ "--verbose" ];
   };
 
+  systemd.services.sanoid.serviceConfig.Type = "oneshot";
   systemd.services."syncoid-${srcDataset}-nix" = syncoidServiceOpts;
   systemd.services."syncoid-${srcDataset}-root" = syncoidServiceOpts // {
     after = syncoidServiceOpts.after ++ [ "syncoid-${srcDataset}-nix.service" ];
