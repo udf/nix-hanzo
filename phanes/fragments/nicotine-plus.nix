@@ -46,7 +46,7 @@ in
           --env="XDG_DATA_DIRS=${pkgs.adwaita-icon-theme}/share" \
           --env="XCURSOR_PATH=/home/nicotine/.icons:${pkgs.adwaita-icon-theme}/share/icons" \
           --env="GDK_PIXBUF_MODULE_FILE=${pkgs.librsvg.out}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache" \
-          --start-child="${nicotinePkg}/bin/nicotine" \
+          --start-child="${nicotinePkg}/bin/nicotine --ci-mode" \
           --exit-with-children=yes \
           :${XDisplay}
       '';
