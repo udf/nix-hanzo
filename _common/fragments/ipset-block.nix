@@ -219,7 +219,6 @@ in
 
         extraStopCommands = ''
           iptables -D INPUT ${iptablesArgs} || true
-          iptables -F
           ipset destroy ${ipsetName} || true
         '';
       };
