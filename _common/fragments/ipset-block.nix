@@ -35,6 +35,7 @@ let
     "10439" = "CARINET, US";
     "10617" = "SION S.A, AR";
     "10796" = "TWC-10796-MIDWEST, US";
+    "11320" = "LIGHTEDGE-AS-02, US";
     "12389" = "ROSTELECOM-AS, RU";
     "12816" = "MWN-AS, DE";
     "12876" = "Online SAS, FR";
@@ -102,6 +103,7 @@ let
     "136180" = "IPIP-CN Beijing Tiantexin Tech. Co., Ltd., CN";
     "138915" = "KAOPU-HK Kaopu Cloud HK Limited, HK";
     "138968" = "RAINBOWIDC-AS-AP rainbow network limited, JP";
+    "141892" = "IDNIC-SENGKED-AS-ID CV Andhika Pratama Sanggoro, ID";
     "141995" = "CAPL-AS-AP Contabo Asia Private Limited, SG";
     "142002" = "SCLOUDPTELTD-AS Scloud Pte Ltd, SG";
     "148981" = "CHINANET-HUBEI-SHIYAN-IDC China Telecom, CN";
@@ -116,10 +118,13 @@ let
     "209588" = "FLYSERVERS-ASN, PA";
     "209605" = "HOSTBALTIC, LT";
     "209805" = "SBCLOUD, RU";
+    "210369" = "MXCLOUD-AS, GB";
     "211298" = "INTERNET-MEASUREMENT, GB";
+    "211590" = "BUCKLOG, FR";
     "211619" = "MAXKO, HR";
     "211680" = "AS-BITSIGHT, PT";
     "211736" = "FDN3, UA";
+    "213412" = "ONYPHE, FR";
     "213613" = "BOTSHIELD-LTD, GB";
     "214943" = "RAILNET, US";
     "215292" = "GRAVHOSTING, GB";
