@@ -85,6 +85,7 @@
     docker = {
       enable = true;
       storageDriver = "overlay2";
+      liveRestore = true;
     };
     arion.backend = "docker";
     oci-containers.backend = "docker";
