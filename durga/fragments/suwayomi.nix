@@ -8,7 +8,7 @@ in
   virtualisation.oci-containers.containers.suwayomi = {
     image = "ghcr.io/suwayomi/tachidesk:v2.0.1761";
     ports = [
-      "${toString PORT}:${toString PORT}"
+      "127.0.0.1:${toString PORT}:${toString PORT}"
     ];
     volumes = [
       "suwayomi:/home/suwayomi/.local/share/Tachidesk"

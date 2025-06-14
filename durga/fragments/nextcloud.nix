@@ -38,7 +38,7 @@ in
   virtualisation.oci-containers.containers.aio-imaginary = {
     image = "nextcloud/aio-imaginary";
     ports = [
-      "9000:9000"
+      "127.0.0.1:9000:9000"
     ];
     environment = {
       IMAGINARY_SECRET = imaginaryKey;
