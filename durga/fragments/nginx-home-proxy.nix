@@ -55,14 +55,14 @@ in
           proxy_send_timeout 20s;
           proxy_read_timeout 20s;
 
-          proxy_cache ramcache; 
+          proxy_cache diskcache; 
           proxy_cache_key "$scheme$host$uri$args_has_embed";
           proxy_cache_bypass $arg_nocache;
           proxy_no_cache $uri_is_dir;
           proxy_cache_lock on;
  	        proxy_cache_lock_age 5s;
 
-          proxy_cache_valid 200 7d;
+          proxy_cache_valid 200 36500d;
           proxy_cache_valid any 5s;
 
           proxy_pass https://${subMap};
