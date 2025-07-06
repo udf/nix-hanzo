@@ -79,6 +79,7 @@ let
     "51167" = "CONTABO, DE";
     "51396" = "PFCLOUD, DE";
     "51852" = "PLI-AS, PA";
+    "52053" = "REDHEBERG, FR";
     "55430" = "STARHUB-NGNBN Starhub Ltd, SG";
     "55933" = "CLOUDIE-AS-AP Cloudie Limited, HK";
     "55990" = "HWCSNET Huawei Cloud Service data center, CN";
