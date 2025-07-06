@@ -4,9 +4,9 @@ let
   util = (import ../../_common/helpers/nginx-util.nix) { inherit lib pkgs; };
   upstreamHost = "192.168.0.2:8096";
   commonOptions = ''
-    proxy_connect_timeout 20s;
-    proxy_send_timeout 20s;
-    proxy_read_timeout 20s;
+    proxy_connect_timeout 5s;
+    proxy_read_timeout 3600s;
+    proxy_send_timeout 3600s;
 
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
@@ -23,9 +23,9 @@ in
       useACMEHost = serverHost;
       forceSSL = true;
       extraConfig = ''
+        client_max_body_size 20M;
+
         # Security / XSS Mitigation Headers
-        add_header X-Frame-Options "SAMEORIGIN";
-        add_header X-XSS-Protection "1; mode=block";
         add_header X-Content-Type-Options "nosniff";
       '';
       locations = {
@@ -50,7 +50,7 @@ in
         '';
 
         # Proxy Jellyfin Websockets traffic
-        "/socket".extraConfig = ''
+        "^~ /socket".extraConfig = ''
           proxy_pass http://${upstreamHost};
           proxy_http_version 1.1;
           proxy_set_header Upgrade $http_upgrade;
