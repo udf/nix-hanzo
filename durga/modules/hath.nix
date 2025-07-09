@@ -113,7 +113,7 @@ in
           User = cfg.user;
           Group = cfg.group;
           Type = "simple";
-          Restart = "on-failure";
+          Restart = "always";
           WorkingDirectory = cfg.homeDir;
           ExecStart = ''
             ${pkgs.HentaiAtHome}/bin/HentaiAtHome \
