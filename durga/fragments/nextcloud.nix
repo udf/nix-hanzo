@@ -36,7 +36,7 @@ in
   };
 
   virtualisation.oci-containers.containers.aio-imaginary = {
-    image = "nextcloud/aio-imaginary";
+    image = "nextcloud/aio-imaginary:20250701_092737";
     ports = [
       "127.0.0.1:9000:9000"
     ];

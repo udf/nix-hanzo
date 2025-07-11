@@ -15,7 +15,11 @@
       "/sync/frigate:/media/frigate"
       "/sync/frigate/cache:/tmp/cache"
     ];
-    environment = { };
+    labels = {
+      # ignore tags starting with commit hashes
+      "diun.exclude_tags" = "^[0-9a-f]{7}(-|$)";
+      "diun.max_tags" = "100";
+    };
     extraOptions = [
       "--cap-add=CAP_PERFMON"
       "--device=/dev/dri/renderD128"
