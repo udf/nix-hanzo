@@ -1,0 +1,26 @@
+watch:
+  workers: 2
+  schedule: "0 6 * * *"
+  jitter: 30s
+  firstCheckNotif: true
+  runOnStartup: true
+
+defaults:
+  watchRepo: true
+  notifyOn:
+    - new
+    - update
+  maxTags: 8
+  sortTags: reverse
+
+notif:
+  telegram:
+    chatIDs:
+      - "232787997"
+    templateBody: |
+      *{{ escapeMarkdown .Meta.Hostname }}.diun.{{ .Entry.Provider }}*:
+      🐋 Docker tag {{ if .Entry.Image.HubLink }}[{{ .Entry.Image }}]({{ .Entry.Image.HubLink }}){{ else }}{{ .Entry.Image }}{{ end }} {{ if (eq .Entry.Status "new") }}is available{{ else }}has been updated{{ end }} on {{ .Entry.Image.Domain }} registry.
+
+providers:
+  docker:
+    watchByDefault: true
