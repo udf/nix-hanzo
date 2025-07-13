@@ -6,8 +6,8 @@
       # "8971:8971" # Web UI
       "8971:5000" # Web UI (no auth)
       "8554:8554" # RTSP feeds
-      "8555:8555/tcp" # WebRTC over tcp
-      "8555:8555/udp" # WebRTC over udp
+      # "8555:8555/tcp" # WebRTC over tcp
+      # "8555:8555/udp" # WebRTC over udp
     ];
     volumes = [
       "/etc/localtime:/etc/localtime:ro"
