@@ -20,7 +20,7 @@ in
   };
 
   services.flood = {
-    enable = false;
+    enable = true;
     openFirewall = true;
     host = "0.0.0.0";
     port = 3000;
