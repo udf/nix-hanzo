@@ -1,5 +1,6 @@
 { config, lib, pkgs, ... }:
 let
+  unstable = import <nixpkgs-unstable> { config = { allowUnfree = true; }; };
   serviceOpts = {
     serviceConfig = {
       Restart = lib.mkForce "always";
@@ -12,14 +13,14 @@ in
 {
   services.qbittorrent = {
     enable = true;
-    port = 8081;
+    profileDir = "/var/lib/qbittorrent/.config";
+    webuiPort = 8081;
     openFirewall = true;
-    maxMemory = "4G";
-    maxSwap = "2G";
+    package = unstable.qbittorrent-nox;
   };
 
   services.flood = {
-    enable = true;
+    enable = false;
     openFirewall = true;
     host = "0.0.0.0";
     port = 3000;
@@ -42,6 +43,19 @@ in
 
   users.users.sam.extraGroups = [ "qbittorrent" ];
 
-  systemd.services.qbittorrent = serviceOpts;
+  systemd.services.qbittorrent = lib.mkMerge [
+    serviceOpts
+    {
+      serviceConfig = {
+        LimitNOFILE = 65536;
+        IOSchedulingClass = "idle";
+        IOSchedulingPriority = 7;
+        MemoryAccounting = "true";
+        MemoryHigh = "4G";
+        MemoryMax = "4G";
+        MemorySwapMax = "2G";
+      };
+    }
+  ];
   systemd.services.flood = serviceOpts;
 }
