@@ -115,6 +115,7 @@ let
     "202425" = "INT-NETWORK, SC";
     "204428" = "SS-NET, BG";
     "207812" = "DM_AUTO, BG";
+    "208317" = "SF-DIGITALSERVICES, MD";
     "209132" = "AS209132, SC";
     "209588" = "FLYSERVERS-ASN, PA";
     "209605" = "HOSTBALTIC, LT";
@@ -206,6 +207,8 @@ in
         ${getBannedNetsScript} | ipset restore
       '';
     };
+
+    systemd.services.firewall.restartTriggers = [ getBannedNetsScript ];
 
     networking.firewall =
       let
