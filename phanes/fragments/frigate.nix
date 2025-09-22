@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 {
   virtualisation.oci-containers.containers.frigate = {
-    image = "ghcr.io/blakeblackshear/frigate:0.15.2";
+    image = "ghcr.io/blakeblackshear/frigate:0.16.1";
     ports = [
       # "8971:8971" # Web UI
       "8971:5000" # Web UI (no auth)
@@ -12,8 +12,8 @@
     volumes = [
       "/etc/localtime:/etc/localtime:ro"
       "/var/lib/frigate/config:/config"
-      "/sync/frigate:/media/frigate"
-      "/sync/frigate/cache:/tmp/cache"
+      "/var/lib/frigate/media:/media/frigate"
+      "/var/cache/frigate:/tmp/cache"
     ];
     labels = {
       # ignore tags starting with commit hashes
@@ -23,6 +23,7 @@
     extraOptions = [
       "--cap-add=CAP_PERFMON"
       "--device=/dev/dri/renderD128"
+      "--shm-size=256m"
     ];
   };
 
