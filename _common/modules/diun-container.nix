@@ -30,7 +30,7 @@ in
     };
 
     virtualisation.oci-containers.containers.diun = {
-      image = "crazymax/diun:4.29";
+      image = "crazymax/diun:4.30";
       volumes = [
         "/var/lib/diun:/data"
         "${cfg.socketPath}:/var/run/docker.sock"

@@ -8,7 +8,7 @@
   };
 
   virtualisation.oci-containers.containers.nebula-sync = {
-    image = "ghcr.io/lovelaze/nebula-sync:v0.11.0";
+    image = "ghcr.io/lovelaze/nebula-sync:v0.11.1";
     environmentFiles = [ "/var/lib/secrets/pihole/nebula-sync.env" ];
     environment = {
       FULL_SYNC = "true";
