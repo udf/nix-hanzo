@@ -11,6 +11,7 @@ in
       root = "/var/www/music";
       extraConfig = ''
         absolute_redirect off;
+        dav_ext_methods PROPFIND OPTIONS;
       '';
       locations = {
         "~ /$".extraConfig = ''
