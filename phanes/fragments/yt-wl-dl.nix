@@ -93,7 +93,7 @@ in
       script = ''
         cd "$STATE_DIRECTORY"
         ${venvSetupCode}
-        pip --cache-dir="$STATE_DIRECTORY/.cache" install --force-reinstall https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz
+        pip --cache-dir="$STATE_DIRECTORY/.cache" install --force-reinstall "yt-dlp[default] @ https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz"
 
         DL_LIST="${downloadList}"
 
@@ -153,7 +153,7 @@ in
     };
     services.yt-wl-dl = {
       after = [ "network.target" ];
-      path = [ pkgs.ffmpeg ];
+      path = [ pkgs.ffmpeg pkgs.deno ];
       upholds = [ "external.mount" "yt-wl-trasher.timer" ];
       unitConfig = {
         RequiresMountsFor = "/external";
@@ -197,7 +197,7 @@ in
 
         cd $STATE_DIRECTORY
         ${venvSetupCode}
-        pip install --force-reinstall https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz
+        pip install --force-reinstall "yt-dlp[default] @ https://github.com/yt-dlp/yt-dlp/archive/master.tar.gz"
 
         mkdir -p "$TEMP_DIR"
 
