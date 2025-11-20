@@ -10,7 +10,7 @@ let
   dlCookiesSocket = "/var/run/yt-wl/yt-store-dl-cookies.socket";
   helperScripts = "${../scripts/yt-wl}";
   pythonPkg = pkgs.python313.withPackages (ps: with ps; [ curl-cffi ]);
-  venvSetupCode = import ../../_common/helpers/gen-venv-setup.nix { inherit pythonPkg; };
+  venvSetupCode = import ../../_common/helpers/gen-venv-setup.nix { inherit pythonPkg; inherit pkgs; };
 in
 {
   imports = [
