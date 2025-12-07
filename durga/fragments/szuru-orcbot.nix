@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   pythonPkg = pkgs.python311;
-  venvSetupCode = import ../../_common/helpers/gen-venv-setup.nix { inherit pythonPkg; };
+  venvSetupCode = import ../../_common/helpers/gen-venv-setup.nix { inherit pythonPkg; inherit pkgs; };
   libraryPkgs = [ pkgs.gcc-unwrapped ];
 in
 {
