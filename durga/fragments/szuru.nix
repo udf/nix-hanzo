@@ -117,6 +117,9 @@ in
         volumes = [
           "${SQL_PATH}:/var/lib/postgresql/data"
         ];
+        labels = {
+          "diun.enable" = "false";
+        };
       };
     };
   };
