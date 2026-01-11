@@ -1,4 +1,4 @@
-{ lib, buildPythonPackage, fetchFromGitHub, callPackage, setuptools, aiohttp, systemd-python }:
+{ lib, buildPythonPackage, fetchFromGitHub, callPackage, setuptools, aiohttp, systemd-python, telethon }:
 
 buildPythonPackage {
   pname = "watcher-bot";
@@ -16,7 +16,7 @@ buildPythonPackage {
   build-system = [ setuptools ];
 
   propagatedBuildInputs = [
-    (callPackage ./telethon.nix { })
+    telethon
     aiohttp
     systemd-python
   ];
