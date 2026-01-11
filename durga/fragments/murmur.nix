@@ -4,6 +4,8 @@ let
   private = import ../../_common/constants/private.nix;
 in
 {
+  systemd.services.murmur.after = [ "acme-renew-durga.withsam.org.timer" ];
+
   services.murmur = {
     enable = true;
     welcometext = "Congratulation! You have earned one (1) autism!";

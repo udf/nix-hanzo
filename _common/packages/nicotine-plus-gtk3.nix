@@ -1,7 +1,7 @@
 {
   lib,
   fetchFromGitHub,
-  wrapGAppsHook,
+  wrapGAppsHook3,
   gdk-pixbuf,
   gettext,
   gobject-introspection,
@@ -29,7 +29,7 @@ python3Packages.buildPythonApplication {
 
   nativeBuildInputs = [
     gettext
-    wrapGAppsHook
+    wrapGAppsHook3
     gobject-introspection
     glib
     gdk-pixbuf

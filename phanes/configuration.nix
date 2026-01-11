@@ -10,11 +10,11 @@
 
   powerManagement.cpuFreqGovernor = "ondemand";
 
-  services.logind = {
-    lidSwitch = "ignore";
-    lidSwitchExternalPower = "ignore";
-    lidSwitchDocked = "ignore";
-    powerKey = "ignore";
+  services.logind.settings.Login = {
+    HandleLidSwitch = "ignore";
+    HandleLidSwitchExternalPower = "ignore";
+    HandleLidSwitchDocked = "ignore";
+    HandlePowerKey = "ignore";
   };
 
   # Use the systemd-boot EFI boot loader.

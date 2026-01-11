@@ -1,8 +1,9 @@
-{ lib, buildPythonPackage, fetchFromGitHub, fetchurl, openssl, rsa, pyaes, pythonOlder }:
+{ lib, buildPythonPackage, fetchFromGitHub, fetchurl, openssl, rsa, pyaes, pythonOlder, setuptools }:
 
 buildPythonPackage rec {
   pname = "telethon";
   version = "1.24.0";
+  pyproject = true;
 
   src = fetchFromGitHub {
     owner = "udf";
@@ -10,6 +11,8 @@ buildPythonPackage rec {
     rev = "v1.24-lts";
     sha256 = "1454v9qsh421ssj6jic3rgvb5a9priwlpgqfqvvrbqh8spibliil";
   };
+
+  build-system = [ setuptools ];
 
   patchPhase = ''
     substituteInPlace telethon/crypto/libssl.py --replace \

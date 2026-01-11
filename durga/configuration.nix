@@ -27,9 +27,9 @@
     denyinterfaces veth*
   '';
 
-  systemd.extraConfig = ''
-    DefaultTimeoutStopSec=10s
-  '';
+  systemd.settings.Manager = {
+    DefaultTimeoutStopSec = "10s";
+  };
 
   services.openssh.enable = true;
   custom.fail2endlessh.enable = true;

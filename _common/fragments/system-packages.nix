@@ -14,7 +14,7 @@
     ncdu
     pv
     lsof
-    aria
+    aria2
     zip
     atool
     unzip

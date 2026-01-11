@@ -77,9 +77,10 @@
       export PATH="$HOME/.local/bin:$PATH"
 
       # syntax highlighting plugin
-      source "${pkgs.zsh-fast-syntax-highlighting}/share/zsh/site-functions/fast-syntax-highlighting.plugin.zsh"
+      source "${pkgs.zsh-fast-syntax-highlighting}/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
 
       # fzf
+      export FZF_DEFAULT_OPTS="--color=dark"
       if [ -n "''${commands[fzf-share]}" ]; then
         source "$(fzf-share)/key-bindings.zsh"
         source "$(fzf-share)/completion.zsh"

@@ -116,7 +116,7 @@ in
           Restart = "always";
           WorkingDirectory = cfg.homeDir;
           ExecStart = ''
-            ${pkgs.HentaiAtHome}/bin/HentaiAtHome \
+            ${pkgs.hentai-at-home}/bin/HentaiAtHome \
               --port=${toString cfg.port} \
               --cache-dir=${cfg.cacheDir} \
               --data-dir=${cfg.dataDir} \
