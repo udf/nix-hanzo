@@ -93,6 +93,7 @@ fi
 # Edit command line with alt-e
 autoload edit-command-line; zle -N edit-command-line
 bindkey '^[e' edit-command-line
+zstyle :zle:edit-command-line editor nvim
 
 # copy current command line to clipboard
 if (( $+commands[xclip] )); then
