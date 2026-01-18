@@ -7,7 +7,7 @@ in
 ${builtins.readFile ./zshrc}
 
 # dircolors (from ${dirColorsConf})
-${builtins.readFile (dirColorsConf + "/dircolors-sh")}
+${builtins.readFile "${dirColorsConf}/dircolors-sh"}
 
 # right prompt
 export RPROMPT='$(${lib.getExe pkgs.gitprompt-rs} zsh)'
