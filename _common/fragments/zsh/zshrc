@@ -96,7 +96,7 @@ bindkey '^[e' edit-command-line
 
 # copy current command line to clipboard
 if (( $+commands[xclip] )); then
-  CLIPCMD=xclip -sel clip
+  CLIPCMD='xclip -sel clip'
 fi
 if (( $+commands[wl-copy] )); then
   CLIPCMD=wl-copy
