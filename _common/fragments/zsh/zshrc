@@ -52,7 +52,7 @@ function do_prompt() {
   two_line=$(( ${#$(print -P '%~')} + 50 >= $COLUMNS ))
   echo -n '%B%F{magenta}'
   (( $two_line )) && echo -n '┌'
-  echo -n '[%b%F{red}%(?..%? )%B%F{green}%m %b%F{magenta}%~%B]'
+  echo -n '[%b%F{red}%(?..%? )%B%(1000#.%F{green}.%F{red}%n@)%m %b%F{magenta}%~%B]'
   (( $two_line )) && echo -n "\n└"
   echo -n '%# %f%b'
 
@@ -64,13 +64,25 @@ function do_prompt() {
 setopt promptsubst
 export PROMPT='$(do_prompt)'
 
-# set window title to running command
+# set window title to running command (+username@host if remote/other user)
+function _should_show_owner() {
+  (( $+SSH_CLIENT )) && return 0
+  if ! (( $+_ZSH_SHOW_OWNER )); then
+    [[ $(id -u) != 1000 || $(loginctl show-session --value -p Remote 'self' 2>/dev/null) == 'yes' ]] && _ZSH_SHOW_OWNER=0 || _ZSH_SHOW_OWNER=1
+  fi
+  return $_ZSH_SHOW_OWNER
+}
+
 function setwindowtitle() {
   SUFFIX=
   if [[ -v 1 ]]; then
     SUFFIX=": $1"
   fi
-  printf '%s' $'\e]0;' "term: $(print -P '%~')$SUFFIX" $'\a'
+  OWNER=
+  if _should_show_owner; then
+    OWNER='%n@%m '
+  fi
+  printf '%s' $'\e]0;' "term: $(print -P "$OWNER%~")$SUFFIX" $'\a'
 }
 
 function preexec() {
