@@ -1,0 +1,133 @@
+
+# Wait 50ms for key sequences (fixes ctrl+ bindings being slow)
+KEYTIMEOUT=5
+
+# History
+HISTFILE=~/.histfile
+HISTSIZE=10000000
+SAVEHIST=10000000
+setopt appendhistory
+setopt histignoredups
+setopt histreduceblanks
+setopt INC_APPEND_HISTORY
+
+# completion
+autoload -Uz compinit
+zstyle ':completion:*' menu select
+zmodload zsh/complist
+compinit
+# Include hidden files
+_comp_options+=(globdots)
+
+# shift-tab to go backwards in completions
+bindkey -M menuselect '^[[Z' reverse-menu-complete
+
+# handle more keys
+bindkey -e
+bindkey "\e[H" beginning-of-line  # HOME
+bindkey "\e[F" end-of-line        # END
+bindkey "\e[3~" delete-char       # DELETE
+bindkey "\e[2~" quoted-insert     # INSERT
+bindkey -s "^[OM" "^M"            # keypad enter
+
+export WORDCHARS=
+bindkey "\e[1;5C" emacs-forward-word
+bindkey "\e[1;5D" emacs-backward-word
+bindkey "^H" vi-backward-kill-word
+
+# make time builtin look like bash
+TIMEFMT=$'\nreal\t%*Es\nuser\t%*Us\nsys\t%*Ss'
+
+# automatically cd on dir name
+setopt autocd
+
+# print error on glob match failiure
+setopt nomatch
+
+# report background job status immediately
+setopt notify
+
+# prompt
+function do_prompt() {
+  two_line=$(( ${#$(print -P '%~')} + 50 >= $COLUMNS ))
+  echo -n '%B%F{magenta}'
+  (( $two_line )) && echo -n '┌'
+  echo -n '[%b%F{red}%(?..%? )%B%F{green}%m %b%F{magenta}%~%B]'
+  (( $two_line )) && echo -n "\n└"
+  echo -n '%# %f%b'
+
+  echo -n '%{'
+  setwindowtitle
+  echo -n '%}'
+}
+
+setopt promptsubst
+export PROMPT='$(do_prompt)'
+
+# set window title to running command
+function setwindowtitle() {
+  SUFFIX=
+  if [[ -v 1 ]]; then
+    SUFFIX=": $1"
+  fi
+  printf '%s' $'\e]0;' "term: $(print -P '%~')$SUFFIX" $'\a'
+}
+
+function preexec() {
+  setwindowtitle "$2"
+}
+
+# Issue a BELL when a command is done
+function precmd() {
+  echo -ne '\a'
+}
+
+export EDITOR='nvim -p'
+if [[ -v DISPLAY ]] && (( $+commands[code] )); then
+  export VISUAL='code --wait'
+fi
+if [[ -v DISPLAY ]] && (( $+commands[vscodium] )); then
+  export VISUAL='vscodium --wait'
+fi
+
+# Edit command line with alt-e
+autoload edit-command-line; zle -N edit-command-line
+bindkey '^[e' edit-command-line
+
+# copy current command line to clipboard
+if (( $+commands[xclip] )); then
+  CLIPCMD=xclip -sel clip
+fi
+if (( $+commands[wl-copy] )); then
+  CLIPCMD=wl-copy
+fi
+
+if [[ -v CLIPCMD ]]; then
+  function clip_cmd() {
+    echo -nE "$BUFFER" | $CLIPCMD
+  }
+  zle -N clip_cmd
+  bindkey "^X" clip_cmd
+fi
+
+# colour aliases
+alias ls='ls --color=auto'
+alias grep='grep --colour=auto'
+alias egrep='egrep --colour=auto'
+alias fgrep='fgrep --colour=auto'
+
+# confirm before overwriting something
+alias cp="cp -i"
+alias mv="mv -i"
+# human-readable sizes
+alias df='df -h'
+# show sizes in MB
+alias free='free -m'
+
+# shorthands
+alias gitc='git commit'
+alias gitd='git diff'
+alias gitds='git diff --stat'
+
+# Add user Python package binaries to path
+export PATH="$HOME/.local/bin:$PATH"
