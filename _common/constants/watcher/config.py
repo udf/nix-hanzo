@@ -14,10 +14,6 @@ flood_password = os.environ.get('FLOOD_PASSWORD')
 
 def systemd_should_ignore(e, tag):
   source = e.get('_COMM') or e.get('SYSLOG_IDENTIFIER')
-  # https://github.com/nextcloud/server/issues/52791 (fixed in Nextcloud 32, currently unreleased)
-  if (tag in {'nextcloud-preview-gen.service', 'nextcloud-cron.service'} and
-      'Cached preview not found for file' in e['MESSAGE']):
-    return True
   if (tag == 'podman-pihole.service' and
       e['MESSAGE'].startswith('tail: /var/log/pihole/FTL.log: file truncated')):
     return True
@@ -25,7 +21,11 @@ def systemd_should_ignore(e, tag):
     return e['PRIORITY'] >= LOG_ERR
 
   if source == 'kernel':
-    return e['PRIORITY'] >= LOG_INFO
+    return e['PRIORITY'] >= LOG_INFO or (
+      e['PRIORITY'] >= LOG_NOTICE and (
+        re.match(r'r8152 .+: Promiscuous mode enabled', e['MESSAGE'])
+      )
+    )
   if source != 'systemd':
     # ignore non-systemd notice and below
     return e['PRIORITY'] >= LOG_NOTICE
