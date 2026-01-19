@@ -13,9 +13,13 @@ setopt INC_APPEND_HISTORY
 
 # completion
 autoload -Uz compinit
-zstyle ':completion:*' menu select
+for dump in ~/.zcompdump(N.mh+24); do
+  compinit
+  echo 'Note: Completions were reloaded'
+done
+compinit -C
 zmodload zsh/complist
-compinit
+zstyle ':completion:*' menu select
 # Include hidden files
 _comp_options+=(globdots)
 
