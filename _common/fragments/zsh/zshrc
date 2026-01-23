@@ -79,15 +79,11 @@ function _should_show_owner() {
 }
 
 function setwindowtitle() {
-  SUFFIX=
-  if [[ -v 1 ]]; then
-    SUFFIX=": $1"
-  fi
   OWNER=
   if _should_show_owner; then
     OWNER='%n@%m '
   fi
-  printf '%s' $'\e]0;' "term: $(print -P "$OWNER%~")$SUFFIX" $'\a'
+  printf '%s' $'\e]0;' "term [$(print -P "$OWNER%~")] $1" $'\a'
 }
 
 function preexec() {
