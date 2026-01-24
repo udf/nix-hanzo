@@ -1,12 +1,34 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   private = (import ../../_common/constants/private.nix).ananke;
-  states = [ "ONLINE" "ONBATT" "LOWBATT" "FSD" "COMMOK" "COMMBAD" "SHUTDOWN" "REPLBATT" "NOCOMM" "NOPARENT" ];
+  states = [
+    "ONLINE"
+    "ONBATT"
+    "LOWBATT"
+    "FSD"
+    "COMMOK"
+    "COMMBAD"
+    "SHUTDOWN"
+    "REPLBATT"
+    "NOCOMM"
+    "NOPARENT"
+  ];
 in
 {
   systemd.services.clear-upsd-pids = {
-    wantedBy = [ "upsd.service" "upsmon.service" ];
-    before = [ "upsd.service" "upsmon.service" ];
+    wantedBy = [
+      "upsd.service"
+      "upsmon.service"
+    ];
+    before = [
+      "upsd.service"
+      "upsmon.service"
+    ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = "yes";
@@ -18,6 +40,7 @@ in
   };
 
   environment.etc."nut/sam.passwd".source = pkgs.writeText "sam.passwd" "${private.upsd.pw}";
+
   power.ups = {
     enable = true;
     mode = "netserver";
@@ -34,14 +57,22 @@ in
       # vendor = "INNO TECH";
     };
     upsd.listen = [
-      { address = "127.0.0.1"; port = 3493; }
-      { address = "192.168.0.3"; port = 3493; }
+      {
+        address = "127.0.0.1";
+        port = 3493;
+      }
+      {
+        address = "192.168.0.3";
+        port = 3493;
+      }
     ];
+
     users.sam = {
       passwordFile = "/etc/nut/sam.passwd";
       instcmds = [ "ALL" ];
       actions = [ "SET" ];
     };
+
     upsmon = {
       monitor."mecer-vesta-3k@localhost" = {
         user = "sam";
@@ -52,11 +83,18 @@ in
         NOTIFYCMD = "/etc/nut/notify.sh";
         POLLFREQ = 1;
         POLLFREQALERT = 1;
-        NOTIFYMSG = map (status: [ status "\"%s\"" ]) states;
-        NOTIFYFLAG = map (status: [ status "EXEC" ]) states;
+        NOTIFYMSG = map (status: [
+          status
+          "\"%s\""
+        ]) states;
+        NOTIFYFLAG = map (status: [
+          status
+          "EXEC"
+        ]) states;
       };
     };
   };
+
   environment.etc."nut/notify.sh".source = pkgs.writeScript "notify.sh" ''
     #!${pkgs.bash}/bin/bash
     echo $NOTIFYTYPE on $1 | ${pkgs.systemd}/bin/systemd-cat -p warning -t upsmon-notify
