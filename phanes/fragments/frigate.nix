@@ -1,6 +1,12 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   virtualisation.oci-containers.containers.frigate = {
+    # MARK: pinned version
     image = "ghcr.io/blakeblackshear/frigate:0.16.3";
     ports = [
       # "8971:8971" # Web UI

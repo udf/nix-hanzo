@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   PORT = 4567;
   UID = toString config.users.users.suwayomi.uid;
@@ -6,7 +11,8 @@ let
 in
 {
   virtualisation.oci-containers.containers.suwayomi = {
-    image = "ghcr.io/suwayomi/tachidesk:v2.1.2031";
+    # MARK: pinned version
+    image = "ghcr.io/suwayomi/tachidesk:v2.1.2061";
     ports = [
       "127.0.0.1:${toString PORT}:${toString PORT}"
     ];

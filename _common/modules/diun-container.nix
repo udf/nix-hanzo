@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
 let
   cfg = config.services.diun-container;
@@ -15,7 +20,7 @@ in
       default = "/var/run/docker.sock";
       description = "Path to the docker/podman socket";
     };
-    configPath =  mkOption {
+    configPath = mkOption {
       type = types.str;
       default = "/etc/diun/diun.yml";
       description = "Path to the diun config file";
@@ -30,7 +35,8 @@ in
     };
 
     virtualisation.oci-containers.containers.diun = {
-      image = "crazymax/diun:4.30";
+      # MARK: pinned version
+      image = "crazymax/diun:4.31";
       volumes = [
         "/var/lib/diun:/data"
         "${cfg.socketPath}:/var/run/docker.sock"

@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 let
   hostName = "nextcloud.withsam.org";
@@ -36,7 +41,8 @@ in
   };
 
   virtualisation.oci-containers.containers.aio-imaginary = {
-    image = "nextcloud/aio-imaginary:20250701_092737";
+    # MARK: pinned version
+    image = "nextcloud/aio-imaginary:20260122_105751";
     ports = [
       "127.0.0.1:9000:9000"
     ];

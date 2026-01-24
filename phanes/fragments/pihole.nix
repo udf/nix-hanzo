@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   services.pihole-container = {
     enable = true;
@@ -8,6 +13,7 @@
   };
 
   virtualisation.oci-containers.containers.nebula-sync = {
+    # MARK: pinned version
     image = "ghcr.io/lovelaze/nebula-sync:v0.11.1";
     environmentFiles = [ "/var/lib/secrets/pihole/nebula-sync.env" ];
     environment = {

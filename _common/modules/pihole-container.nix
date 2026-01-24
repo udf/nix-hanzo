@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
 let
   cfg = config.services.pihole-container;
@@ -38,7 +43,8 @@ in
     ];
 
     virtualisation.oci-containers.containers.pihole = {
-      image = "pihole/pihole:2025.06.2";
+      # MARK: pinned version
+      image = "pihole/pihole:2025.11.1";
       ports = [
         "53:53/tcp"
         "53:53/udp"

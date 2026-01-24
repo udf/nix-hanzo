@@ -11,6 +11,7 @@
 }:
 let
   pname = "nicotine-plus";
+  # MARK: pinned version
   version = "3.3.10";
   unstablePkgs = import <nixpkgs-unstable> { };
 in

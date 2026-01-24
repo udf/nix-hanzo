@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   CONFIG_PATH = "/var/lib/szuru/config.yaml";
   DATA_PATH = "/var/lib/szuru/data";
@@ -39,7 +44,11 @@ in
       '';
     in
     {
-      after = [ "docker.service" "docker.socket" "network-online.target" ];
+      after = [
+        "docker.service"
+        "docker.socket"
+        "network-online.target"
+      ];
       wants = [ "network-online.target" ];
       script = lib.mkForce (genArionCmd "up");
       serviceConfig = {
@@ -50,7 +59,8 @@ in
         EnvironmentFile = "-/run/szuru.env";
         ExecStartPre = pkgs.writeShellScript "szuru-rebuild.sh" rebuildScriptText;
         ExecReload = pkgs.writeShellScript "szuru-reload.sh" (
-          rebuildScriptText + ''
+          rebuildScriptText
+          + ''
             kill -HUP $MAINPID
           ''
         );
@@ -110,8 +120,13 @@ in
       };
 
       sql.service = {
+        # MARK: pinned version
         image = "postgres:16-alpine";
-        command = [ "postgres" "-c" "jit=off" ];
+        command = [
+          "postgres"
+          "-c"
+          "jit=off"
+        ];
         restart = "unless-stopped";
         env_file = [ "/var/lib/szuru/.env" ];
         volumes = [
