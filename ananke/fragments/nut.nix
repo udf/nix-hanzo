@@ -41,9 +41,14 @@ in
 
   environment.etc."nut/sam.passwd".source = pkgs.writeText "sam.passwd" "${private.upsd.pw}";
 
+  users.groups.nutmon = {
+    gid = 69;
+  };
+
   power.ups = {
     enable = true;
     mode = "netserver";
+
     ups.mecer-vesta-3k = {
       driver = "nutdrv_qx";
       port = "auto";
@@ -56,6 +61,7 @@ in
       # product = "USB to Serial";
       # vendor = "INNO TECH";
     };
+
     upsd.listen = [
       {
         address = "127.0.0.1";
