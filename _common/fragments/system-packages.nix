@@ -20,5 +20,6 @@
     unzip
     pipx
     expect
+    jq
   ];
 }
