@@ -30,10 +30,9 @@ def systemd_should_ignore(e, tag):
     # ignore non-systemd notice and below
     return e['PRIORITY'] >= LOG_NOTICE
 
-  unit = e.get('UNIT', '')
   return (
     e['PRIORITY'] >= LOG_NOTICE and (
-      unit in {
+      tag in {
         'backup-root.service',
         'fstrim.service',
         'nix-gc.service',
@@ -47,28 +46,28 @@ def systemd_should_ignore(e, tag):
         'NetworkManager-dispatcher.service',
       }
       or (
-        re.match(r'music-dl(-.+)?\.(service|target)$', unit)
-        or re.match(r'yt-wl-trasher.(service|timer)$', unit)
-        or re.match(r'system-music\\x2ddl.+slice$', unit)
-        or re.match(r'.+\.(auto)?mount$', unit)
-        or re.match(r'acme-.+\.service$', unit)
-        or re.match(r'yt-store-cookies@.+\.service$', unit)
-        or re.match(r'yt-store-dl-cookies@.+\.service$', unit)
-        or re.match(r'syncoid-.+\.service$', unit)
+        re.match(r'music-dl(-.+)?\.(service|target)$', tag)
+        or re.match(r'yt-wl-trasher.(service|timer)$', tag)
+        or re.match(r'system-music\\x2ddl.+slice$', tag)
+        or re.match(r'.+\.(auto)?mount$', tag)
+        or re.match(r'acme-.+\.service$', tag)
+        or re.match(r'yt-store-cookies@.+\.service$', tag)
+        or re.match(r'yt-store-dl-cookies@.+\.service$', tag)
+        or re.match(r'syncoid-.+\.service$', tag)
       )
     )
   ) or (
     e['PRIORITY'] >= LOG_INFO and (
-      re.match(r'zfs-snapshot-\w+\.service$', unit)
-      or unit == 'sanoid.service'
-      or unit == 'systemd-tmpfiles-clean.service'
-      or re.match(r'run-credentials-systemd.+tmpfiles.+clean$', unit)
-      or unit == 'logrotate.service'
-      or unit == 'ddclient.service'
-      or re.match(r'nginx(-config-reload)?\.service$', unit)
-      or re.match(r'run-docker-runtime.+.mount$$', unit)
-      or unit == 'nscd.service'
-      or unit == 'nss-lookup.target'
-      or unit == 'nss-user-lookup.target'
+      re.match(r'zfs-snapshot-\w+\.service$', tag)
+      or tag == 'sanoid.service'
+      or tag == 'systemd-tmpfiles-clean.service'
+      or re.match(r'run-credentials-systemd.+tmpfiles.+clean$', tag)
+      or tag == 'logrotate.service'
+      or tag == 'ddclient.service'
+      or re.match(r'nginx(-config-reload)?\.service$', tag)
+      or re.match(r'run-docker-runtime.+.mount$$', tag)
+      or tag == 'nscd.service'
+      or tag == 'nss-lookup.target'
+      or tag == 'nss-user-lookup.target'
     )
   )
